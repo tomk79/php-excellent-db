@@ -16,7 +16,8 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * Test
 	 */
 	public function testMain(){
-		$this->assertTrue( true );
+		$exdb = new excellent_db\main();
+		$this->assertTrue( is_object($exdb) );
 	}//testMain()
 
 }
