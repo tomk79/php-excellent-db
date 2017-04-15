@@ -20,12 +20,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			// DB Config.
 			array(
 				"dbms" => "sqlite",
-				"host" => __DIR__.'/_tmp/db/test.sqlite',
+				"host" => __DIR__.'/testdata/_tmp/db/test.sqlite',
 				"prefix" => "excellent_test",
-				"path_cache_dir" => __DIR__.'/_tmp/caches/',
+				"path_cache_dir" => __DIR__.'/testdata/_tmp/caches/',
 			),
 			// DB Table Definition.
-			__DIR__.'/db/sample_db_tables.xlsx'
+			__DIR__.'/testdata/db/sample_db_tables.xlsx'
 		);
 		$this->assertTrue( is_object($exdb) );
 	}//testMain()
