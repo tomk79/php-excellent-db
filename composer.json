@@ -24,7 +24,7 @@
     },
     "autoload": {
         "files": [
-            "php/main.php"
+            "php/create.php"
         ]
     }
 }

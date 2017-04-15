@@ -16,7 +16,17 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * Test
 	 */
 	public function testMain(){
-		$exdb = new excellent_db\main();
+		$exdb = new excellent_db\create(
+			// DB Config.
+			array(
+				"dbms" => "sqlite",
+				"host" => __DIR__.'/_tmp/db/test.sqlite',
+				"prefix" => "excellent_test",
+				"path_cache_dir" => __DIR__.'/_tmp/caches/',
+			),
+			// DB Table Definition.
+			__DIR__.'/db/sample_db_tables.xlsx'
+		);
 		$this->assertTrue( is_object($exdb) );
 	}//testMain()
 
