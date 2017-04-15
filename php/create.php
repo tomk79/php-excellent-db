@@ -9,8 +9,11 @@ namespace excellent_db;
  */
 class create{
 
-	/** tomk79/filesystem */
+	/** tomk79/filesystem Instance */
 	private $fs;
+
+	/** PDO Instance */
+	private $pdo;
 
 	/** Database Config */
 	private $config;
@@ -18,9 +21,11 @@ class create{
 	/**
 	 * constructor
 	 *
+	 * @param object $pdo PDO Instance
 	 * @param object $config Database Config
 	 */
-	public function __construct( $config ){
+	public function __construct( $pdo, $config ){
+		$this->pdo = $pdo;
 		$this->config = json_decode(json_encode($config));
 
 		$this->fs = new \tomk79\filesystem();

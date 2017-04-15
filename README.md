@@ -8,9 +8,8 @@ Excelファイルで定義したデータベーステーブル仕様に従って
 
 ```php
 <?php
-$exdb = new excellent_db\create( array(
-	"dbms" => "sqlite",
-	"host" => '/path/to/your/database.sqlite',
+$pdo = new PDO( /* PDO Options */ );
+$exdb = new excellent_db\create( $pdo, array(
 	"prefix" => "your_prefix",
 	"path_definition_file" => '/path/to/your/db_table_definition.xlsx',
 	"path_cache_dir" => '/path/to/your/caches/',

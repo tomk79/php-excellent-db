@@ -16,9 +16,15 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * Test
 	 */
 	public function testMain(){
-		$exdb = new excellent_db\create( array(
-			"dbms" => "sqlite",
-			"host" => __DIR__.'/testdata/_tmp/db/test.sqlite',
+		$pdo = new \PDO(
+			'sqlite:'.__DIR__.'/testdata/_tmp/db/test.sqlite',
+			null, null,
+			array(
+				\PDO::ATTR_PERSISTENT => false, // ←これをtrueにすると、"持続的な接続" になる
+			)
+		);
+
+		$exdb = new excellent_db\create( $pdo, array(
 			"prefix" => "excellent_test",
 			"path_definition_file" => __DIR__.'/testdata/db/sample_db_tables.xlsx',
 			"path_cache_dir" => __DIR__.'/testdata/_tmp/caches/',
