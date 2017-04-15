@@ -1,1 +1,10 @@
-{}
+{
+    "tables": {
+        "user": {
+            "sheet_label": "table_user"
+        },
+        "project": {
+            "sheet_label": "table_project"
+        }
+    }
+}

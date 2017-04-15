@@ -34,17 +34,28 @@ class create{
 
 		// テーブル定義ファイルの解析を実行
 		$table_definition = $this->parse_definition_file();
+		$this->fs->save_file(
+			$this->config->path_cache_dir.'/table_definition.json',
+			json_encode($table_definition, JSON_PRETTY_PRINT)
+		);
 		return;
 	}
 
 	/**
 	 * テーブル定義ファイルを解析する
+	 * @param string $path_definition_file Path to Table Definition File (default to `$config->path_definition_file`)
 	 * @return object Table Definition Info.
 	 */
-	public function parse_definition_file(){
+	public function parse_definition_file( $path_definition_file = null ){
+		if(!strlen($path_definition_file)){
+			$path_definition_file = $this->config->path_definition_file;
+		}
+		if( !is_file($path_definition_file) || !is_readable($path_definition_file) ){
+			trigger_error('File NOT found, or NOT readable.');
+			return false;
+		}
 		$parser = new parser_xlsx($this);
-		$rtn = $parser->parse();
-		$this->fs->save_file($this->config->path_cache_dir.'/table_definition.json', json_encode($rtn));
+		$rtn = $parser->parse($path_definition_file);
 		return $rtn;
 	}
 
