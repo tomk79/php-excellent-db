@@ -8,17 +8,13 @@ Excelファイルで定義したデータベーステーブル仕様に従って
 
 ```php
 <?php
-$exdb = new excellent_db\create(
-	// DB Config.
-	array(
-		"dbms" => "sqlite",
-		"host" => '/path/to/your/database.sqlite',
-		"prefix" => "your_prefix",
-		"path_cache_dir" => '/path/to/your/caches/',
-	),
-	// DB Table Definition.
-	'/path/to/your/db_table_definition.xlsx'
-);
+$exdb = new excellent_db\create( array(
+	"dbms" => "sqlite",
+	"host" => '/path/to/your/database.sqlite',
+	"prefix" => "your_prefix",
+	"path_definition_file" => '/path/to/your/db_table_definition.xlsx',
+	"path_cache_dir" => '/path/to/your/caches/',
+) );
 ```
 
 ## ライセンス - License

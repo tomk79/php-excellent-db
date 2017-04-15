@@ -9,21 +9,21 @@ namespace excellent_db;
  */
 class create{
 
+	/** tomk79/filesystem */
+	private $fs;
+
 	/** Database Config */
 	private $config;
-
-	/** Path to table definition file */
-	private $path_table_definition_file;
 
 	/**
 	 * constructor
 	 *
 	 * @param object $config Database Config
-	 * @param string $path_table_definition_file Path to Table Definition File(`*.xlsx`)
 	 */
-	public function __construct( $config, $path_table_definition_file ){
+	public function __construct( $config ){
 		$this->config = json_decode(json_encode($config));
-		$this->path_table_definition_file = $path_table_definition_file;
+
+		$this->fs = new \tomk79\filesystem();
 
 		// 環境情報をチェック
 		$env_error = $this->validate_env();
@@ -31,7 +31,21 @@ class create{
 			trigger_error('[ExcellentDb: Setup Error] '.$env_error);
 			return;
 		}
+
+		// テーブル定義ファイルの解析を実行
+		$table_definition = $this->parse_definition_file();
 		return;
+	}
+
+	/**
+	 * テーブル定義ファイルを解析する
+	 * @return object Table Definition Info.
+	 */
+	public function parse_definition_file(){
+		$parser = new parser_xlsx($this);
+		$rtn = $parser->parse();
+		$this->fs->save_file($this->config->path_cache_dir.'/table_definition.json', json_encode($rtn));
+		return $rtn;
 	}
 
 	/**
@@ -39,20 +53,20 @@ class create{
 	 * @return string Error message.
 	 */
 	private function validate_env(){
-		if( !is_file($this->path_table_definition_file) ){
+		if( !is_file($this->config->path_definition_file) ){
 			return 'Table definition file is NOT a file (or NOT exists).';
 		}
-		if( !is_readable($this->path_table_definition_file) ){
+		if( !is_readable($this->config->path_definition_file) ){
 			return 'Table definition file is NOT readable.';
 		}
 
 		if( !is_dir($this->config->path_cache_dir) ){
 			return 'path_cache_dir is NOT a directory (or NOT exists).';
 		}
-		if( !is_readable($this->path_table_definition_file) ){
+		if( !is_readable($this->config->path_definition_file) ){
 			return 'path_cache_dir is NOT readable.';
 		}
-		if( !is_writable($this->path_table_definition_file) ){
+		if( !is_writable($this->config->path_definition_file) ){
 			return 'path_cache_dir is NOT writable.';
 		}
 		return null;
