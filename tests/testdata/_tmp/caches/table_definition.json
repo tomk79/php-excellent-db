@@ -1,10 +1,255 @@
 {
     "tables": {
         "user": {
-            "sheet_label": "table_user"
+            "sheet_label": "table_user",
+            "table_name": "user",
+            "table_definition": {
+                "user_id": {
+                    "cell_name": "user_id",
+                    "type": "auto_id",
+                    "label": "User ID",
+                    "description": null,
+                    "unique": "user_id",
+                    "primary_key": 1,
+                    "index": 1,
+                    "hidden": 1,
+                    "not_null": 1,
+                    "auto_increment": 1,
+                    "foreign_key": null
+                },
+                "user_account": {
+                    "cell_name": "user_account",
+                    "type": "string",
+                    "label": "Account Name",
+                    "description": null,
+                    "unique": "user_account",
+                    "primary_key": null,
+                    "index": 1,
+                    "hidden": null,
+                    "not_null": 1,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "password": {
+                    "cell_name": "password",
+                    "type": "password",
+                    "label": "Password",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": null,
+                    "not_null": 1,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "user_name": {
+                    "cell_name": "user_name",
+                    "type": "string",
+                    "label": "User Name",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": null,
+                    "not_null": 1,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "email": {
+                    "cell_name": "email",
+                    "type": "email",
+                    "label": "E-mail Address",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": 1,
+                    "hidden": null,
+                    "not_null": null,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "birthday": {
+                    "cell_name": "birthday",
+                    "type": "date",
+                    "label": "Birthday",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": null,
+                    "not_null": null,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "last_login_date": {
+                    "cell_name": "last_login_date",
+                    "type": "datetime",
+                    "label": "Last Login",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "create_date": {
+                    "cell_name": "create_date",
+                    "type": "create_date",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "update_date": {
+                    "cell_name": "update_date",
+                    "type": "update_date",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "delete_date": {
+                    "cell_name": "delete_date",
+                    "type": "delete_date",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "auto_increment": null,
+                    "foreign_key": null
+                },
+                "delete_flg": {
+                    "cell_name": "delete_flg",
+                    "type": "delete_flg",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "auto_increment": null,
+                    "foreign_key": null
+                }
+            }
         },
         "project": {
-            "sheet_label": "table_project"
+            "sheet_label": "table_project",
+            "table_name": "project",
+            "table_definition": {
+                "project_id": {
+                    "cell_name": "project_id",
+                    "type": "auto_id",
+                    "label": "Project ID",
+                    "description": null,
+                    "unique": "project_id",
+                    "primary_key": 1,
+                    "index": 1,
+                    "hidden": 1,
+                    "not_null": 1,
+                    "foreign_key": null
+                },
+                "user_id": {
+                    "cell_name": "user_id",
+                    "type": "string",
+                    "label": "User ID",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": 1,
+                    "foreign_key": "user.user_id"
+                },
+                "project_name": {
+                    "cell_name": "project_name",
+                    "type": "string",
+                    "label": "Project Name",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": null,
+                    "not_null": 1,
+                    "foreign_key": null
+                },
+                "description": {
+                    "cell_name": "description",
+                    "type": "text",
+                    "label": "Project Description",
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": null,
+                    "not_null": null,
+                    "foreign_key": null
+                },
+                "create_date": {
+                    "cell_name": "create_date",
+                    "type": "create_date",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "foreign_key": null
+                },
+                "update_date": {
+                    "cell_name": "update_date",
+                    "type": "update_date",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "foreign_key": null
+                },
+                "delete_date": {
+                    "cell_name": "delete_date",
+                    "type": "delete_date",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "foreign_key": null
+                },
+                "delete_flg": {
+                    "cell_name": "delete_flg",
+                    "type": "delete_flg",
+                    "label": null,
+                    "description": null,
+                    "unique": null,
+                    "primary_key": null,
+                    "index": null,
+                    "hidden": 1,
+                    "not_null": null,
+                    "foreign_key": null
+                }
+            }
         }
     }
 }
