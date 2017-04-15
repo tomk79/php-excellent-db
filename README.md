@@ -14,6 +14,7 @@ $exdb = new excellent_db\create( $pdo, array(
 	"path_definition_file" => '/path/to/your/db_table_definition.xlsx',
 	"path_cache_dir" => '/path/to/your/caches/',
 ) );
+$exdb->migrate_init_tables();
 ```
 
 ## ライセンス - License

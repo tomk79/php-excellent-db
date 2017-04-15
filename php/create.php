@@ -52,24 +52,6 @@ class create{
 	}
 
 	/**
-	 * テーブル定義ファイルを解析する
-	 * @param string $path_definition_file Path to Table Definition File (default to `$config->path_definition_file`)
-	 * @return object Table Definition Info.
-	 */
-	public function parse_definition_file( $path_definition_file = null ){
-		if(!strlen($path_definition_file)){
-			$path_definition_file = $this->config->path_definition_file;
-		}
-		if( !is_file($path_definition_file) || !is_readable($path_definition_file) ){
-			trigger_error('File NOT found, or NOT readable.');
-			return false;
-		}
-		$parser = new parser_xlsx($this);
-		$rtn = $parser->parse($path_definition_file);
-		return $rtn;
-	}
-
-	/**
 	 * 環境情報(設定を含む)を検証する
 	 * @return string Error message.
 	 */
@@ -110,6 +92,24 @@ class create{
 	}
 
 	/**
+	 * テーブル定義ファイルを解析する
+	 * @param string $path_definition_file Path to Table Definition File (default to `$config->path_definition_file`)
+	 * @return object Table Definition Info.
+	 */
+	public function parse_definition_file( $path_definition_file = null ){
+		if(!strlen($path_definition_file)){
+			$path_definition_file = $this->config->path_definition_file;
+		}
+		if( !is_file($path_definition_file) || !is_readable($path_definition_file) ){
+			trigger_error('File NOT found, or NOT readable.');
+			return false;
+		}
+		$parser = new parser_xlsx($this);
+		$rtn = $parser->parse($path_definition_file);
+		return $rtn;
+	}
+
+	/**
 	 * 定義データをリロードする
 	 * @return boolean 成否。
 	 */
@@ -140,6 +140,15 @@ class create{
 	 */
 	public function clearcache(){
 		return $this->caches->clear();
+	}
+
+	/**
+	 * データベーステーブルを初期化する
+	 * @return boolean 成否。
+	 */
+	public function migrate_init_tables(){
+		$migrate_init_tables = new migrate_init_tables($this);
+		return $migrate_init_tables->init();
 	}
 
 }

@@ -16,6 +16,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * Test
 	 */
 	public function testMain(){
+		@unlink(__DIR__.'/testdata/_tmp/db/test.sqlite');
 		$pdo = new \PDO(
 			'sqlite:'.__DIR__.'/testdata/_tmp/db/test.sqlite',
 			null, null,
@@ -34,6 +35,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->assertTrue( $exdb->clearcache() );
 		$this->assertTrue( $exdb->reload_definition_data() );
 
+		$exdb->migrate_init_tables();
 
 	}//testMain()
 
