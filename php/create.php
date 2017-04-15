@@ -92,6 +92,22 @@ class create{
 	}
 
 	/**
+	 * `$pdo` を取得する
+	 * @return object PDO Instance.
+	 */
+	public function pdo(){
+		return $this->pdo;
+	}
+
+	/**
+	 * テーブル設計を取得する
+	 * @return object Table Definition.
+	 */
+	public function get_table_definition(){
+		return $this->table_definition;
+	}
+
+	/**
 	 * テーブル定義ファイルを解析する
 	 * @param string $path_definition_file Path to Table Definition File (default to `$config->path_definition_file`)
 	 * @return object Table Definition Info.
