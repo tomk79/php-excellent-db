@@ -26,6 +26,7 @@
     "autoload": {
         "files": [
             "php/create.php",
+            "php/caches.php",
             "php/parser/xlsx.php"
         ]
     }

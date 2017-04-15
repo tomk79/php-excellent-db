@@ -29,7 +29,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			"path_definition_file" => __DIR__.'/testdata/db/sample_db_tables.xlsx',
 			"path_cache_dir" => __DIR__.'/testdata/_tmp/caches/',
 		) );
+
 		$this->assertTrue( is_object($exdb) );
+		$this->assertTrue( $exdb->clearcache() );
+		$this->assertTrue( $exdb->reload_definition_data() );
+
+
 	}//testMain()
 
 }

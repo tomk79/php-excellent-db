@@ -12,11 +12,17 @@ class create{
 	/** tomk79/filesystem Instance */
 	private $fs;
 
+	/** cache manager Instance */
+	private $caches;
+
 	/** PDO Instance */
 	private $pdo;
 
 	/** Database Config */
 	private $config;
+
+	/** Table Definition */
+	private $table_definition;
 
 	/**
 	 * constructor
@@ -28,7 +34,11 @@ class create{
 		$this->pdo = $pdo;
 		$this->config = json_decode(json_encode($config));
 
+		// filesystem utilitiy
 		$this->fs = new \tomk79\filesystem();
+
+		// cache manager
+		$this->caches = new caches($this);
 
 		// 環境情報をチェック
 		$env_error = $this->validate_env();
@@ -37,12 +47,7 @@ class create{
 			return;
 		}
 
-		// テーブル定義ファイルの解析を実行
-		$table_definition = $this->parse_definition_file();
-		$this->fs->save_file(
-			$this->config->path_cache_dir.'/table_definition.json',
-			json_encode($table_definition, JSON_PRETTY_PRINT)
-		);
+		$this->reload_definition_data();
 		return;
 	}
 
@@ -94,6 +99,47 @@ class create{
 	 */
 	public function conf(){
 		return $this->config;
+	}
+
+	/**
+	 * `$fs` を取得する
+	 * @return object Filesystem Utilitiy Instance.
+	 */
+	public function fs(){
+		return $this->fs;
+	}
+
+	/**
+	 * 定義データをリロードする
+	 * @return boolean 成否。
+	 */
+	public function reload_definition_data(){
+		// キャッシュから読み込み
+		$caches = $this->caches->load_cached_contents();
+
+		if( $caches === false ){
+			// テーブル定義ファイルの解析を実行
+			$table_definition = $this->parse_definition_file();
+			$this->fs->save_file(
+				$this->config->path_cache_dir.'/table_definition.json',
+				json_encode($table_definition, JSON_PRETTY_PRINT)
+			);
+			$caches = $this->caches->load_cached_contents();
+		}
+		if( $caches === false ){
+			trigger_error('[ExcellentDb: Setup Error] Could NOT read data.');
+			return;
+		}
+		$this->table_definition = $caches->table_definition;
+		return true;
+	}
+
+	/**
+	 * キャッシュを消去する
+	 * @return boolean 成否。
+	 */
+	public function clearcache(){
+		return $this->caches->clear();
 	}
 
 }
