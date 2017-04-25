@@ -12,6 +12,9 @@ class dba_crud{
 	/** ExcellentDb Object */
 	private $exdb;
 
+	/** 最後に挿入したレコードを引くために必要な情報の記憶 */
+	private $last_insert_info = false;
+
 	/**
 	 * constructor
 	 *
@@ -26,6 +29,8 @@ class dba_crud{
 	 * INSERT
 	 */
 	public function insert($tbl, $data){
+		$this->last_insert_info = false;//初期化
+		$auto_column = false;
 		$table_definition = $this->exdb->get_table_definition($tbl);
 		// var_dump($table_definition);
 		// var_dump($data);
@@ -38,9 +43,22 @@ class dba_crud{
 		$sql_keys = array();
 		$sql_tpls = array();
 
-		foreach( $table_definition->table_definition as $cell_definition ){
-			array_push($sql_keys, $cell_definition->cell_name);
-			array_push($sql_tpls, ':'.$cell_definition->cell_name);
+		foreach( $table_definition->table_definition as $column_definition ){
+			array_push($sql_keys, $column_definition->column_name);
+			array_push($sql_tpls, ':'.$column_definition->column_name);
+			if( $column_definition->type == 'auto_id' ){
+				$auto_column = array(
+					'type'=>$column_definition->type,
+					'column_name'=>$column_definition->column_name,
+					'value'=>null,
+				);
+			}else if( $column_definition->type == 'auto_increment' ){
+				$auto_column = array(
+					'type'=>$column_definition->type,
+					'column_name'=>$column_definition->column_name,
+					'value'=>null,
+				);
+			}
 		}
 
 		$sql_template = $sql['insert'].implode($sql_keys,',').$sql['values'].implode($sql_tpls,',').$sql['close'];
@@ -55,28 +73,29 @@ class dba_crud{
 				break;
 			}
 			$insert_data = array();
-			foreach( $table_definition->table_definition as $cell_definition ){
+			foreach( $table_definition->table_definition as $column_definition ){
 				$row_value = null;
-				if( !@is_null( $data[$cell_definition->cell_name] ) ){
+				if( !@is_null( $data[$column_definition->column_name] ) ){
 					// データの入力がある場合
-					$row_value = $data[$cell_definition->cell_name];
+					$row_value = $data[$column_definition->column_name];
 				}
 
-				if( $cell_definition->type == 'auto_id' ){
+				if( $column_definition->type == 'auto_id' ){
 					if( is_null($row_value) ){
 						$row_value = md5( microtime().'_'.rand() );
+						$auto_column['value'] = $row_value;
 					}
-				}elseif( $cell_definition->type == 'password' ){
+				}elseif( $column_definition->type == 'password' ){
 					if( !is_null($row_value) ){
 						$row_value = $this->exdb->encrypt_password($row_value);
 					}
-				}elseif( $cell_definition->type == 'create_date' ){
+				}elseif( $column_definition->type == 'create_date' ){
 					$row_value = date("Y-m-d H:i:s");
-				}elseif( $cell_definition->type == 'delete_flg' ){
+				}elseif( $column_definition->type == 'delete_flg' ){
 					$row_value = 0;
 				}
 
-				$insert_data[':'.$cell_definition->cell_name] = $row_value;
+				$insert_data[':'.$column_definition->column_name] = $row_value;
 
 			}
 			// var_dump($insert_data);
@@ -89,7 +108,20 @@ class dba_crud{
 			break;
 		}
 
+		if( $auto_column['type'] == 'auto_increment' ){
+			$auto_column['value'] = $this->pdo->lastInsertId();
+		}
+		$this->last_insert_info = $auto_column;
+
 		return true;
 	} // insert()
+
+	/**
+	 * 最後に挿入したレコードを引くためのキー情報を取得する
+	 * @return Array キー情報を格納する連想配列
+	 */
+	public function get_last_insert_info(){
+		return $this->last_insert_info;
+	}
 
 }

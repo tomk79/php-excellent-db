@@ -210,6 +210,14 @@ class create{
 	}
 
 	/**
+	 * 最後に挿入したレコードを引くためのキー情報を取得する
+	 * @return Array キー情報を格納する連想配列
+	 */
+	public function get_last_insert_info(){
+		return $this->crud->get_last_insert_info();
+	}
+
+	/**
 	 * SELECT
 	 */
 	public function select($tbl, $where){

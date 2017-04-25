@@ -57,6 +57,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		));
 		// var_dump($result_insert);
 		$this->assertTrue( $result_insert );
+		$last_insert_info = $this->exdb->get_last_insert_info();
+		// var_dump($last_insert_info);
+		$this->assertEquals( $last_insert_info['type'], 'auto_id' );
 
 		$result_insert = $this->exdb->insert('user', array(
 			'user_account'=>'tester002',
@@ -65,6 +68,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		));
 		// var_dump($result_insert);
 		$this->assertTrue( $result_insert );
+		$last_insert_info = $this->exdb->get_last_insert_info();
+		// var_dump($last_insert_info);
+		$this->assertEquals( $last_insert_info['type'], 'auto_id' );
 
 		$result_insert = $this->exdb->insert('user', array(
 			'user_account'=>'tester003',
@@ -73,6 +79,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		));
 		// var_dump($result_insert);
 		$this->assertTrue( $result_insert );
+		$last_insert_info = $this->exdb->get_last_insert_info();
+		// var_dump($last_insert_info);
+		$this->assertEquals( $last_insert_info['type'], 'auto_id' );
 
 	}//testInsert()
 

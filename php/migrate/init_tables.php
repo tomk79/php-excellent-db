@@ -35,56 +35,56 @@ class migrate_init_tables{
 
 			$sql_create_db = '';
 			$sql_create_db .= 'CREATE TABLE '.$this->exdb->get_physical_table_name($table_definition_row->table_name).' (';
-			$ary_table_cells = array();
-			foreach( $table_definition_row->table_definition as $cell_definition ){
-				$sql_cell_definition = '';
+			$ary_table_columns = array();
+			foreach( $table_definition_row->table_definition as $column_definition ){
+				$sql_column_definition = '';
 
 				// セル名
-				$sql_cell_definition .= $cell_definition->cell_name;
+				$sql_column_definition .= $column_definition->column_name;
 
 				// 型
-				switch(strtolower( $cell_definition->type )){
+				switch(strtolower( $column_definition->type )){
 					case 'email':
 					case 'string':
 					case 'password':
 					case 'auto_id':
-						$sql_cell_definition .= ' VARCHAR';
+						$sql_column_definition .= ' VARCHAR';
 						break;
 					case 'create_date':
 					case 'update_date':
 					case 'delete_date':
-						$sql_cell_definition .= ' DATETIME';
+						$sql_column_definition .= ' DATETIME';
 						break;
 					case 'int':
 					case 'integer':
 					case 'number':
 					case 'auto_increment':
-						$sql_cell_definition .= ' INTEGER';
+						$sql_column_definition .= ' INTEGER';
 						break;
 					case 'delete_flg':
-						$sql_cell_definition .= ' INTEGER';
+						$sql_column_definition .= ' INTEGER';
 						break;
 					case 'text':
 					case 'date':
 					case 'datetime':
 					default:
-						$sql_cell_definition .= ' '.strtoupper($cell_definition->type);
+						$sql_column_definition .= ' '.strtoupper($column_definition->type);
 						break;
 				}
 
 				// NOT NULL 制約
-				if( $cell_definition->not_null ){
-					$sql_cell_definition .= ' NOT NULL';
+				if( $column_definition->not_null ){
+					$sql_column_definition .= ' NOT NULL';
 				}
 
 				// UNIQUE 制約
-				if( $cell_definition->unique ){
-					$sql_cell_definition .= ' UNIQUE';
+				if( $column_definition->unique ){
+					$sql_column_definition .= ' UNIQUE';
 				}
 
-				array_push($ary_table_cells, $sql_cell_definition);
+				array_push($ary_table_columns, $sql_column_definition);
 			}
-			$sql_create_db .= implode($ary_table_cells, ',');
+			$sql_create_db .= implode($ary_table_columns, ',');
 			$sql_create_db .= ');';
 			// var_dump($sql_create_db);
 			$result = @$this->exdb->pdo()->query($sql_create_db);

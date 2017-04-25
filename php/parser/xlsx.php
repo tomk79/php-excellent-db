@@ -102,10 +102,10 @@ class parser_xlsx{
 			foreach($col_define as $col_def_row){
 				$col->{$col_def_row['key']} = $objSheet->getCell($col_def_row['col'].$row_number)->getCalculatedValue();
 			}
-			if(!@strlen($col->cell_name)){
+			if(!@strlen($col->column_name)){
 				break;
 			}
-			@$parsed->table_definition->{$col->cell_name} = $col;
+			@$parsed->table_definition->{$col->column_name} = $col;
 			$row_number ++;
 			continue;
 		}

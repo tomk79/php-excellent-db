@@ -5,7 +5,7 @@
             "table_name": "user",
             "table_definition": {
                 "user_id": {
-                    "cell_name": "user_id",
+                    "column_name": "user_id",
                     "type": "auto_id",
                     "label": "User ID",
                     "description": null,
@@ -18,7 +18,7 @@
                     "foreign_key": null
                 },
                 "user_account": {
-                    "cell_name": "user_account",
+                    "column_name": "user_account",
                     "type": "string",
                     "label": "Account Name",
                     "description": null,
@@ -31,7 +31,7 @@
                     "foreign_key": null
                 },
                 "password": {
-                    "cell_name": "password",
+                    "column_name": "password",
                     "type": "password",
                     "label": "Password",
                     "description": null,
@@ -44,7 +44,7 @@
                     "foreign_key": null
                 },
                 "user_name": {
-                    "cell_name": "user_name",
+                    "column_name": "user_name",
                     "type": "string",
                     "label": "User Name",
                     "description": null,
@@ -57,7 +57,7 @@
                     "foreign_key": null
                 },
                 "email": {
-                    "cell_name": "email",
+                    "column_name": "email",
                     "type": "email",
                     "label": "E-mail Address",
                     "description": null,
@@ -70,7 +70,7 @@
                     "foreign_key": null
                 },
                 "birthday": {
-                    "cell_name": "birthday",
+                    "column_name": "birthday",
                     "type": "date",
                     "label": "Birthday",
                     "description": null,
@@ -83,7 +83,7 @@
                     "foreign_key": null
                 },
                 "last_login_date": {
-                    "cell_name": "last_login_date",
+                    "column_name": "last_login_date",
                     "type": "datetime",
                     "label": "Last Login",
                     "description": null,
@@ -96,7 +96,7 @@
                     "foreign_key": null
                 },
                 "create_date": {
-                    "cell_name": "create_date",
+                    "column_name": "create_date",
                     "type": "create_date",
                     "label": null,
                     "description": null,
@@ -109,7 +109,7 @@
                     "foreign_key": null
                 },
                 "update_date": {
-                    "cell_name": "update_date",
+                    "column_name": "update_date",
                     "type": "update_date",
                     "label": null,
                     "description": null,
@@ -122,7 +122,7 @@
                     "foreign_key": null
                 },
                 "delete_date": {
-                    "cell_name": "delete_date",
+                    "column_name": "delete_date",
                     "type": "delete_date",
                     "label": null,
                     "description": null,
@@ -135,7 +135,7 @@
                     "foreign_key": null
                 },
                 "delete_flg": {
-                    "cell_name": "delete_flg",
+                    "column_name": "delete_flg",
                     "type": "delete_flg",
                     "label": null,
                     "description": null,
@@ -154,7 +154,7 @@
             "table_name": "project",
             "table_definition": {
                 "project_id": {
-                    "cell_name": "project_id",
+                    "column_name": "project_id",
                     "type": "auto_id",
                     "label": "Project ID",
                     "description": null,
@@ -166,7 +166,7 @@
                     "foreign_key": null
                 },
                 "user_id": {
-                    "cell_name": "user_id",
+                    "column_name": "user_id",
                     "type": "string",
                     "label": "User ID",
                     "description": null,
@@ -178,7 +178,7 @@
                     "foreign_key": "user.user_id"
                 },
                 "project_name": {
-                    "cell_name": "project_name",
+                    "column_name": "project_name",
                     "type": "string",
                     "label": "Project Name",
                     "description": null,
@@ -190,7 +190,7 @@
                     "foreign_key": null
                 },
                 "description": {
-                    "cell_name": "description",
+                    "column_name": "description",
                     "type": "text",
                     "label": "Project Description",
                     "description": null,
@@ -202,7 +202,7 @@
                     "foreign_key": null
                 },
                 "create_date": {
-                    "cell_name": "create_date",
+                    "column_name": "create_date",
                     "type": "create_date",
                     "label": null,
                     "description": null,
@@ -214,7 +214,7 @@
                     "foreign_key": null
                 },
                 "update_date": {
-                    "cell_name": "update_date",
+                    "column_name": "update_date",
                     "type": "update_date",
                     "label": null,
                     "description": null,
@@ -226,7 +226,7 @@
                     "foreign_key": null
                 },
                 "delete_date": {
-                    "cell_name": "delete_date",
+                    "column_name": "delete_date",
                     "type": "delete_date",
                     "label": null,
                     "description": null,
@@ -238,7 +238,7 @@
                     "foreign_key": null
                 },
                 "delete_flg": {
-                    "cell_name": "delete_flg",
+                    "column_name": "delete_flg",
                     "type": "delete_flg",
                     "label": null,
                     "description": null,
