@@ -24,6 +24,9 @@ class create{
 	/** Table Definition */
 	private $table_definition;
 
+	/** CRUD Operator */
+	private $crud;
+
 	/**
 	 * constructor
 	 *
@@ -46,6 +49,9 @@ class create{
 			trigger_error('[ExcellentDb: Setup Error] '.$env_error);
 			return;
 		}
+
+		// Generate CRUD Operator
+		$this->crud = new dba_crud( $this );
 
 		$this->reload_definition_data();
 		return;
@@ -165,6 +171,30 @@ class create{
 	public function migrate_init_tables(){
 		$migrate_init_tables = new migrate_init_tables($this);
 		return $migrate_init_tables->init();
+	}
+
+	/**
+	 * INSERT
+	 */
+	public function insert($tbl, $data){
+	}
+
+	/**
+	 * SELECT
+	 */
+	public function select($tbl, $where){
+	}
+
+	/**
+	 * UPDATE (Logical Deletion)
+	 */
+	public function update($tbl, $where, $data){
+	}
+
+	/**
+	 * DELETE (Physica Deletion)
+	 */
+	public function physical_delete($tbl, $where){
 	}
 
 }

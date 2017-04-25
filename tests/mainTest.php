@@ -4,20 +4,17 @@
  */
 class mainTest extends PHPUnit_Framework_TestCase{
 
+	private $pdo;
+	private $exdb;
+
 	/**
 	 * setup
 	 */
 	public function setup(){
 		mb_internal_encoding('utf-8');
 		@date_default_timezone_set('Asia/Tokyo');
-	}
 
-	/**
-	 * Test
-	 */
-	public function testMain(){
-		@unlink(__DIR__.'/testdata/_tmp/db/test.sqlite');
-		$pdo = new \PDO(
+		$this->pdo = new \PDO(
 			'sqlite:'.__DIR__.'/testdata/_tmp/db/test.sqlite',
 			null, null,
 			array(
@@ -25,17 +22,25 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			)
 		);
 
-		$exdb = new excellent_db\create( $pdo, array(
+		$this->exdb = new excellent_db\create( $this->pdo, array(
 			"prefix" => "excellent_test",
 			"path_definition_file" => __DIR__.'/testdata/db/sample_db_tables.xlsx',
 			"path_cache_dir" => __DIR__.'/testdata/_tmp/caches/',
 		) );
 
-		$this->assertTrue( is_object($exdb) );
-		$this->assertTrue( $exdb->clearcache() );
-		$this->assertTrue( $exdb->reload_definition_data() );
+	}
 
-		$exdb->migrate_init_tables();
+	/**
+	 * Test
+	 */
+	public function testMain(){
+		@unlink(__DIR__.'/testdata/_tmp/db/test.sqlite');
+
+		$this->assertTrue( is_object($this->exdb) );
+		$this->assertTrue( $this->exdb->clearcache() );
+		$this->assertTrue( $this->exdb->reload_definition_data() );
+
+		$this->exdb->migrate_init_tables();
 
 	}//testMain()
 

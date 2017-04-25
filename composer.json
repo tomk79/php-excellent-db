@@ -28,7 +28,8 @@
             "php/create.php",
             "php/caches.php",
             "php/parser/xlsx.php",
-            "php/migrate/init_tables.php"
+            "php/migrate/init_tables.php",
+            "php/dba/crud.php"
         ]
     }
 }
