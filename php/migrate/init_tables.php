@@ -27,17 +27,14 @@ class migrate_init_tables{
 	 * @return boolean 成否。
 	 */
 	public function init(){
-		$prefix = $this->exdb->conf()->prefix;
-		if( strlen($prefix) ){
-			$prefix = preg_replace('/\_*$/', '_', $prefix);
-		}
-		$table_definition = $this->exdb->get_table_definition();
+		$table_definition = $this->exdb->get_table_definition_all();
 		// var_dump($table_definition);
+		$error = array();
 		foreach($table_definition->tables as $table_name=>$table_definition_row){
 			// var_dump($table_definition_row);
 
 			$sql_create_db = '';
-			$sql_create_db .= 'CREATE TABLE '.$prefix.$table_definition_row->table_name.' (';
+			$sql_create_db .= 'CREATE TABLE '.$this->exdb->get_physical_table_name($table_definition_row->table_name).' (';
 			$ary_table_cells = array();
 			foreach( $table_definition_row->table_definition as $cell_definition ){
 				$sql_cell_definition = '';
@@ -89,10 +86,17 @@ class migrate_init_tables{
 			}
 			$sql_create_db .= implode($ary_table_cells, ',');
 			$sql_create_db .= ');';
+			// var_dump($sql_create_db);
 			$result = @$this->exdb->pdo()->query($sql_create_db);
-
+			// var_dump($result);
+			if( !$result ){
+				array_push($error, '[ERROR] Failed to create table "'.$this->exdb->get_physical_table_name($table_definition_row->table_name).'"');
+			}
 		}
-		return true;
+		// var_dump($error);
+		$rtn = true;
+		if(count($error)){$rtn = false;}
+		return $rtn;
 	}
 
 }

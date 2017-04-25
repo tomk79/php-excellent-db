@@ -17,6 +17,7 @@
     "repositories": [
     ],
     "require": {
+        "php": ">=5.4.0" ,
         "phpoffice/phpexcel": "^1.8",
         "tomk79/filesystem": "^1.0"
     },

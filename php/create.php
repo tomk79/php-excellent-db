@@ -106,11 +106,28 @@ class create{
 	}
 
 	/**
+	 * パスワードをハッシュ値化する
+	 * @param  String $password 平文のパスワード
+	 * @return String           ハッシュ値化後のパスワード
+	 */
+	public function encrypt_password($password){
+		return md5($password);
+	}
+
+	/**
+	 * すべてのテーブル設計を取得する
+	 * @return object Table Definition.
+	 */
+	public function get_table_definition_all(){
+		return $this->table_definition;
+	}
+
+	/**
 	 * テーブル設計を取得する
 	 * @return object Table Definition.
 	 */
-	public function get_table_definition(){
-		return $this->table_definition;
+	public function get_table_definition( $table_name ){
+		return $this->table_definition->tables->{$table_name};
 	}
 
 	/**
@@ -174,9 +191,22 @@ class create{
 	}
 
 	/**
+	 * getting table prefix
+	 * @return String Table Prefix
+	 */
+	public function get_physical_table_name($table_name){
+		$prefix = $this->conf()->prefix;
+		if( strlen($prefix) ){
+			$prefix = preg_replace('/\_*$/', '_', $prefix);
+		}
+		return $prefix.$table_name;
+	}
+
+	/**
 	 * INSERT
 	 */
 	public function insert($tbl, $data){
+		return $this->crud->insert($tbl, $data);
 	}
 
 	/**
@@ -186,13 +216,19 @@ class create{
 	}
 
 	/**
-	 * UPDATE (Logical Deletion)
+	 * UPDATE
 	 */
 	public function update($tbl, $where, $data){
 	}
 
 	/**
-	 * DELETE (Physica Deletion)
+	 * DELETE (Logical Deletion)
+	 */
+	public function delete($tbl, $where){
+	}
+
+	/**
+	 * DELETE (Physical Deletion)
 	 */
 	public function physical_delete($tbl, $where){
 	}
