@@ -218,6 +218,21 @@ class create{
 	}
 
 	/**
+	 * 最後に挿入したレコードを取得する
+	 * @return Array 行情報
+	 */
+	public function get_last_insert_row(){
+		$last_insert_info = $this->crud->get_last_insert_info();
+		// var_dump($last_insert_info->table_name, $last_insert_info->insert_data);
+		$result = $this->crud->select( $last_insert_info->table_name, $last_insert_info->insert_data );
+		// var_dump($result);
+		if( !is_array($result) || !count($result) ){
+			return false;
+		}
+		return $result[0];
+	}
+
+	/**
 	 * SELECT
 	 */
 	public function select($tbl, $where, $options = array()){

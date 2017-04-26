@@ -100,6 +100,8 @@ class dba_crud{
 			$auto_column->value = $this->pdo->lastInsertId();
 		}
 		$this->last_insert_info = $auto_column;
+		@$this->last_insert_info->table_name = $tbl;
+		@$this->last_insert_info->insert_data = $data;
 
 		return true;
 	} // insert()
@@ -118,15 +120,13 @@ class dba_crud{
 	public function select($tbl, $where, $options = array()){
 		$table_definition = $this->exdb->get_table_definition($tbl);
 		$delete_flg_id = $table_definition->system_columns->delete_flg;
-		foreach( $table_definition->table_definition as $column_definition ){
-			if( $column_definition->type == 'delete_flg' ){
-				$delete_flg_id = array(
-					'column_name'=>$column_definition->column_name ,
-				);
-			}
-		}
 		// var_dump($table_definition);
 
+		foreach($where as $key=>$val){
+			if( $table_definition->table_definition->{$key}->type == 'password' ){
+				$where[$key] = $this->exdb->encrypt_password($val);
+			}
+		}
 		if( is_string($delete_flg_id) && @is_null( $where[$delete_flg_id] ) ){
 			$where[$delete_flg_id] = 0;
 		}

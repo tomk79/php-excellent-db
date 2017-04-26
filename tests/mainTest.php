@@ -70,6 +70,10 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			// var_dump($userData);
 			$this->assertEquals( count($userData), 1 );
 			$this->assertEquals( $userData[0]['user_name'], 'Tester No.'.$str_id_number );
+
+			$last_insert_row = $this->exdb->get_last_insert_row();
+			// var_dump($last_insert_row);
+			$this->assertEquals( $last_insert_row['user_name'], 'Tester No.'.$str_id_number );
 		}
 
 		// --------------------------------------
