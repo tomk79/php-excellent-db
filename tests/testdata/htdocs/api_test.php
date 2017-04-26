@@ -19,5 +19,5 @@ $exdb = new excellent_db\create( $pdo, array(
 
 
 
-
-echo 'test';
+$exdb->automatic_rest_api_response();
+exit();

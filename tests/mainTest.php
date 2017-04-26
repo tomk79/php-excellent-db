@@ -49,7 +49,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * INSERT
 	 */
 	public function testInsert(){
-		$max_user_count = 2000;
+		$max_user_count = 500;
 
 		// --------------------------------------
 		// ユーザーテーブルにデータを挿入
@@ -82,7 +82,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * SELECT
 	 */
 	public function testSelect(){
-		$max_user_count = 2000;
+		$max_user_count = 500;
 
 		// --------------------------------------
 		// SELECT して答え合わせ

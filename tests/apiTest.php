@@ -53,10 +53,19 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		// var_dump($res);
 		$this->assertEquals( trim($res->getBody()), 'health check.' );
 
-		$res = $this->client->request('GET', 'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php');
-		// var_dump($res);
-		$this->assertEquals( trim($res->getBody()), 'test' );
-
 	}//testWebServerHealthCheck()
+
+	/**
+	 * Gettin List
+	 */
+	public function testGettingList(){
+
+		$res = $this->client->request('GET', 'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user');
+		// var_dump($res);
+		$json = json_decode($res->getBody());
+		// var_dump($json);
+		$this->assertEquals( $json->result, true );
+
+	}//testGettingList()
 
 }

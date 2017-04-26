@@ -260,4 +260,15 @@ class create{
 		return $this->crud->physical_delete($tbl, $where);
 	}
 
+
+	/**
+	 * REST APIエンドポイントを自動的にセットアップ
+	 * @param  array $options オプション
+	 * @return null          このメソッドは値を返しません。
+	 */
+	public function automatic_rest_api_response($options = null){
+		$api = new endpoint_rest( $this, $options );
+		$api->execute();
+		return null;
+	}
 }
