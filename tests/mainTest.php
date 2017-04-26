@@ -137,4 +137,27 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 	}//testDelete()
 
+	/**
+	 * DELETE (Physical Deletion)
+	 */
+	public function testPhysicalDelete(){
+		$result = $this->exdb->physical_delete(
+			'user',
+			array(
+				'user_account'=>'tester-00000'
+			)
+		);
+		// var_dump($result);
+		$this->assertEquals( $result, 1 );
+
+		$afterData = $this->exdb->select('user', array('user_account'=>'tester-00000'));
+		// var_dump($afterData);
+		$this->assertEquals( count($afterData), 0 );
+
+		$afterData = $this->exdb->select('user', array('user_account'=>'tester-00000','delete_flg'=>1));
+		// var_dump($afterData);
+		$this->assertEquals( count($afterData), 0 );
+
+	}//testPhysicalDelete()
+
 }

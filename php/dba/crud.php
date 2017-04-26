@@ -232,17 +232,26 @@ class dba_crud{
 
 	/**
 	 * DELETE (Logical Deletion)
+	 * 論理削除フラグを持っているテーブルでは論理削除、論理削除フラグがない場合は物理削除します。
 	 */
 	public function delete($tbl, $where){
 		$table_definition = $this->exdb->get_table_definition($tbl);
 		$delete_flg_id = $table_definition->system_columns->delete_flg;
 		$delete_date_id = $table_definition->system_columns->delete_date;
-		$data = array(
-			$delete_date_id => date("Y-m-d H:i:s") ,
-			$delete_flg_id => 1 ,
-		);
-		// var_dump($data);
-		$result = $this->update($tbl, $where, $data);
+		$result = 0;
+
+		if( strlen($delete_flg_id) ){
+			// 論理削除フラグを持っているテーブルでは、論理削除する。
+			$data = array(
+				$delete_date_id => date("Y-m-d H:i:s") ,
+				$delete_flg_id => 1 ,
+			);
+			// var_dump($data);
+			$result = $this->update($tbl, $where, $data);
+		}else{
+			// 論理削除フラグがない場合は、物理削除する。
+			$result = $this->physical_delete($tbl, $where);
+		}
 		return $result;
 	} // delete()
 
@@ -250,7 +259,31 @@ class dba_crud{
 	 * DELETE (Physical Deletion)
 	 */
 	public function physical_delete($tbl, $where){
-		return false;
+		$table_definition = $this->exdb->get_table_definition($tbl);
+
+		$sql = array();
+		$sql['delete'] = 'DELETE FROM '.$this->exdb->get_physical_table_name($tbl).'';
+		$sql['where'] = ' WHERE ';
+		$sql['close'] = ';';
+
+		$bind_data = array();
+		$sql_where = array();
+		foreach( $where as $column_name => $cond ){
+			array_push($sql_where, $column_name.'=:__where__'.$column_name);
+			$bind_data['__where__'.$column_name] = $cond;
+		}
+
+		$sql_template = $sql['delete'].(count($sql_where) ? $sql['where'].implode($sql_where, ' AND ') : '').$sql['close'];
+		// var_dump($sql_template);
+		$sth = $this->exdb->pdo()->prepare( $sql_template );
+		$result = $sth->execute( $bind_data );
+		if( $result === false ){
+			return false;
+		}
+		$result = $sth->rowCount();
+		// var_dump($result);
+
+		return $result;
 	} // physical_delete()
 
 }
