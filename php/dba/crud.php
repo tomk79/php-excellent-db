@@ -30,8 +30,9 @@ class dba_crud{
 	 */
 	public function insert($tbl, $data){
 		$this->last_insert_info = false;//初期化
-		$auto_column = false;
 		$table_definition = $this->exdb->get_table_definition($tbl);
+		$auto_column = $table_definition->system_columns->id;
+		@$auto_column->value = null;
 		// var_dump($table_definition);
 		// var_dump($data);
 
@@ -46,19 +47,6 @@ class dba_crud{
 		foreach( $table_definition->table_definition as $column_definition ){
 			array_push($sql_keys, $column_definition->column_name);
 			array_push($sql_tpls, ':'.$column_definition->column_name);
-			if( $column_definition->type == 'auto_id' ){
-				$auto_column = array(
-					'type'=>$column_definition->type,
-					'column_name'=>$column_definition->column_name,
-					'value'=>null,
-				);
-			}else if( $column_definition->type == 'auto_increment' ){
-				$auto_column = array(
-					'type'=>$column_definition->type,
-					'column_name'=>$column_definition->column_name,
-					'value'=>null,
-				);
-			}
 		}
 
 		$sql_template = $sql['insert'].implode($sql_keys,',').$sql['values'].implode($sql_tpls,',').$sql['close'];
@@ -83,7 +71,7 @@ class dba_crud{
 				if( $column_definition->type == 'auto_id' ){
 					if( is_null($row_value) ){
 						$row_value = md5( microtime().'_'.rand() );
-						$auto_column['value'] = $row_value;
+						$auto_column->value = $row_value;
 					}
 				}elseif( $column_definition->type == 'password' ){
 					if( !is_null($row_value) ){
@@ -108,8 +96,8 @@ class dba_crud{
 			break;
 		}
 
-		if( $auto_column['type'] == 'auto_increment' ){
-			$auto_column['value'] = $this->pdo->lastInsertId();
+		if( $auto_column->type == 'auto_increment' ){
+			$auto_column->value = $this->pdo->lastInsertId();
 		}
 		$this->last_insert_info = $auto_column;
 
@@ -129,18 +117,18 @@ class dba_crud{
 	 */
 	public function select($tbl, $where, $options = array()){
 		$table_definition = $this->exdb->get_table_definition($tbl);
-		$delete_flg_info = false;
+		$delete_flg_id = $table_definition->system_columns->delete_flg;
 		foreach( $table_definition->table_definition as $column_definition ){
 			if( $column_definition->type == 'delete_flg' ){
-				$delete_flg_info = array(
+				$delete_flg_id = array(
 					'column_name'=>$column_definition->column_name ,
 				);
 			}
 		}
 		// var_dump($table_definition);
 
-		if( is_array($delete_flg_info) && @is_null( $where[$delete_flg_info['column_name']] ) ){
-			$where[$delete_flg_info['column_name']] = 0;
+		if( is_string($delete_flg_id) && @is_null( $where[$delete_flg_id] ) ){
+			$where[$delete_flg_id] = 0;
 		}
 
 		$sql = array();

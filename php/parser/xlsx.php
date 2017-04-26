@@ -65,7 +65,7 @@ class parser_xlsx{
 		$col = 'A';
 		$skip_count = 0;
 		while(1){
-			$def_key = $objSheet->getCell($col.'3')->getCalculatedValue();
+			$def_key = $objSheet->getCell($col.'3')->getCalculatedValue(); // TODO: 3行目を決め打ちしているが、フレキシブルにしたい。
 			if(!strlen($def_key)){
 				$skip_count ++;
 				$col ++;
@@ -108,6 +108,34 @@ class parser_xlsx{
 			@$parsed->table_definition->{$col->column_name} = $col;
 			$row_number ++;
 			continue;
+		}
+
+		// --------------------
+		// テーブル定義を整理
+		// システムカラム情報を抽出
+		$parsed->system_columns = json_decode(json_encode(array(
+			'id'=>null,
+			'create_date'=>null,
+			'update_date'=>null,
+			'delete_date'=>null,
+			'delete_flg'=>null,
+		)));
+		foreach( $parsed->table_definition as $column_definition ){
+			if( $column_definition->type == 'auto_id' || $column_definition->type == 'auto_increment' ){
+				$parsed->system_columns->id = json_decode(json_encode(array(
+					'type'=>$column_definition->type,
+					'column_name'=>$column_definition->column_name,
+				)));
+			}else if( $column_definition->type == 'create_date' ){
+				$parsed->system_columns->create_date = $column_definition->column_name;
+			}elseif( $column_definition->type == 'update_date' ){
+				$parsed->system_columns->update_date = $column_definition->column_name;
+			}elseif( $column_definition->type == 'delete_date' ){
+				$parsed->system_columns->delete_date = $column_definition->column_name;
+			}elseif( $column_definition->type == 'delete_flg' ){
+				$parsed->system_columns->delete_flg = $column_definition->column_name;
+			}
+			// var_dump($column_definition);
 		}
 
 		return $parsed;

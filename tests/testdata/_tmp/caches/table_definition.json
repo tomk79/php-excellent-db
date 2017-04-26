@@ -147,6 +147,16 @@
                     "auto_increment": null,
                     "foreign_key": null
                 }
+            },
+            "system_columns": {
+                "id": {
+                    "type": "auto_id",
+                    "column_name": "user_id"
+                },
+                "create_date": "create_date",
+                "update_date": "update_date",
+                "delete_date": "delete_date",
+                "delete_flg": "delete_flg"
             }
         },
         "project": {
@@ -249,6 +259,16 @@
                     "not_null": null,
                     "foreign_key": null
                 }
+            },
+            "system_columns": {
+                "id": {
+                    "type": "auto_id",
+                    "column_name": "project_id"
+                },
+                "create_date": "create_date",
+                "update_date": "update_date",
+                "delete_date": "delete_date",
+                "delete_flg": "delete_flg"
             }
         }
     }

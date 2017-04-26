@@ -64,9 +64,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			$this->assertTrue( $result_insert );
 			$last_insert_info = $this->exdb->get_last_insert_info();
 			// var_dump($last_insert_info);
-			$this->assertEquals( $last_insert_info['type'], 'auto_id' );
+			$this->assertEquals( $last_insert_info->type, 'auto_id' );
 
-			$userData = $this->exdb->select('user', array($last_insert_info['column_name']=>$last_insert_info['value']));
+			$userData = $this->exdb->select('user', array($last_insert_info->column_name=>$last_insert_info->value));
 			// var_dump($userData);
 			$this->assertEquals( count($userData), 1 );
 			$this->assertEquals( $userData[0]['user_name'], 'Tester No.'.$str_id_number );
