@@ -122,6 +122,69 @@ class dba_crud{
 	 */
 	public function get_last_insert_info(){
 		return $this->last_insert_info;
-	}
+	} // get_last_insert_info()
+
+	/**
+	 * SELECT
+	 */
+	public function select($tbl, $where, $options = array()){
+		$table_definition = $this->exdb->get_table_definition($tbl);
+		$delete_flg_info = false;
+		foreach( $table_definition->table_definition as $column_definition ){
+			if( $column_definition->type == 'delete_flg' ){
+				$delete_flg_info = array(
+					'column_name'=>$column_definition->column_name ,
+				);
+			}
+		}
+		// var_dump($table_definition);
+
+		if( is_array($delete_flg_info) && @is_null( $where[$delete_flg_info['column_name']] ) ){
+			$where[$delete_flg_info['column_name']] = 0;
+		}
+
+		$sql = array();
+		$sql['select'] = 'SELECT * FROM '.$this->exdb->get_physical_table_name($tbl).'';
+		$sql['where'] = ' WHERE ';
+		$sql['close'] = ';';
+
+		$sql_where = array();
+		foreach( $where as $column_name => $cond ){
+			array_push($sql_where, $column_name.'=:'.$column_name);
+		}
+
+		$sql_template = $sql['select'].(count($sql_where) ? $sql['where'].implode($sql_where, ' AND ') : '').$sql['close'];
+		// var_dump($sql_template);
+		$sth = $this->exdb->pdo()->prepare( $sql_template );
+		$result = $sth->execute( $where );
+		if( $result === false ){
+			return false;
+		}
+		$result = $sth->fetchAll(\PDO::FETCH_ASSOC);
+		// var_dump($result);
+
+		return $result;
+	} // select()
+
+	/**
+	 * UPDATE
+	 */
+	public function update($tbl, $where, $data){
+		return false;
+	} // update()
+
+	/**
+	 * DELETE (Logical Deletion)
+	 */
+	public function delete($tbl, $where){
+		return false;
+	} // delete()
+
+	/**
+	 * DELETE (Physical Deletion)
+	 */
+	public function physical_delete($tbl, $where){
+		return false;
+	} // physical_delete()
 
 }

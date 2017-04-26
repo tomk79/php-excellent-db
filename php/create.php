@@ -220,25 +220,29 @@ class create{
 	/**
 	 * SELECT
 	 */
-	public function select($tbl, $where){
+	public function select($tbl, $where, $options = array()){
+		return $this->crud->select($tbl, $where);
 	}
 
 	/**
 	 * UPDATE
 	 */
 	public function update($tbl, $where, $data){
+		return $this->crud->update($tbl, $where, $data);
 	}
 
 	/**
 	 * DELETE (Logical Deletion)
 	 */
 	public function delete($tbl, $where){
+		return $this->crud->delete($tbl, $where);
 	}
 
 	/**
 	 * DELETE (Physical Deletion)
 	 */
 	public function physical_delete($tbl, $where){
+		return $this->crud->physical_delete($tbl, $where);
 	}
 
 }

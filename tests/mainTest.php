@@ -49,39 +49,34 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * INSERT
 	 */
 	public function testInsert(){
+		$max_user_count = 2000;
 
-		$result_insert = $this->exdb->insert('user', array(
-			'user_account'=>'tester001',
-			'password'=>'password',
-			'user_name'=>'Tester No.001',
-		));
-		// var_dump($result_insert);
-		$this->assertTrue( $result_insert );
-		$last_insert_info = $this->exdb->get_last_insert_info();
-		// var_dump($last_insert_info);
-		$this->assertEquals( $last_insert_info['type'], 'auto_id' );
+		// --------------------------------------
+		// ユーザーテーブルにデータを挿入
+		for( $i = 0; $i < $max_user_count; $i ++ ){
+			$str_id_number = str_pad( $i, 5, '0', STR_PAD_LEFT );
+			$result_insert = $this->exdb->insert('user', array(
+				'user_account'=>'tester-'.$str_id_number,
+				'password'=>'password',
+				'user_name'=>'Tester No.'.$str_id_number,
+			));
+			// var_dump($result_insert);
+			$this->assertTrue( $result_insert );
+			$last_insert_info = $this->exdb->get_last_insert_info();
+			// var_dump($last_insert_info);
+			$this->assertEquals( $last_insert_info['type'], 'auto_id' );
 
-		$result_insert = $this->exdb->insert('user', array(
-			'user_account'=>'tester002',
-			'password'=>'password',
-			'user_name'=>'Tester No.002',
-		));
-		// var_dump($result_insert);
-		$this->assertTrue( $result_insert );
-		$last_insert_info = $this->exdb->get_last_insert_info();
-		// var_dump($last_insert_info);
-		$this->assertEquals( $last_insert_info['type'], 'auto_id' );
+			$userData = $this->exdb->select('user', array($last_insert_info['column_name']=>$last_insert_info['value']));
+			// var_dump($userData);
+			$this->assertEquals( count($userData), 1 );
+			$this->assertEquals( $userData[0]['user_name'], 'Tester No.'.$str_id_number );
+		}
 
-		$result_insert = $this->exdb->insert('user', array(
-			'user_account'=>'tester003',
-			'password'=>'password',
-			'user_name'=>'Tester No.003',
-		));
-		// var_dump($result_insert);
-		$this->assertTrue( $result_insert );
-		$last_insert_info = $this->exdb->get_last_insert_info();
-		// var_dump($last_insert_info);
-		$this->assertEquals( $last_insert_info['type'], 'auto_id' );
+		// --------------------------------------
+		// SELECT して答え合わせ
+		$userList = $this->exdb->select('user', array());
+		// var_dump($userList);
+		$this->assertEquals( count($userList), $max_user_count );
 
 	}//testInsert()
 
