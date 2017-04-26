@@ -182,6 +182,17 @@ class endpoint_rest{
 				return null;
 			}
 
+			$result = $this->exdb->delete(
+				$this->options['table'],
+				array(
+					$table_definition->system_columns->id->column_name => $this->options['id'],
+				)
+			);
+			$rtn['result'] = ($result ? true : false);
+			$rtn['affected_rows'] = $result;
+			echo json_encode( $rtn );
+			return null;
+
 		}
 
 		$rtn['error'] = 'Unknown method';

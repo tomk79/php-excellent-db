@@ -61,6 +61,8 @@ class apiTest extends PHPUnit_Framework_TestCase{
 	 */
 	public function testPostPutDelete(){
 
+		// --------------------------------------
+		// 行を追加
 		$res = $this->client->request(
 			'POST',
 			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user',
@@ -91,6 +93,8 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals( $getJson->row->user_name, 'POST Tester No.00001' );
 
 
+		// --------------------------------------
+		// 行を更新
 		$res = $this->client->request(
 			'PUT',
 			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user/'.$postJson->given_id,
@@ -120,6 +124,29 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals( $getJson->row->user_account, 'post-tester-00001' );
 		$this->assertEquals( @$getJson->row->password, null );
 		$this->assertEquals( $getJson->row->user_name, 'POST Tester No.00001' );
+
+
+		// --------------------------------------
+		// 追加された行を削除
+		$res = $this->client->request(
+			'DELETE',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user/'.$postJson->given_id
+		);
+		// var_dump($res);
+		$deleteJson = json_decode($res->getBody());
+		// var_dump($deleteJson);
+		$this->assertEquals( $deleteJson->result, true );
+		$this->assertEquals( $deleteJson->affected_rows, 1 );
+
+		// GET して確認
+		$res = $this->client->request(
+			'GET',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user/'.$postJson->given_id
+		);
+		$getJson = json_decode($res->getBody());
+		// var_dump($getJson);
+		$this->assertEquals( $getJson->result, true );
+		$this->assertNull( $getJson->row );
 
 	}//testPostPutDelete()
 
