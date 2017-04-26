@@ -76,12 +76,42 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			$this->assertEquals( $last_insert_row['user_name'], 'Tester No.'.$str_id_number );
 		}
 
+	}//testInsert()
+
+	/**
+	 * SELECT
+	 */
+	public function testSelect(){
+		$max_user_count = 2000;
+
 		// --------------------------------------
 		// SELECT して答え合わせ
 		$userList = $this->exdb->select('user', array());
 		// var_dump($userList);
 		$this->assertEquals( count($userList), $max_user_count );
 
-	}//testInsert()
+	}//testSelect()
+
+	/**
+	 * UPDATE
+	 */
+	public function testUpdate(){
+		$result = $this->exdb->update(
+			'user',
+			array(
+				'user_account'=>'tester-00000'
+			),
+			array(
+				'user_name'=>'Updated UserName No.00000'
+			)
+		);
+		// var_dump($result);
+		$this->assertEquals( count($result), 1 );
+
+		$afterData = $this->exdb->select('user', array('user_account'=>'tester-00000'));
+		// var_dump($afterData);
+		$this->assertTrue( is_string($afterData[0]['update_date']) );
+		$this->assertEquals( $afterData[0]['user_name'], 'Updated UserName No.00000' );
+	}//testUpdate()
 
 }
