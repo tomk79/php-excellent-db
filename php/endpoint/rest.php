@@ -75,10 +75,34 @@ class endpoint_rest{
 
 		$rtn = array();
 		$rtn['result'] = false;
+		// $rtn['options'] = $this->options;
+		// $rtn['_SERVER'] = $_SERVER;
+		// $rtn['_GET'] = $_GET;
+		// $rtn['_POST'] = $_POST;
 
 		if( $this->options['method'] == 'POST' ){
 			// --------------------------------------
 			// 投稿系リクエスト
+			if( !strlen($this->options['table']) ){
+				// 対象のテーブルが不明な場合はエラー
+				$rtn['error'] = 'Table name not set.';
+				echo json_encode( $rtn );
+				return null;
+			}
+			if( strlen($this->options['id']) ){
+				// 対象のテーブルが指定された場合はエラー
+				$rtn['error'] = 'Resource ID was set.';
+				echo json_encode( $rtn );
+				return null;
+			}
+
+			$params = $this->options['post_params'];
+			$result = $this->exdb->insert($this->options['table'], $params);
+			$rtn['result'] = $result;
+			$last_insert_info = $this->exdb->get_last_insert_info();
+			$rtn['given_id'] = $last_insert_info->value;
+			echo json_encode( $rtn );
+			return null;
 
 		}elseif( $this->options['method'] == 'GET' ){
 			// --------------------------------------
@@ -99,9 +123,15 @@ class endpoint_rest{
 			}else{
 				// ID指定がある場合、詳細情報1件を返す
 				$where = $this->options['get_params'];
-				$where[$table_definition->table_definition->system_columns->id->column_name] = $this->options['id'];
+				// $rtn['table_definition'] = $table_definition;
+				$where[$table_definition->system_columns->id->column_name] = $this->options['id'];
 				$row = $this->exdb->select($this->options['table'], $where);
 				$rtn['row'] = @$row[0];
+				foreach($table_definition->table_definition as $column_definition){
+					if($column_definition->type == 'password'){
+						unset($rtn['row'][$column_definition->column_name]);
+					}
+				}
 				$rtn['result'] = true;
 				echo json_encode( $rtn );
 				return null;
@@ -110,17 +140,37 @@ class endpoint_rest{
 		}elseif( $this->options['method'] == 'PUT' ){
 			// --------------------------------------
 			// 更新系リクエスト
+			if( !strlen($this->options['table']) ){
+				// 対象のテーブルが不明な場合はエラー
+				$rtn['error'] = 'Table name not set.';
+				echo json_encode( $rtn );
+				return null;
+			}
+			if( !strlen($this->options['id']) ){
+				// 対象のテーブルが不明な場合はエラー
+				$rtn['error'] = 'Resource ID not set.';
+				echo json_encode( $rtn );
+				return null;
+			}
 
 		}elseif( $this->options['method'] == 'DELETE' ){
 			// --------------------------------------
 			// 削除系リクエスト
+			if( !strlen($this->options['table']) ){
+				// 対象のテーブルが不明な場合はエラー
+				$rtn['error'] = 'Table name not set.';
+				echo json_encode( $rtn );
+				return null;
+			}
+			if( !strlen($this->options['id']) ){
+				// 対象のテーブルが不明な場合はエラー
+				$rtn['error'] = 'Resource ID not set.';
+				echo json_encode( $rtn );
+				return null;
+			}
 
 		}
 
-		$rtn['options'] = $this->options;
-		$rtn['_SERVER'] = $_SERVER;
-		$rtn['_GET'] = $_GET;
-		$rtn['_POST'] = $_POST;
 		$rtn['error'] = 'Unknown method';
 
 		echo json_encode( $rtn );

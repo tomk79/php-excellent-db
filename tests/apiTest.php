@@ -56,6 +56,42 @@ class apiTest extends PHPUnit_Framework_TestCase{
 	}//testWebServerHealthCheck()
 
 	/**
+	 * POST
+	 */
+	public function testPost(){
+
+		$res = $this->client->request(
+			'POST',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user',
+			array(
+				'form_params'=>array(
+					'user_account' => 'post-tester-00001',
+					'password' => 'password',
+					'user_name' => 'POST Tester No.00001',
+				)
+			)
+		);
+		// var_dump($res);
+		$postJson = json_decode($res->getBody());
+		// var_dump($postJson);
+		$this->assertEquals( $postJson->result, true );
+
+		// GET して確認
+		$res = $this->client->request(
+			'GET',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user/'.$postJson->given_id
+		);
+		$getJson = json_decode($res->getBody());
+		// var_dump($getJson);
+		$this->assertEquals( $getJson->result, true );
+		$this->assertEquals( $getJson->row->user_id, $postJson->given_id );
+		$this->assertEquals( $getJson->row->user_account, 'post-tester-00001' );
+		$this->assertEquals( @$getJson->row->password, null );
+		$this->assertEquals( $getJson->row->user_name, 'POST Tester No.00001' );
+
+	}//testPost()
+
+	/**
 	 * Gettin List
 	 */
 	public function testGettingList(){
