@@ -234,7 +234,16 @@ class dba_crud{
 	 * DELETE (Logical Deletion)
 	 */
 	public function delete($tbl, $where){
-		return false;
+		$table_definition = $this->exdb->get_table_definition($tbl);
+		$delete_flg_id = $table_definition->system_columns->delete_flg;
+		$delete_date_id = $table_definition->system_columns->delete_date;
+		$data = array(
+			$delete_date_id => date("Y-m-d H:i:s") ,
+			$delete_flg_id => 1 ,
+		);
+		// var_dump($data);
+		$result = $this->update($tbl, $where, $data);
+		return $result;
 	} // delete()
 
 	/**

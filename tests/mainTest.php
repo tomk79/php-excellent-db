@@ -106,12 +106,35 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			)
 		);
 		// var_dump($result);
-		$this->assertEquals( count($result), 1 );
+		$this->assertEquals( $result, 1 );
 
 		$afterData = $this->exdb->select('user', array('user_account'=>'tester-00000'));
 		// var_dump($afterData);
 		$this->assertTrue( is_string($afterData[0]['update_date']) );
 		$this->assertEquals( $afterData[0]['user_name'], 'Updated UserName No.00000' );
 	}//testUpdate()
+
+	/**
+	 * DELETE (Logical Deletion)
+	 */
+	public function testDelete(){
+		$result = $this->exdb->delete(
+			'user',
+			array(
+				'user_account'=>'tester-00000'
+			)
+		);
+		// var_dump($result);
+		$this->assertEquals( $result, 1 );
+
+		$afterData = $this->exdb->select('user', array('user_account'=>'tester-00000'));
+		// var_dump($afterData);
+		$this->assertEquals( count($afterData), 0 );
+
+		$afterData = $this->exdb->select('user', array('user_account'=>'tester-00000','delete_flg'=>1));
+		// var_dump($afterData);
+		$this->assertEquals( count($afterData), 1 );
+
+	}//testDelete()
 
 }
