@@ -153,6 +153,19 @@ class endpoint_rest{
 				return null;
 			}
 
+			$params = $this->options['post_params'];
+			$result = $this->exdb->update(
+				$this->options['table'],
+				array(
+					$table_definition->system_columns->id->column_name => $this->options['id'],
+				),
+				$params
+			);
+			$rtn['result'] = ($result ? true : false);
+			$rtn['affected_rows'] = $result;
+			echo json_encode( $rtn );
+			return null;
+
 		}elseif( $this->options['method'] == 'DELETE' ){
 			// --------------------------------------
 			// 削除系リクエスト

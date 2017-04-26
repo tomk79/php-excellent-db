@@ -33,6 +33,7 @@ register_shutdown_function(function() use ($pid) {
 class apiTest extends PHPUnit_Framework_TestCase{
 
 	private $client;
+	private $posted_id;
 
 	/**
 	 * setup
@@ -56,9 +57,9 @@ class apiTest extends PHPUnit_Framework_TestCase{
 	}//testWebServerHealthCheck()
 
 	/**
-	 * POST
+	 * POST, PUT, DELETE
 	 */
-	public function testPost(){
+	public function testPostPutDelete(){
 
 		$res = $this->client->request(
 			'POST',
@@ -89,7 +90,38 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals( @$getJson->row->password, null );
 		$this->assertEquals( $getJson->row->user_name, 'POST Tester No.00001' );
 
-	}//testPost()
+
+		$res = $this->client->request(
+			'PUT',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user/'.$postJson->given_id,
+			array(
+				'form_params'=>array(
+					'user_account' => 'post-and-put-tester-00001',
+					'password' => 'password',
+					'user_name' => 'POST and PUT Tester No.00001',
+				)
+			)
+		);
+		// var_dump($res);
+		$putJson = json_decode($res->getBody());
+		// var_dump($putJson);
+		$this->assertEquals( $putJson->result, true );
+		$this->assertEquals( $putJson->affected_rows, 1 );
+
+		// GET して確認
+		$res = $this->client->request(
+			'GET',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user/'.$postJson->given_id
+		);
+		$getJson = json_decode($res->getBody());
+		// var_dump($getJson);
+		$this->assertEquals( $getJson->result, true );
+		$this->assertEquals( $getJson->row->user_id, $postJson->given_id );
+		$this->assertEquals( $getJson->row->user_account, 'post-tester-00001' );
+		$this->assertEquals( @$getJson->row->password, null );
+		$this->assertEquals( $getJson->row->user_name, 'POST Tester No.00001' );
+
+	}//testPostPutDelete()
 
 	/**
 	 * Gettin List
