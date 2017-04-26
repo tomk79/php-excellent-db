@@ -119,6 +119,7 @@ class parser_xlsx{
 			'update_date'=>null,
 			'delete_date'=>null,
 			'delete_flg'=>null,
+			'password'=>array(),
 		)));
 		foreach( $parsed->table_definition as $column_definition ){
 			if( $column_definition->type == 'auto_id' || $column_definition->type == 'auto_increment' ){
@@ -134,6 +135,8 @@ class parser_xlsx{
 				$parsed->system_columns->delete_date = $column_definition->column_name;
 			}elseif( $column_definition->type == 'delete_flg' ){
 				$parsed->system_columns->delete_flg = $column_definition->column_name;
+			}elseif( $column_definition->type == 'password' ){
+				array_push($parsed->system_columns->password, $column_definition->column_name);
 			}
 			// var_dump($column_definition);
 		}

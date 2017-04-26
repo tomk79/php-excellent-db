@@ -118,6 +118,13 @@ class endpoint_rest{
 				// ID無指定の場合、一覧情報を返す
 				$rtn['list'] = $this->exdb->select($this->options['table'], $this->options['get_params']);
 				$rtn['result'] = true;
+				if( count($table_definition->system_columns->password) ){
+					foreach( $rtn['list'] as $key=>$val ){
+						foreach($table_definition->system_columns->password as $column_name){
+							unset($rtn['list'][$key][$column_name]);
+						}
+					}
+				}
 				echo json_encode( $rtn );
 				return null;
 			}else{
@@ -127,10 +134,8 @@ class endpoint_rest{
 				$where[$table_definition->system_columns->id->column_name] = $this->options['id'];
 				$row = $this->exdb->select($this->options['table'], $where);
 				$rtn['row'] = @$row[0];
-				foreach($table_definition->table_definition as $column_definition){
-					if($column_definition->type == 'password'){
-						unset($rtn['row'][$column_definition->column_name]);
-					}
+				foreach($table_definition->system_columns->password as $column_name){
+					unset($rtn['row'][$column_name]);
 				}
 				$rtn['result'] = true;
 				echo json_encode( $rtn );

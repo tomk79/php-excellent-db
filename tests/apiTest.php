@@ -160,6 +160,11 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		$json = json_decode($res->getBody());
 		// var_dump($json);
 		$this->assertEquals( $json->result, true );
+		$this->assertTrue( is_array($json->list) );
+		$this->assertTrue( is_object($json->list[0]) );
+		$this->assertNull( @$json->list[0]->password );
+		$this->assertNull( @$json->list[1]->password );
+		$this->assertNull( @$json->list[2]->password );
 
 	}//testGettingList()
 

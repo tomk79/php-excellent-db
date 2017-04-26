@@ -156,7 +156,10 @@
                 "create_date": "create_date",
                 "update_date": "update_date",
                 "delete_date": "delete_date",
-                "delete_flg": "delete_flg"
+                "delete_flg": "delete_flg",
+                "password": [
+                    "password"
+                ]
             }
         },
         "project": {
@@ -268,7 +271,8 @@
                 "create_date": "create_date",
                 "update_date": "update_date",
                 "delete_date": "delete_date",
-                "delete_flg": "delete_flg"
+                "delete_flg": "delete_flg",
+                "password": []
             }
         }
     }
