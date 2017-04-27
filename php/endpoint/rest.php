@@ -15,6 +15,9 @@ class endpoint_rest{
 	/** Options */
 	private $options;
 
+	/** Query Options */
+	private $query_options;
+
 	/**
 	 * constructor
 	 *
@@ -40,11 +43,27 @@ class endpoint_rest{
 		$this->options['method'] = strtoupper($this->options['method']);
 
 		// params
+
 		if( @!is_array($this->options['get_params']) ){
 			$this->options['get_params'] = $_GET;
 		}
+		foreach($this->options['get_params'] as $key=>$val){
+			if( preg_match('/^\//', $key) ){
+				$tmp_key = preg_replace('/^\//', '', $key);
+				$this->query_options[$tmp_key] = $val;
+				unset($this->options['get_params'][$key]);
+			}
+		}
+
 		if( @!is_array($this->options['post_params']) ){
 			$this->options['post_params'] = $_POST;
+		}
+		foreach($this->options['post_params'] as $key=>$val){
+			if( preg_match('/^\//', $key) ){
+				$tmp_key = preg_replace('/^\//', '', $key);
+				$this->query_options[$tmp_key] = $val;
+				unset($this->options['post_params'][$key]);
+			}
 		}
 
 		// table name
@@ -116,7 +135,7 @@ class endpoint_rest{
 
 			if( !strlen($this->options['id']) ){
 				// ID無指定の場合、一覧情報を返す
-				$rtn['list'] = $this->exdb->select($this->options['table'], $this->options['get_params']);
+				$rtn['list'] = $this->exdb->select($this->options['table'], $this->options['get_params'], $this->query_options);
 				$rtn['result'] = true;
 				if( count($table_definition->system_columns->password) ){
 					foreach( $rtn['list'] as $key=>$val ){

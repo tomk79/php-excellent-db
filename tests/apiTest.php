@@ -162,10 +162,29 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		// var_dump($json);
 		$this->assertEquals( $json->result, true );
 		$this->assertTrue( is_array($json->list) );
+		$this->assertEquals( count($json->list), 10 );
 		$this->assertTrue( is_object($json->list[0]) );
 		$this->assertNull( @$json->list[0]->password );
 		$this->assertNull( @$json->list[1]->password );
 		$this->assertNull( @$json->list[2]->password );
+		$this->assertEquals( @$json->list[0]->user_account, 'tester-00001' );
+		$this->assertEquals( @$json->list[1]->user_account, 'tester-00002' );
+		$this->assertEquals( @$json->list[2]->user_account, 'tester-00003' );
+
+		$res = $this->client->request('GET', 'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user?/page=1&/limit=100');
+		// var_dump($res);
+		$json = json_decode($res->getBody());
+		// var_dump($json);
+		$this->assertEquals( $json->result, true );
+		$this->assertTrue( is_array($json->list) );
+		$this->assertEquals( count($json->list), 100 );
+		$this->assertTrue( is_object($json->list[0]) );
+		$this->assertNull( @$json->list[0]->password );
+		$this->assertNull( @$json->list[1]->password );
+		$this->assertNull( @$json->list[2]->password );
+		$this->assertEquals( @$json->list[0]->user_account, 'tester-00101' );
+		$this->assertEquals( @$json->list[1]->user_account, 'tester-00102' );
+		$this->assertEquals( @$json->list[2]->user_account, 'tester-00103' );
 
 	}//testGettingList()
 
