@@ -236,7 +236,7 @@ class create{
 	 * SELECT
 	 */
 	public function select($tbl, $where, $options = array()){
-		return $this->crud->select($tbl, $where);
+		return $this->crud->select($tbl, $where, $options);
 	}
 
 	/**

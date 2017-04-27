@@ -1,4 +1,6 @@
 <?php
+@date_default_timezone_set('Asia/Tokyo');
+
 // Command that starts the built-in web server
 $command = sprintf(
 	'php -S %s:%d -t %s >/dev/null 2>&1 & echo $!',
@@ -40,7 +42,6 @@ class apiTest extends PHPUnit_Framework_TestCase{
 	 */
 	public function setup(){
 		mb_internal_encoding('utf-8');
-		@date_default_timezone_set('Asia/Tokyo');
 
 		$this->client = new \GuzzleHttp\Client();
 	}

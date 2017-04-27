@@ -1,4 +1,6 @@
 <?php
+@date_default_timezone_set('Asia/Tokyo');
+
 /**
  * Test Script
  */
@@ -11,7 +13,6 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 */
 	public function setup(){
 		mb_internal_encoding('utf-8');
-		@date_default_timezone_set('Asia/Tokyo');
 
 		// @unlink(__DIR__.'/testdata/_tmp/db/test.sqlite');
 		// clearstatcache();
@@ -82,13 +83,45 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * SELECT
 	 */
 	public function testSelect(){
-		$max_user_count = 500;
 
 		// --------------------------------------
-		// SELECT して答え合わせ
+		// オプション無指定で普通に取得
 		$userList = $this->exdb->select('user', array());
 		// var_dump($userList);
-		$this->assertEquals( count($userList), $max_user_count );
+		$this->assertEquals( count($userList), 10 );//デフォルトは10件
+		$this->assertEquals( $userList[0]['user_account'], 'tester-00000' );
+		$this->assertEquals( $userList[9]['user_account'], 'tester-00009' );
+
+		// --------------------------------------
+		// ページ指定して取得
+		$userList = $this->exdb->select('user', array(), array(
+			'limit' => 10 ,
+			'page' => 1 , // ← 2ページ目
+		));
+		// var_dump($userList);
+		$this->assertEquals( count($userList), 10 );
+		$this->assertEquals( $userList[0]['user_account'], 'tester-00010' );
+		$this->assertEquals( $userList[9]['user_account'], 'tester-00019' );
+
+		$userList = $this->exdb->select('user', array(), array(
+			'limit' => 10 ,
+			'page' => 5 , // ← 6ページ目
+		));
+		// var_dump($userList);
+		$this->assertEquals( count($userList), 10 );
+		$this->assertEquals( $userList[0]['user_account'], 'tester-00050' );
+		$this->assertEquals( $userList[9]['user_account'], 'tester-00059' );
+
+		// --------------------------------------
+		// ページごとの件数を指定して取得
+		$userList = $this->exdb->select('user', array(), array(
+			'limit' => 100 ,
+			'page' => 1 , // ← 2ページ目
+		));
+		// var_dump($userList);
+		$this->assertEquals( count($userList), 100 );
+		$this->assertEquals( $userList[0]['user_account'], 'tester-00100' );
+		$this->assertEquals( $userList[99]['user_account'], 'tester-00199' );
 
 	}//testSelect()
 

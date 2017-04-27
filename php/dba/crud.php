@@ -125,6 +125,16 @@ class dba_crud{
 		$table_definition = $this->exdb->get_table_definition($tbl);
 		$delete_flg_id = $table_definition->system_columns->delete_flg;
 		// var_dump($table_definition);
+		// var_dump($options);
+
+		$page = 0; // ページ数(0から数える)
+		if( @strlen($options['page']) ){
+			$page = intval($options['page']);
+		}
+		$limit = 10; // 10件ずつ
+		if( @strlen($options['limit']) ){
+			$limit = intval($options['limit']);
+		}
 
 		foreach($where as $key=>$val){
 			if( $table_definition->table_definition->{$key}->type == 'password' ){
@@ -142,6 +152,7 @@ class dba_crud{
 		$sql = array();
 		$sql['select'] = 'SELECT * FROM '.$this->exdb->get_physical_table_name($tbl).'';
 		$sql['where'] = ' WHERE ';
+		$sql['limit'] = ' LIMIT '.($page*$limit).','.$limit.' ';
 		$sql['close'] = ';';
 
 		$sql_where = array();
@@ -149,7 +160,7 @@ class dba_crud{
 			array_push($sql_where, $column_name.'=:'.$column_name);
 		}
 
-		$sql_template = $sql['select'].(count($sql_where) ? $sql['where'].implode($sql_where, ' AND ') : '').$sql['close'];
+		$sql_template = $sql['select'].(count($sql_where) ? $sql['where'].implode($sql_where, ' AND ') : '').$sql['limit'].$sql['close'];
 		// var_dump($sql_template);
 		$sth = $this->exdb->pdo()->prepare( $sql_template );
 		$result = $sth->execute( $where );
