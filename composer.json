@@ -1,5 +1,6 @@
 {
     "name": "tomk79/excellent-db",
+    "description": "Excelファイルで定義したデータベーステーブル仕様に従って、データベース操作を実行します。",
     "type": "library",
     "keywords": [],
     "license": "MIT",
