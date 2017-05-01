@@ -1,0 +1,6 @@
+<p>Max: {{ count }}</p>
+<ul>
+{% for row in list %}
+<li><a href="{{ row.href }}">{{ row.label }}</a></li>
+{% endfor %}
+</ul>
