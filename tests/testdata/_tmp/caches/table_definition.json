@@ -98,7 +98,7 @@
                 "create_date": {
                     "column_name": "create_date",
                     "type": "create_date",
-                    "label": null,
+                    "label": "Create Date",
                     "description": null,
                     "unique": null,
                     "primary_key": null,
@@ -111,7 +111,7 @@
                 "update_date": {
                     "column_name": "update_date",
                     "type": "update_date",
-                    "label": null,
+                    "label": "Update Date",
                     "description": null,
                     "unique": null,
                     "primary_key": null,
@@ -124,7 +124,7 @@
                 "delete_date": {
                     "column_name": "delete_date",
                     "type": "delete_date",
-                    "label": null,
+                    "label": "Delete Date",
                     "description": null,
                     "unique": null,
                     "primary_key": null,
@@ -137,7 +137,7 @@
                 "delete_flg": {
                     "column_name": "delete_flg",
                     "type": "delete_flg",
-                    "label": null,
+                    "label": "Delete Flag",
                     "description": null,
                     "unique": null,
                     "primary_key": null,
@@ -217,7 +217,7 @@
                 "create_date": {
                     "column_name": "create_date",
                     "type": "create_date",
-                    "label": null,
+                    "label": "Create Date",
                     "description": null,
                     "unique": null,
                     "primary_key": null,
@@ -229,7 +229,7 @@
                 "update_date": {
                     "column_name": "update_date",
                     "type": "update_date",
-                    "label": null,
+                    "label": "Update Date",
                     "description": null,
                     "unique": null,
                     "primary_key": null,
@@ -241,7 +241,7 @@
                 "delete_date": {
                     "column_name": "delete_date",
                     "type": "delete_date",
-                    "label": null,
+                    "label": "Delete Date",
                     "description": null,
                     "unique": null,
                     "primary_key": null,
@@ -253,7 +253,7 @@
                 "delete_flg": {
                     "column_name": "delete_flg",
                     "type": "delete_flg",
-                    "label": null,
+                    "label": "Delete Flag",
                     "description": null,
                     "unique": null,
                     "primary_key": null,

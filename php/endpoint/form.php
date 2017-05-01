@@ -130,6 +130,8 @@ class endpoint_form{
 				return null;
 			}else{
 				// ID指定がある場合、詳細情報1件を返す
+				echo $this->page_detail($this->options['table'], $this->options['id']);
+				return null;
 			}
 
 		}
@@ -209,6 +211,47 @@ class endpoint_form{
 		$rtn = $this->wrap_theme($rtn);
 		return $rtn;
 	} // page_list()
+
+
+	/**
+	 * 詳細画面を描画
+	 * @return String HTML Source Code
+	 */
+	private function page_detail( $table_name, $row_id ){
+		// var_dump($table_name);
+		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
+
+		// var_dump($this->table_definition->system_columns);
+		if( count($this->table_definition->system_columns->password) ){
+			foreach( $list as $key=>$val ){
+				foreach($this->table_definition->system_columns->password as $column_name){
+					unset($list[$key][$column_name]);
+				}
+			}
+		}
+		$rtn = '';
+		foreach( $this->table_definition->table_definition as $column_definition ){
+			var_dump($column_definition);
+			$rtn .= $this->twig->render(
+				'form_elms/default/detail.html',
+				array(
+					'value'=>@$list[0][$column_definition->column_name],
+					'column_definition'=>@$column_definition,
+				)
+			);
+		}
+
+		$rtn = $this->twig->render(
+			'form_detail.html',
+			array(
+				'content'=>@$rtn,
+			)
+		);
+
+		// $rtn = '<form>'.$rtn.'</form>';
+		$rtn = $this->wrap_theme($rtn);
+		return $rtn;
+	} // page_detail()
 
 
 	/**
