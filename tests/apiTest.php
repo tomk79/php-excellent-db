@@ -170,6 +170,7 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals( @$json->list[0]->user_account, 'tester-00001' );
 		$this->assertEquals( @$json->list[1]->user_account, 'tester-00002' );
 		$this->assertEquals( @$json->list[2]->user_account, 'tester-00003' );
+		$this->assertEquals( @$json->count, 499 );
 
 		$res = $this->client->request('GET', 'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user?/page=1&/limit=100');
 		// var_dump($res);
@@ -185,6 +186,7 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals( @$json->list[0]->user_account, 'tester-00101' );
 		$this->assertEquals( @$json->list[1]->user_account, 'tester-00102' );
 		$this->assertEquals( @$json->list[2]->user_account, 'tester-00103' );
+		$this->assertEquals( @$json->count, 499 );
 
 	}//testGettingList()
 

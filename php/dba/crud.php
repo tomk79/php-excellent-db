@@ -183,6 +183,54 @@ class dba_crud{
 	} // select()
 
 	/**
+	 * SELECT文を発行し、該当件数を調べる
+	 * @param  string $tbl テーブル名
+	 * @param  array $where 抽出条件
+	 * @return int 抽出されたレコード数
+	 */
+	public function count($tbl, $where){
+		$table_definition = $this->exdb->get_table_definition($tbl);
+		$delete_flg_id = $table_definition->system_columns->delete_flg;
+		// var_dump($table_definition);
+
+		foreach($where as $key=>$val){
+			if( $table_definition->table_definition->{$key}->type == 'password' ){
+				// パスワードをハッシュ値化
+				$where[$key] = $this->exdb->encrypt_password($val);
+			}elseif( $table_definition->table_definition->{$key}->type == 'delete_flg' ){
+				// delete_flgを 0 or 1 に整形
+				$where[$key] = ($val ? 1 : 0);
+			}
+		}
+		if( is_string($delete_flg_id) && @is_null( $where[$delete_flg_id] ) ){
+			$where[$delete_flg_id] = 0;
+		}
+
+		$sql = array();
+		$sql['select'] = 'SELECT COUNT(*) AS count FROM '.$this->exdb->get_physical_table_name($tbl).'';
+		$sql['where'] = ' WHERE ';
+		$sql['close'] = ';';
+
+		$sql_where = array();
+		foreach( $where as $column_name => $cond ){
+			array_push($sql_where, $column_name.'=:'.$column_name);
+		}
+
+		$sql_template = $sql['select'].(count($sql_where) ? $sql['where'].implode($sql_where, ' AND ') : '').$sql['close'];
+		// var_dump($sql_template);
+		$sth = $this->exdb->pdo()->prepare( $sql_template );
+		$result = $sth->execute( $where );
+		if( $result === false ){
+			return false;
+		}
+		$result = $sth->fetchAll(\PDO::FETCH_ASSOC);
+		// var_dump($result);
+		$rtn = intval($result[0]['count']);
+
+		return $rtn;
+	} // count()
+
+	/**
 	 * UPDATE文を発行する
 	 * @param  string $tbl テーブル名
 	 * @param  array $where 抽出条件

@@ -136,6 +136,7 @@ class endpoint_rest{
 			if( !strlen($this->options['id']) ){
 				// ID無指定の場合、一覧情報を返す
 				$rtn['list'] = $this->exdb->select($this->options['table'], $this->options['get_params'], $this->query_options);
+				$rtn['count'] = $this->exdb->count($this->options['table'], $this->options['get_params']);
 				$rtn['result'] = true;
 				if( count($table_definition->system_columns->password) ){
 					foreach( $rtn['list'] as $key=>$val ){

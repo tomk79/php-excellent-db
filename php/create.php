@@ -251,6 +251,16 @@ class create{
 	}
 
 	/**
+	 * SELECT文を発行し、該当件数を調べる
+	 * @param  string $tbl テーブル名
+	 * @param  array $where 抽出条件
+	 * @return int 抽出されたレコード数
+	 */
+	public function count($tbl, $where){
+		return $this->crud->count($tbl, $where);
+	}
+
+	/**
 	 * UPDATE文を発行する
 	 * @param  string $tbl テーブル名
 	 * @param  array $where 抽出条件

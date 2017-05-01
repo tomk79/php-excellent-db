@@ -93,6 +93,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals( $userList[9]['user_account'], 'tester-00009' );
 
 		// --------------------------------------
+		// 件数を数える
+		$userCount = $this->exdb->count('user', array());
+		// var_dump($userCount);
+		$this->assertEquals( $userCount, 500 );
+
+		// --------------------------------------
 		// ページ指定して取得
 		$userList = $this->exdb->select('user', array(), array(
 			'limit' => 10 ,
@@ -167,6 +173,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$afterData = $this->exdb->select('user', array('user_account'=>'tester-00000','delete_flg'=>1));
 		// var_dump($afterData);
 		$this->assertEquals( count($afterData), 1 );
+
+		// --------------------------------------
+		// 件数を数える
+		$userCount = $this->exdb->count('user', array());
+		// var_dump($userCount);
+		$this->assertEquals( $userCount, 500-1 ); // deleteされているので1件減っているはず
 
 	}//testDelete()
 
