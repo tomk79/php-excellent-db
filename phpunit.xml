@@ -3,6 +3,7 @@
 		<testsuite>
 			<file>tests/mainTest.php</file>
 			<file>tests/apiTest.php</file>
+			<file>tests/formTest.php</file>
 			<file>tests/clearningTest.php</file>
 		</testsuite>
 	</testsuites>

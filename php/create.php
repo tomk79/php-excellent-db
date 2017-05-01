@@ -306,4 +306,15 @@ class create{
 		$api->execute();
 		return null;
 	}
+
+	/**
+	 * フォームエンドポイントを自動的にセットアップ
+	 * @param  array $options オプション
+	 * @return null          このメソッドは値を返しません。
+	 */
+	public function automatic_form($options = null){
+		$api = new endpoint_form( $this, $options );
+		$api->execute();
+		return null;
+	}
 }

@@ -37,6 +37,7 @@
             "php/parser/xlsx.php",
             "php/migrate/init_tables.php",
             "php/dba/crud.php",
+            "php/endpoint/form.php",
             "php/endpoint/rest.php"
         ]
     }
