@@ -18,6 +18,12 @@ class endpoint_form{
 	/** Query Options */
 	private $query_options;
 
+	/** Twig Instance */
+	private $twig;
+
+	/** Table Definition */
+	private $table_definition;
+
 	/**
 	 * constructor
 	 *
@@ -68,13 +74,24 @@ class endpoint_form{
 
 		// table name
 		if( @!strlen($this->options['table']) ){
-			$this->options['table'] = $tmp_path_info[1];
+			$this->options['table'] = @$tmp_path_info[1];
 		}
 
 		// resource id
 		if( @!strlen($this->options['id']) ){
-			$this->options['id'] = $tmp_path_info[2];
+			$this->options['id'] = @$tmp_path_info[2];
 		}
+
+		if( strlen($this->options['table']) ){
+			$this->table_definition = $this->exdb->get_table_definition($this->options['table']);
+		}
+
+		$loader = new \Twig_Loader_Filesystem(__DIR__.'/../templates/');
+		$this->twig = new \Twig_Environment($loader, array(
+			// 'cache' => $this->exdb->conf()->path_cache_dir.'/twig_cache/',
+			'debug' => true,
+		));
+		$this->twig->addExtension(new \Twig_Extension_Debug());
 
 		return;
 	}
@@ -88,11 +105,14 @@ class endpoint_form{
 	public function execute(){
 		@header('text/html; charset=UTF-8');
 
-		if( strlen($this->options['table']) ){
-			$table_definition = $this->exdb->get_table_definition($this->options['table']);
-		}
-
 		$rtn = '';
+
+		if( !strlen($this->options['table']) ){
+			// --------------------
+			// 対象のテーブルが選択されていない
+			echo $this->page_table_list();
+			return null;
+		}
 
 		if( $this->options['method'] == 'POST' ){
 			// --------------------------------------
@@ -104,9 +124,56 @@ class endpoint_form{
 
 		}
 
-		$rtn = '<html><body>Unknown method</body></html>';
+
+		// 描画
+		$rtn = $this->wrap_theme('<p>Unknown method</p>');
 		echo $rtn;
+
 		return null;
+	}
+
+
+	/**
+	 * テーブル選択画面を描画
+	 * @return String HTML Source Code
+	 */
+	private function page_table_list(){
+		$table_defs_all = $this->exdb->get_table_definition_all();
+		// var_dump($table_defs_all);
+		$table_list = array();
+		foreach( $table_defs_all->tables as $table_def ){
+			// var_dump($table_def);
+			$table = array();
+			$table['label'] = $table_def->table_name;
+			$table['table_name'] = $table_def->table_name;
+			$table['href'] = $_SERVER['SCRIPT_NAME'].'/'.$table_def->table_name.'/';
+			array_push($table_list, $table);
+		}
+		$rtn = $this->twig->render(
+			'form_table_list.html',
+			array(
+				'table_list'=>$table_list,
+			)
+		);
+		// var_dump($table_list);
+		$rtn = $this->wrap_theme($rtn);
+		return $rtn;
+	}
+
+	/**
+	 * HTMLのテーマでラップする
+	 * @param  String $html_content コンテンツエリアのHTMLソース
+	 * @return String               テーマで包まれたHTMLソース
+	 */
+	private function wrap_theme($html_content){
+		$rtn = $this->twig->render(
+			'form_theme.html',
+			array(
+				'_SERVER'=>$_SERVER,
+				'content'=>$html_content,
+			)
+		);
+		return $rtn;
 	}
 
 }

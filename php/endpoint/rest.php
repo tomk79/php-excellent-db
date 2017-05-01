@@ -68,12 +68,12 @@ class endpoint_rest{
 
 		// table name
 		if( @!strlen($this->options['table']) ){
-			$this->options['table'] = $tmp_path_info[1];
+			$this->options['table'] = @$tmp_path_info[1];
 		}
 
 		// resource id
 		if( @!strlen($this->options['id']) ){
-			$this->options['id'] = $tmp_path_info[2];
+			$this->options['id'] = @$tmp_path_info[2];
 		}
 
 		return;

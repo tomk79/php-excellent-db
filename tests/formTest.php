@@ -21,9 +21,9 @@ class formTest extends PHPUnit_Framework_TestCase{
 	 */
 	public function testWebServerHealthCheck(){
 
-		$res = $this->client->request('GET', 'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/healthcheck.html');
+		$res = $this->client->request('GET', 'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/form_test.php');
 		// var_dump($res);
-		$this->assertEquals( trim($res->getBody()), 'health check.' );
+		$this->assertTrue( !!preg_match('/\!DOCTYPE html/', $res->getBody()) );
 
 	}//testWebServerHealthCheck()
 
