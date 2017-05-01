@@ -82,6 +82,11 @@ class endpoint_form{
 			$this->options['id'] = @$tmp_path_info[2];
 		}
 
+		// action name
+		if( @!strlen($this->options['action']) ){
+			$this->options['action'] = @$tmp_path_info[3];
+		}
+
 		if( strlen($this->options['table']) ){
 			$this->table_definition = $this->exdb->get_table_definition($this->options['table']);
 		}
@@ -130,7 +135,13 @@ class endpoint_form{
 				return null;
 			}else{
 				// ID指定がある場合、詳細情報1件を返す
-				echo $this->page_detail($this->options['table'], $this->options['id']);
+				if( $this->options['action'] == 'edit' ){
+					echo $this->page_edit($this->options['table'], $this->options['id']);
+				}elseif( $this->options['action'] == 'delete' ){
+					echo $this->page_delete($this->options['table'], $this->options['id']);
+				}else{
+					echo $this->page_detail($this->options['table'], $this->options['id']);
+				}
 				return null;
 			}
 
@@ -231,7 +242,7 @@ class endpoint_form{
 		}
 		$rtn = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
-			var_dump($column_definition);
+			// var_dump($column_definition);
 			$rtn .= $this->twig->render(
 				'form_elms/default/detail.html',
 				array(
@@ -244,6 +255,9 @@ class endpoint_form{
 		$rtn = $this->twig->render(
 			'form_detail.html',
 			array(
+				'href_edit'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/edit/',
+				'href_delete'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/delete/',
+				'href_list'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/',
 				'content'=>@$rtn,
 			)
 		);
@@ -252,6 +266,92 @@ class endpoint_form{
 		$rtn = $this->wrap_theme($rtn);
 		return $rtn;
 	} // page_detail()
+
+
+	/**
+	 * 編集画面を描画
+	 * @return String HTML Source Code
+	 */
+	private function page_edit( $table_name, $row_id ){
+		// var_dump($table_name);
+		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
+
+		// var_dump($this->table_definition->system_columns);
+		if( count($this->table_definition->system_columns->password) ){
+			foreach( $list as $key=>$val ){
+				foreach($this->table_definition->system_columns->password as $column_name){
+					unset($list[$key][$column_name]);
+				}
+			}
+		}
+		$rtn = '';
+		foreach( $this->table_definition->table_definition as $column_definition ){
+			// var_dump($column_definition);
+			$rtn .= $this->twig->render(
+				'form_elms/default/detail.html',
+				array(
+					'value'=>@$list[0][$column_definition->column_name],
+					'column_definition'=>@$column_definition,
+				)
+			);
+		}
+
+		$rtn = $this->twig->render(
+			'form_detail.html',
+			array(
+				'href_edit'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/edit/',
+				'href_list'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/',
+				'content'=>@$rtn,
+			)
+		);
+
+		// $rtn = '<form>'.$rtn.'</form>';
+		$rtn = $this->wrap_theme($rtn);
+		return $rtn;
+	} // page_edit()
+
+
+	/**
+	 * 削除画面を描画
+	 * @return String HTML Source Code
+	 */
+	private function page_delete( $table_name, $row_id ){
+		// var_dump($table_name);
+		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
+
+		// var_dump($this->table_definition->system_columns);
+		if( count($this->table_definition->system_columns->password) ){
+			foreach( $list as $key=>$val ){
+				foreach($this->table_definition->system_columns->password as $column_name){
+					unset($list[$key][$column_name]);
+				}
+			}
+		}
+		$rtn = '';
+		foreach( $this->table_definition->table_definition as $column_definition ){
+			// var_dump($column_definition);
+			$rtn .= $this->twig->render(
+				'form_elms/default/detail.html',
+				array(
+					'value'=>@$list[0][$column_definition->column_name],
+					'column_definition'=>@$column_definition,
+				)
+			);
+		}
+
+		$rtn = $this->twig->render(
+			'form_detail.html',
+			array(
+				'href_edit'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/edit/',
+				'href_list'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/',
+				'content'=>@$rtn,
+			)
+		);
+
+		// $rtn = '<form>'.$rtn.'</form>';
+		$rtn = $this->wrap_theme($rtn);
+		return $rtn;
+	} // page_delete()
 
 
 	/**
