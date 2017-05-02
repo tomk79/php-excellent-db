@@ -204,6 +204,29 @@ class create{
 		return $prefix.$table_name;
 	}
 
+
+	/**
+	 * 編集可能なカラムか調べる
+	 * @param  object  $column_definition カラム定義
+	 * @return boolean                    編集可否
+	 */
+	public function is_editable_column( $column_definition ){
+		if($column_definition->type == 'auto_id'){
+			return false;
+		}elseif($column_definition->type == 'auto_increment'){
+			return false;
+		}elseif($column_definition->type == 'create_date'){
+			return false;
+		}elseif($column_definition->type == 'update_date'){
+			return false;
+		}elseif($column_definition->type == 'delete_date'){
+			return false;
+		}elseif($column_definition->type == 'delete_flg'){
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * INSERT文を発行する
 	 * @param  string $tbl テーブル名

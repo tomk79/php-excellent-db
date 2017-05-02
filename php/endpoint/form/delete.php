@@ -5,9 +5,9 @@
 namespace excellent_db;
 
 /**
- * endpoint/form/edit.php
+ * endpoint/form/delete.php
  */
-class endpoint_form_edit{
+class endpoint_form_delete{
 
 	/** ExcellentDb Object */
 	private $exdb;
@@ -45,13 +45,13 @@ class endpoint_form_edit{
 		$this->row_id = $row_id;
 		$this->table_definition = $this->form_endpoint->get_current_table_definition();
 		$this->query_options = $this->form_endpoint->get_query_options();
-		$this->action_name = (strlen($row_id) ? 'edit' : 'create');
+		$this->action_name = 'delete';
 		return;
 	}
 
 
 	/**
-	 * 編集画面を実行
+	 * 削除画面を実行
 	 * @return String HTML Source Code
 	 */
 	public function execute(){
@@ -79,44 +79,9 @@ class endpoint_form_edit{
 			return $this->write($data);
 		}elseif( $action == 'done' ){
 			return $this->done();
-		}elseif( $action == 'confirm' ){
-			return $this->confirm($data);
 		}
-		return $this->input($data);
+		return $this->confirm($data);
 	} // execute()
-
-	/**
-	 * 編集画面を描画
-	 * @return String HTML Source Code
-	 */
-	private function input($data){
-		$rtn = '';
-		foreach( $this->table_definition->table_definition as $column_definition ){
-			// var_dump($column_definition);
-			if( !$this->exdb->is_editable_column( $column_definition ) ){
-				continue;
-			}
-			$rtn .= $this->form_endpoint->render(
-				'form_elms/default/edit.html',
-				array(
-					'value'=>@$data[$column_definition->column_name],
-					'def'=>@$column_definition,
-				)
-			);
-		}
-
-		$rtn = $this->form_endpoint->render(
-			'form_edit.html',
-			array(
-				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
-				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
-				'content'=>$rtn,
-			)
-		);
-
-		$rtn = $this->form_endpoint->wrap_theme($rtn);
-		return $rtn;
-	} // input()
 
 	/**
 	 * 確認画面を描画
@@ -141,7 +106,7 @@ class endpoint_form_edit{
 		}
 
 		$rtn = $this->form_endpoint->render(
-			'form_edit_confirm.html',
+			'form_delete.html',
 			array(
 				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
 				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
@@ -159,19 +124,10 @@ class endpoint_form_edit{
 	 * @return String HTML Source Code
 	 */
 	private function write($data){
-		// var_dump($data);
-		if( $this->action_name == "create" ){
-			$result = $this->exdb->insert(
-				$this->table_name,
-				$data
-			);
-		}elseif( $this->action_name == "edit" ){
-			$result = $this->exdb->update(
-				$this->table_name,
-				array($this->table_definition->system_columns->id->column_name=>$this->row_id),
-				$data
-			);
-		}
+		$result = $this->exdb->delete(
+			$this->table_name,
+			array($this->table_definition->system_columns->id->column_name=>$this->row_id)
+		);
 
 		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name);
 		@header('Location: '.$action.'?'.urlencode(':action').'=done');
@@ -184,9 +140,9 @@ class endpoint_form_edit{
 	 */
 	private function done(){
 		$rtn = $this->form_endpoint->render(
-			'form_edit_done.html',
+			'form_delete_done.html',
 			array(
-				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
+				'href_list'=>$this->form_endpoint->generate_url($this->table_name),
 			)
 		);
 

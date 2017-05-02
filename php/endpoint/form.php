@@ -300,6 +300,8 @@ class endpoint_form{
 	 * @return String HTML Source Code
 	 */
 	private function page_delete( $table_name, $row_id ){
+		$page_delete = new endpoint_form_delete($this->exdb, $this, $table_name, $row_id);
+		return $page_delete->execute();
 		// var_dump($table_name);
 		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
 
