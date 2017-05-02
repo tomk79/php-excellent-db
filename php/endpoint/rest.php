@@ -51,8 +51,8 @@ class endpoint_rest{
 			$this->options['get_params'] = $_GET;
 		}
 		foreach($this->options['get_params'] as $key=>$val){
-			if( preg_match('/^\//', $key) ){
-				$tmp_key = preg_replace('/^\//', '', $key);
+			if( preg_match('/^\:/', $key) ){
+				$tmp_key = preg_replace('/^\:/', '', $key);
 				$this->query_options[$tmp_key] = $val;
 				unset($this->options['get_params'][$key]);
 			}
@@ -62,8 +62,8 @@ class endpoint_rest{
 			$this->options['post_params'] = $_POST;
 		}
 		foreach($this->options['post_params'] as $key=>$val){
-			if( preg_match('/^\//', $key) ){
-				$tmp_key = preg_replace('/^\//', '', $key);
+			if( preg_match('/^\:/', $key) ){
+				$tmp_key = preg_replace('/^\:/', '', $key);
 				$this->query_options[$tmp_key] = $val;
 				unset($this->options['post_params'][$key]);
 			}

@@ -57,10 +57,10 @@ class endpoint_form_edit{
 	public function execute(){
 		$options = $this->form_endpoint->get_options();
 		$form_params = array_merge($options['get_params'], $options['post_params']);
-		$action = @$form_params[':action'];
+		$action = @$this->query_options['action'];
 		$data = array();
 		if( !strlen($action) && strlen($this->row_id) ){
-			$list = $this->exdb->select($this->table_name, array($this->table_definition->system_columns->id->column_name=>$this->row_id), $this->query_options);
+			$list = $this->exdb->select($this->table_name, array($this->table_definition->system_columns->id->column_name=>$this->row_id), array());
 
 			// var_dump($this->table_definition->system_columns);
 			if( count($this->table_definition->system_columns->password) ){
@@ -74,7 +74,6 @@ class endpoint_form_edit{
 		}else{
 			$data = array_merge($data, $options['post_params']);
 		}
-		unset($data[':action']);
 
 		if( $action == 'write' ){
 			return $this->write($data);
