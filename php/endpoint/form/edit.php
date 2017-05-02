@@ -27,6 +27,9 @@ class endpoint_form_edit{
 	/** Row ID */
 	private $row_id;
 
+	/** Action Name (`edit` or `create`) */
+	private $action_name;
+
 	/**
 	 * constructor
 	 *
@@ -42,6 +45,7 @@ class endpoint_form_edit{
 		$this->row_id = $row_id;
 		$this->table_definition = $this->form_endpoint->get_current_table_definition();
 		$this->query_options = $this->form_endpoint->get_query_options();
+		$this->action_name = (strlen($row_id) ? 'edit' : 'create');
 		return;
 	}
 
@@ -53,9 +57,9 @@ class endpoint_form_edit{
 	public function execute(){
 		$options = $this->form_endpoint->get_options();
 		$form_params = array_merge($options['get_params'], $options['post_params']);
-		$action = @$form_params['__action/'];
+		$action = @$form_params[':action'];
 		$data = array();
-		if( !strlen($action) ){
+		if( !strlen($action) && strlen($this->row_id) ){
 			$list = $this->exdb->select($this->table_name, array($this->table_definition->system_columns->id->column_name=>$this->row_id), $this->query_options);
 
 			// var_dump($this->table_definition->system_columns);
@@ -66,11 +70,11 @@ class endpoint_form_edit{
 					}
 				}
 			}
-			$data = $list[0];
+			$data = @$list[0];
 		}else{
 			$data = array_merge($data, $options['post_params']);
 		}
-		unset($data['__action/']);
+		unset($data[':action']);
 
 		if( $action == 'write' ){
 			return $this->write($data);
@@ -90,6 +94,9 @@ class endpoint_form_edit{
 		$rtn = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
 			// var_dump($column_definition);
+			if( !$this->is_editable_column( $column_definition ) ){
+				continue;
+			}
 			$rtn .= $this->form_endpoint->render(
 				'form_elms/default/edit.html',
 				array(
@@ -103,7 +110,7 @@ class endpoint_form_edit{
 			'form_edit.html',
 			array(
 				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
-				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, 'edit'),
+				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
 				'content'=>$rtn,
 			)
 		);
@@ -121,6 +128,9 @@ class endpoint_form_edit{
 		$hidden = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
 			// var_dump($column_definition);
+			if( !$this->is_editable_column( $column_definition ) ){
+				continue;
+			}
 			$content .= $this->form_endpoint->render(
 				'form_elms/default/detail.html',
 				array(
@@ -135,7 +145,7 @@ class endpoint_form_edit{
 			'form_edit_confirm.html',
 			array(
 				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
-				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, 'edit'),
+				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
 				'content'=>$content,
 				'hidden'=>$hidden,
 			)
@@ -151,14 +161,21 @@ class endpoint_form_edit{
 	 */
 	private function write($data){
 		// var_dump($data);
-		$result = $this->exdb->update(
-			$this->table_name,
-			array($this->table_definition->system_columns->id->column_name=>$this->row_id),
-			$data
-		);
+		if( $this->action_name == "create" ){
+			$result = $this->exdb->insert(
+				$this->table_name,
+				$data
+			);
+		}elseif( $this->action_name == "edit" ){
+			$result = $this->exdb->update(
+				$this->table_name,
+				array($this->table_definition->system_columns->id->column_name=>$this->row_id),
+				$data
+			);
+		}
 
-		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, 'edit');
-		@header('Location: '.$action.'?'.urlencode('__action/').'=done');
+		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name);
+		@header('Location: '.$action.'?'.urlencode(':action').'=done');
 		return '';
 	} // write()
 
@@ -177,5 +194,27 @@ class endpoint_form_edit{
 		$rtn = $this->form_endpoint->wrap_theme($rtn);
 		return $rtn;
 	} // done()
+
+	/**
+	 * 編集可能なカラムか調べる
+	 * @param  object  $column_definition カラム定義
+	 * @return boolean                    編集可否
+	 */
+	private function is_editable_column( $column_definition ){
+		if($column_definition->type == 'auto_id'){
+			return false;
+		}elseif($column_definition->type == 'auto_increment'){
+			return false;
+		}elseif($column_definition->type == 'create_date'){
+			return false;
+		}elseif($column_definition->type == 'update_date'){
+			return false;
+		}elseif($column_definition->type == 'delete_date'){
+			return false;
+		}elseif($column_definition->type == 'delete_flg'){
+			return false;
+		}
+		return true;
+	}
 
 }

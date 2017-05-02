@@ -146,6 +146,10 @@ class endpoint_form{
 			// ID無指定の場合、一覧情報を返す
 			echo $this->page_list($this->options['table']);
 			return null;
+		}elseif( $this->options['id'] == ':create' ){
+			// IDの代わりに文字列 `:create` が指定されたら、新規作成画面を返す
+			echo $this->page_edit($this->options['table']);
+			return null;
 		}else{
 			// ID指定がある場合、詳細情報1件を返す
 			if( $this->options['action'] == 'delete' ){
@@ -218,7 +222,7 @@ class endpoint_form{
 		foreach( $original_list as $row ){
 			$tmp_row = array();
 			$tmp_row['label'] = $row[$this->table_definition->system_columns->id->column_name];
-			$tmp_row['href'] = $this->generate_url($table_name, $row['user_id']);
+			$tmp_row['href'] = $this->generate_url($table_name, $row[$this->table_definition->system_columns->id->column_name]);
 			$tmp_row['val'] = $row;
 			array_push($list, $tmp_row);
 		}
@@ -228,6 +232,7 @@ class endpoint_form{
 			array(
 				'count'=>$count,
 				'list'=>$list,
+				'href_create'=>$this->generate_url($table_name, null, 'create'),
 			)
 		);
 		// var_dump($table_list);
@@ -284,7 +289,7 @@ class endpoint_form{
 	 * 編集画面を描画
 	 * @return String HTML Source Code
 	 */
-	private function page_edit( $table_name, $row_id ){
+	private function page_edit( $table_name, $row_id = null ){
 		$page_edit = new endpoint_form_edit($this->exdb, $this, $table_name, $row_id);
 		return $page_edit->execute();
 	} // page_edit()
@@ -336,6 +341,9 @@ class endpoint_form{
 	 * URLを生成する
 	 */
 	public function generate_url($table_name = null, $row_id = null, $action = null){
+		if( strlen( $table_name ) && !strlen( $row_id ) && $action == 'create' ){
+			return @$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/:create/';
+		}
 		if( strlen( $table_name ) && strlen( $row_id ) && strlen( $action ) ){
 			return @$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/'.$action.'/';
 		}
