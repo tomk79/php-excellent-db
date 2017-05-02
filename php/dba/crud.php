@@ -39,6 +39,11 @@ class dba_crud{
 		// var_dump($table_definition);
 		// var_dump($data);
 
+		$errors = $this->exdb->validate( $tbl, $data );
+		if( count($errors) ){
+			return false;
+		}
+
 		$sql = array();
 		$sql['insert'] = 'INSERT INTO '.$this->exdb->get_physical_table_name($tbl).'(';
 		$sql['values'] = ')VALUES(';
@@ -254,6 +259,11 @@ class dba_crud{
 		}
 		if( is_string($delete_flg_id) && @is_null( $where[$delete_flg_id] ) ){
 			$where[$delete_flg_id] = 0;
+		}
+
+		$errors = $this->exdb->validate( $tbl, $data );
+		if( count($errors) ){
+			return false;
 		}
 
 		$sql = array();

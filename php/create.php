@@ -12,20 +12,23 @@ class create{
 	/** tomk79/filesystem Instance */
 	private $fs;
 
+	/** PDO Instance */
+	private $pdo;
+
 	/** cache manager Instance */
 	private $caches;
 
-	/** PDO Instance */
-	private $pdo;
+	/** CRUD Operator Instance */
+	private $crud;
+
+	/** Validator Instance */
+	private $validator;
 
 	/** Database Config */
 	private $config;
 
 	/** Table Definition */
 	private $table_definition;
-
-	/** CRUD Operator */
-	private $crud;
 
 	/**
 	 * constructor
@@ -44,7 +47,7 @@ class create{
 		$this->caches = new caches($this);
 
 		// 環境情報をチェック
-		$env_error = $this->validate_env();
+		$env_error = $this->check_env();
 		if( $env_error ){
 			trigger_error('[ExcellentDb: Setup Error] '.$env_error);
 			return;
@@ -52,6 +55,9 @@ class create{
 
 		// Generate CRUD Operator
 		$this->crud = new dba_crud( $this );
+
+		// Generate Validator
+		$this->validator = new validator_validate($this);
 
 		$this->reload_definition_data();
 		return;
@@ -61,7 +67,7 @@ class create{
 	 * 環境情報(設定を含む)を検証する
 	 * @return string Error message.
 	 */
-	private function validate_env(){
+	private function check_env(){
 		if( !is_file($this->config->path_definition_file) ){
 			return 'Table definition file is NOT a file (or NOT exists).';
 		}
@@ -319,6 +325,15 @@ class create{
 		return $this->crud->physical_delete($tbl, $where);
 	}
 
+
+	/**
+	 * データを検証する
+	 */
+	public function validate( $table, $data ){
+		// TODO: 未実装
+		$errors = $this->validator->validate($table, $data);
+		return $errors;
+	}
 
 	/**
 	 * REST APIエンドポイントを自動的にセットアップ

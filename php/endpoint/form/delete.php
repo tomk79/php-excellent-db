@@ -56,7 +56,6 @@ class endpoint_form_delete{
 	 */
 	public function execute(){
 		$options = $this->form_endpoint->get_options();
-		$form_params = array_merge($options['get_params'], $options['post_params']);
 		$action = @$this->query_options['action'];
 		$data = array();
 		if( !strlen($action) && strlen($this->row_id) ){

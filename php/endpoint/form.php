@@ -190,7 +190,7 @@ class endpoint_form{
 		}else{
 			// ID指定がある場合、詳細情報1件を返す
 			$row_data = $this->get_current_row_data();
-			if( !$row_data ){
+			if( !$row_data && !($this->options['action'] == 'delete' && $this->query_options['action'] == 'done') ){
 				@header("HTTP/1.0 404 Not Found");
 				$rtn = $this->page_fatal_error('ID NOT Exists.');
 				echo $rtn;

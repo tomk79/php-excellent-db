@@ -56,7 +56,6 @@ class endpoint_form_edit{
 	 */
 	public function execute(){
 		$options = $this->form_endpoint->get_options();
-		$form_params = array_merge($options['get_params'], $options['post_params']);
 		$action = @$this->query_options['action'];
 		$data = array();
 		if( !strlen($action) && strlen($this->row_id) ){
@@ -65,11 +64,21 @@ class endpoint_form_edit{
 			$data = array_merge($data, $options['post_params']);
 		}
 
+		$errors = $this->exdb->validate($this->table_name, $data);
+
 		if( $action == 'write' ){
+			if( count($errors) ){
+				// validation でエラーが検出されたら、入力画面に戻る。
+				return $this->input($data, $errors);
+			}
 			return $this->write($data);
 		}elseif( $action == 'done' ){
 			return $this->done();
 		}elseif( $action == 'confirm' ){
+			if( count($errors) ){
+				// validation でエラーが検出されたら、入力画面に戻る。
+				return $this->input($data, $errors);
+			}
 			return $this->confirm($data);
 		}
 		return $this->input($data);
@@ -79,7 +88,7 @@ class endpoint_form_edit{
 	 * 編集画面を描画
 	 * @return String HTML Source Code
 	 */
-	private function input($data){
+	private function input($data, $errors = array()){
 		$rtn = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
 			// var_dump($column_definition);
@@ -90,6 +99,7 @@ class endpoint_form_edit{
 				'form_elms/default/edit.html',
 				array(
 					'value'=>@$data[$column_definition->column_name],
+					'error'=>@$errors[$column_definition->column_name],
 					'def'=>@$column_definition,
 				)
 			);
