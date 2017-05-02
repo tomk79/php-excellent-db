@@ -60,17 +60,7 @@ class endpoint_form_edit{
 		$action = @$this->query_options['action'];
 		$data = array();
 		if( !strlen($action) && strlen($this->row_id) ){
-			$list = $this->exdb->select($this->table_name, array($this->table_definition->system_columns->id->column_name=>$this->row_id), array());
-
-			// var_dump($this->table_definition->system_columns);
-			if( count($this->table_definition->system_columns->password) ){
-				foreach( $list as $key=>$val ){
-					foreach($this->table_definition->system_columns->password as $column_name){
-						unset($list[$key][$column_name]);
-					}
-				}
-			}
-			$data = @$list[0];
+			$data = @$this->form_endpoint->get_current_row_data();
 		}else{
 			$data = array_merge($data, $options['post_params']);
 		}

@@ -24,6 +24,9 @@ class endpoint_form{
 	/** Table Definition */
 	private $table_definition;
 
+	/** ROW Data */
+	private $row_data;
+
 	/**
 	 * constructor
 	 *
@@ -88,7 +91,25 @@ class endpoint_form{
 		}
 
 		if( strlen($this->options['table']) ){
+			// テーブル名が指定されている場合、テーブル定義を取得する
 			$this->table_definition = $this->exdb->get_table_definition($this->options['table']);
+			if( $this->table_definition && strlen($this->options['id']) ){
+				// さらに、行のIDが指定されている場合、
+				// 行データをSELECTしておく。
+				$list = $this->exdb->select(
+					$this->options['table'],
+					array(
+						$this->table_definition->system_columns->id->column_name=>$this->options['id']
+					),
+					array()
+				);
+				$this->row_data = @$list[0];
+				if( count($this->table_definition->system_columns->password) ){
+					foreach($this->table_definition->system_columns->password as $column_name){
+						unset($this->row_data[$column_name]);
+					}
+				}
+			}
 		}
 
 
@@ -121,7 +142,14 @@ class endpoint_form{
 	 * Getting Current Table Definition
 	 */
 	public function get_current_table_definition(){
-		return $this->table_definition;
+		return ($this->table_definition ? $this->table_definition : false);
+	}
+
+	/**
+	 * Getting Current ROW Data
+	 */
+	public function get_current_row_data(){
+		return ($this->row_data ? $this->row_data : false);
 	}
 
 	/**
@@ -142,6 +170,15 @@ class endpoint_form{
 			return null;
 		}
 
+		$table_definition = $this->get_current_table_definition();
+		// var_dump($table_definition);
+		if( !$table_definition ){
+			@header("HTTP/1.0 404 Not Found");
+			$rtn = $this->page_fatal_error('Table NOT Exists.');
+			echo $rtn;
+			return null;
+		}
+
 		if( !strlen($this->options['id']) ){
 			// ID無指定の場合、一覧情報を返す
 			echo $this->page_list($this->options['table']);
@@ -152,6 +189,14 @@ class endpoint_form{
 			return null;
 		}else{
 			// ID指定がある場合、詳細情報1件を返す
+			$row_data = $this->get_current_row_data();
+			if( !$row_data ){
+				@header("HTTP/1.0 404 Not Found");
+				$rtn = $this->page_fatal_error('ID NOT Exists.');
+				echo $rtn;
+				return null;
+			}
+
 			if( $this->options['action'] == 'delete' ){
 				echo $this->page_delete($this->options['table'], $this->options['id']);
 			}elseif( $this->options['action'] == 'edit' ){
@@ -165,7 +210,7 @@ class endpoint_form{
 
 
 		// エラー画面
-		$rtn = $this->wrap_theme('<p>Unknown method</p>');
+		$rtn = $this->page_fatal_error('Unknown method');
 		echo $rtn;
 
 		return null;
@@ -302,42 +347,17 @@ class endpoint_form{
 	private function page_delete( $table_name, $row_id ){
 		$page_delete = new endpoint_form_delete($this->exdb, $this, $table_name, $row_id);
 		return $page_delete->execute();
-		// var_dump($table_name);
-		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
-
-		// var_dump($this->table_definition->system_columns);
-		if( count($this->table_definition->system_columns->password) ){
-			foreach( $list as $key=>$val ){
-				foreach($this->table_definition->system_columns->password as $column_name){
-					unset($list[$key][$column_name]);
-				}
-			}
-		}
-		$rtn = '';
-		foreach( $this->table_definition->table_definition as $column_definition ){
-			// var_dump($column_definition);
-			$rtn .= $this->render(
-				'form_elms/default/detail.html',
-				array(
-					'value'=>@$list[0][$column_definition->column_name],
-					'def'=>@$column_definition,
-				)
-			);
-		}
-
-		$rtn = $this->render(
-			'form_delete.html',
-			array(
-				'href_detail'=>$this->generate_url($table_name, $row_id),
-				'content'=>@$rtn,
-			)
-		);
-
-		// $rtn = '<form>'.$rtn.'</form>';
-		$rtn = $this->wrap_theme($rtn);
-		return $rtn;
 	} // page_delete()
 
+	/**
+	 * 致命的なエラー画面
+	 */
+	public function page_fatal_error($errors = ''){
+		$rtn = '';
+		$rtn .= '<p>'.htmlspecialchars($errors).'</p>';
+		$rtn = $this->wrap_theme($rtn);
+		return $rtn;
+	}
 
 	/**
 	 * URLを生成する

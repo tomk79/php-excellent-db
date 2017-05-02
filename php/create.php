@@ -128,7 +128,8 @@ class create{
 	 * @return object Table Definition.
 	 */
 	public function get_table_definition( $table_name ){
-		return $this->table_definition->tables->{$table_name};
+		$tabel_definition = @$this->table_definition->tables->{$table_name};
+		return ($tabel_definition ? $tabel_definition : false);
 	}
 
 	/**
