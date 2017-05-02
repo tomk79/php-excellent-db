@@ -104,6 +104,27 @@ class endpoint_form{
 	}
 
 	/**
+	 * Getting Options
+	 */
+	public function get_options(){
+		return $this->options;
+	}
+
+	/**
+	 * Getting Query Options
+	 */
+	public function get_query_options(){
+		return $this->query_options;
+	}
+
+	/**
+	 * Getting Current Table Definition
+	 */
+	public function get_current_table_definition(){
+		return $this->table_definition;
+	}
+
+	/**
 	 * Execute
 	 *
 	 * @param object $exdb ExcellentDb Object
@@ -121,34 +142,25 @@ class endpoint_form{
 			return null;
 		}
 
-		if( $this->options['method'] == 'POST' ){
-			// --------------------------------------
-			// データベース操作系リクエスト
-
-		}elseif( $this->options['method'] == 'GET' ){
-			// --------------------------------------
-			// 画面表示系リクエスト
-
-			if( !strlen($this->options['id']) ){
-				// ID無指定の場合、一覧情報を返す
-				echo $this->page_list($this->options['table']);
-				return null;
+		if( !strlen($this->options['id']) ){
+			// ID無指定の場合、一覧情報を返す
+			echo $this->page_list($this->options['table']);
+			return null;
+		}else{
+			// ID指定がある場合、詳細情報1件を返す
+			if( $this->options['action'] == 'delete' ){
+				echo $this->page_delete($this->options['table'], $this->options['id']);
+			}elseif( $this->options['action'] == 'edit' ){
+				echo $this->page_edit($this->options['table'], $this->options['id']);
 			}else{
-				// ID指定がある場合、詳細情報1件を返す
-				if( $this->options['action'] == 'edit' ){
-					echo $this->page_edit($this->options['table'], $this->options['id']);
-				}elseif( $this->options['action'] == 'delete' ){
-					echo $this->page_delete($this->options['table'], $this->options['id']);
-				}else{
-					echo $this->page_detail($this->options['table'], $this->options['id']);
-				}
-				return null;
+				echo $this->page_detail($this->options['table'], $this->options['id']);
 			}
-
+			return null;
 		}
 
 
-		// 描画
+
+		// エラー画面
 		$rtn = $this->wrap_theme('<p>Unknown method</p>');
 		echo $rtn;
 
@@ -169,10 +181,10 @@ class endpoint_form{
 			$table = array();
 			$table['label'] = $table_def->table_name;
 			$table['table_name'] = $table_def->table_name;
-			$table['href'] = $_SERVER['SCRIPT_NAME'].'/'.$table_def->table_name.'/';
+			$table['href'] = $this->generate_url($table_def->table_name);
 			array_push($table_list, $table);
 		}
-		$rtn = $this->twig->render(
+		$rtn = $this->render(
 			'form_table_list.html',
 			array(
 				'table_list'=>$table_list,
@@ -185,7 +197,7 @@ class endpoint_form{
 
 
 	/**
-	 * 行の一覧画面を描画
+	 * 一覧画面を描画
 	 * @return String HTML Source Code
 	 */
 	private function page_list( $table_name ){
@@ -206,12 +218,12 @@ class endpoint_form{
 		foreach( $original_list as $row ){
 			$tmp_row = array();
 			$tmp_row['label'] = $row[$this->table_definition->system_columns->id->column_name];
-			$tmp_row['href'] = $_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row['user_id'].'/';
+			$tmp_row['href'] = $this->generate_url($table_name, $row['user_id']);
 			$tmp_row['val'] = $row;
 			array_push($list, $tmp_row);
 		}
 
-		$rtn = $this->twig->render(
+		$rtn = $this->render(
 			'form_list.html',
 			array(
 				'count'=>$count,
@@ -243,21 +255,21 @@ class endpoint_form{
 		$rtn = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
 			// var_dump($column_definition);
-			$rtn .= $this->twig->render(
+			$rtn .= $this->render(
 				'form_elms/default/detail.html',
 				array(
 					'value'=>@$list[0][$column_definition->column_name],
-					'column_definition'=>@$column_definition,
+					'def'=>@$column_definition,
 				)
 			);
 		}
 
-		$rtn = $this->twig->render(
+		$rtn = $this->render(
 			'form_detail.html',
 			array(
-				'href_edit'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/edit/',
-				'href_delete'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/delete/',
-				'href_list'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/',
+				'href_edit'=>$this->generate_url($table_name, $row_id, 'edit'),
+				'href_delete'=>$this->generate_url($table_name, $row_id, 'delete'),
+				'href_list'=>$this->generate_url($table_name),
 				'content'=>@$rtn,
 			)
 		);
@@ -273,41 +285,8 @@ class endpoint_form{
 	 * @return String HTML Source Code
 	 */
 	private function page_edit( $table_name, $row_id ){
-		// var_dump($table_name);
-		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
-
-		// var_dump($this->table_definition->system_columns);
-		if( count($this->table_definition->system_columns->password) ){
-			foreach( $list as $key=>$val ){
-				foreach($this->table_definition->system_columns->password as $column_name){
-					unset($list[$key][$column_name]);
-				}
-			}
-		}
-		$rtn = '';
-		foreach( $this->table_definition->table_definition as $column_definition ){
-			// var_dump($column_definition);
-			$rtn .= $this->twig->render(
-				'form_elms/default/detail.html',
-				array(
-					'value'=>@$list[0][$column_definition->column_name],
-					'column_definition'=>@$column_definition,
-				)
-			);
-		}
-
-		$rtn = $this->twig->render(
-			'form_detail.html',
-			array(
-				'href_edit'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/edit/',
-				'href_list'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/',
-				'content'=>@$rtn,
-			)
-		);
-
-		// $rtn = '<form>'.$rtn.'</form>';
-		$rtn = $this->wrap_theme($rtn);
-		return $rtn;
+		$page_edit = new endpoint_form_edit($this->exdb, $this, $table_name, $row_id);
+		return $page_edit->execute();
 	} // page_edit()
 
 
@@ -330,20 +309,19 @@ class endpoint_form{
 		$rtn = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
 			// var_dump($column_definition);
-			$rtn .= $this->twig->render(
+			$rtn .= $this->render(
 				'form_elms/default/detail.html',
 				array(
 					'value'=>@$list[0][$column_definition->column_name],
-					'column_definition'=>@$column_definition,
+					'def'=>@$column_definition,
 				)
 			);
 		}
 
-		$rtn = $this->twig->render(
-			'form_detail.html',
+		$rtn = $this->render(
+			'form_delete.html',
 			array(
-				'href_edit'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/edit/',
-				'href_list'=>@$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/',
+				'href_detail'=>$this->generate_url($table_name, $row_id),
 				'content'=>@$rtn,
 			)
 		);
@@ -355,12 +333,36 @@ class endpoint_form{
 
 
 	/**
+	 * URLを生成する
+	 */
+	public function generate_url($table_name = null, $row_id = null, $action = null){
+		if( strlen( $table_name ) && strlen( $row_id ) && strlen( $action ) ){
+			return @$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/'.$action.'/';
+		}
+		if( strlen( $table_name ) && strlen( $row_id ) ){
+			return @$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/'.$row_id.'/';
+		}
+		if( strlen( $table_name ) ){
+			return @$_SERVER['SCRIPT_NAME'].'/'.$table_name.'/';
+		}
+		return @$_SERVER['SCRIPT_NAME'].'/';
+	}
+
+	/**
+	 * テンプレートを描画する
+	 */
+	public function render($template, $data){
+		$rtn = $this->twig->render($template, $data);
+		return $rtn;
+	}
+
+	/**
 	 * HTMLのテーマでラップする
 	 * @param  String $html_content コンテンツエリアのHTMLソース
 	 * @return String               テーマで包まれたHTMLソース
 	 */
-	private function wrap_theme($html_content){
-		$rtn = $this->twig->render(
+	public function wrap_theme($html_content){
+		$rtn = $this->render(
 			'form_theme.html',
 			array(
 				'_SERVER'=>$_SERVER,

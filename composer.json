@@ -39,6 +39,7 @@
             "php/migrate/init_tables.php",
             "php/dba/crud.php",
             "php/endpoint/form.php",
+            "php/endpoint/form/edit.php",
             "php/endpoint/rest.php"
         ]
     }
