@@ -32,8 +32,10 @@ class endpoint_form_edit{
 	 *
 	 * @param object $exdb ExcellentDb Object
 	 * @param object $form_endpoint Form Endpoint Object
+	 * @param string $table_name Target Table Name
+	 * @param string $row_id Target Row Unique ID
 	 */
-	public function __construct( $exdb, $form_endpoint, $table_name, $row_id ){
+	public function __construct( $exdb, $form_endpoint, $table_name, $row_id = null ){
 		$this->exdb = $exdb;
 		$this->form_endpoint = $form_endpoint;
 		$this->table_name = $table_name;
@@ -51,43 +53,47 @@ class endpoint_form_edit{
 	public function execute(){
 		$options = $this->form_endpoint->get_options();
 		$form_params = array_merge($options['get_params'], $options['post_params']);
+		$action = @$form_params['__action/'];
+		$data = array();
+		if( !strlen($action) ){
+			$list = $this->exdb->select($this->table_name, array($this->table_definition->system_columns->id->column_name=>$this->row_id), $this->query_options);
 
-		if( @$form_params['__action/'] == 'write' ){
-			return $this->write();
-		}elseif( @$form_params['__action/'] == 'done' ){
-			return $this->done();
-		}elseif( @$form_params['__action/'] == 'confirm' ){
-			return $this->confirm();
+			// var_dump($this->table_definition->system_columns);
+			if( count($this->table_definition->system_columns->password) ){
+				foreach( $list as $key=>$val ){
+					foreach($this->table_definition->system_columns->password as $column_name){
+						unset($list[$key][$column_name]);
+					}
+				}
+			}
+			$data = $list[0];
+		}else{
+			$data = array_merge($data, $options['post_params']);
 		}
-		return $this->input();
+		unset($data['__action/']);
+
+		if( $action == 'write' ){
+			return $this->write($data);
+		}elseif( $action == 'done' ){
+			return $this->done();
+		}elseif( $action == 'confirm' ){
+			return $this->confirm($data);
+		}
+		return $this->input($data);
 	} // page_edit()
 
 	/**
 	 * 編集画面を描画
 	 * @return String HTML Source Code
 	 */
-	private function input(){
-		// var_dump($table_name);
-		$table_name = $this->table_name;
-		$row_id = $this->row_id;
-
-		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
-
-		// var_dump($this->table_definition->system_columns);
-		if( count($this->table_definition->system_columns->password) ){
-			foreach( $list as $key=>$val ){
-				foreach($this->table_definition->system_columns->password as $column_name){
-					unset($list[$key][$column_name]);
-				}
-			}
-		}
+	private function input($data){
 		$rtn = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
 			// var_dump($column_definition);
 			$rtn .= $this->form_endpoint->render(
 				'form_elms/default/edit.html',
 				array(
-					'value'=>@$list[0][$column_definition->column_name],
+					'value'=>@$data[$column_definition->column_name],
 					'def'=>@$column_definition,
 				)
 			);
@@ -96,8 +102,8 @@ class endpoint_form_edit{
 		$rtn = $this->form_endpoint->render(
 			'form_edit.html',
 			array(
-				'href_detail'=>$this->form_endpoint->generate_url($table_name, $row_id),
-				'action'=>$this->form_endpoint->generate_url($table_name, $row_id, 'edit'),
+				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
+				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, 'edit'),
 				'content'=>$rtn,
 			)
 		);
@@ -110,39 +116,28 @@ class endpoint_form_edit{
 	 * 確認画面を描画
 	 * @return String HTML Source Code
 	 */
-	private function confirm(){
-		// var_dump($table_name);
-		$table_name = $this->table_name;
-		$row_id = $this->row_id;
-
-		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
-
-		// var_dump($this->table_definition->system_columns);
-		if( count($this->table_definition->system_columns->password) ){
-			foreach( $list as $key=>$val ){
-				foreach($this->table_definition->system_columns->password as $column_name){
-					unset($list[$key][$column_name]);
-				}
-			}
-		}
-		$rtn = '';
+	private function confirm($data){
+		$content = '';
+		$hidden = '';
 		foreach( $this->table_definition->table_definition as $column_definition ){
 			// var_dump($column_definition);
-			$rtn .= $this->form_endpoint->render(
+			$content .= $this->form_endpoint->render(
 				'form_elms/default/detail.html',
 				array(
-					'value'=>@$list[0][$column_definition->column_name],
+					'value'=>@$data[$column_definition->column_name],
 					'def'=>@$column_definition,
 				)
 			);
+			$hidden .= '<input type="hidden" name="'.htmlspecialchars($column_definition->column_name).'" value="'.htmlspecialchars(@$data[$column_definition->column_name]).'"/>';
 		}
 
 		$rtn = $this->form_endpoint->render(
 			'form_edit_confirm.html',
 			array(
-				'href_detail'=>$this->form_endpoint->generate_url($table_name, $row_id),
-				'action'=>$this->form_endpoint->generate_url($table_name, $row_id, 'edit'),
-				'content'=>$rtn,
+				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
+				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, 'edit'),
+				'content'=>$content,
+				'hidden'=>$hidden,
 			)
 		);
 
@@ -154,7 +149,14 @@ class endpoint_form_edit{
 	 * 書き込みを実行
 	 * @return String HTML Source Code
 	 */
-	private function write(){
+	private function write($data){
+		// var_dump($data);
+		$result = $this->exdb->update(
+			$this->table_name,
+			array($this->table_definition->system_columns->id->column_name=>$this->row_id),
+			$data
+		);
+
 		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, 'edit');
 		@header('Location: '.$action.'?'.urlencode('__action/').'=done');
 		return '';

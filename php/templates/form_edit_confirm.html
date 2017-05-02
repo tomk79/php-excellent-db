@@ -5,11 +5,13 @@
 
 <p><button>CONFIRM</button></p>
 <input type="hidden" name="__action/" value="write" />
+{{ hidden|raw }}
 </form>
 
 <form action="{{ action }}" method="post">
 <p><button>Re EDIT</button></p>
 <input type="hidden" name="__action/" value="input" />
+{{ hidden|raw }}
 </form>
 
 <p><a href="{{ href_detail }}">cancel</a></p>
