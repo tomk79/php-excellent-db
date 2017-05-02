@@ -1,13 +1,14 @@
-<table>
+<table class="table">
 {{ content|raw }}
 </table>
 
 <p>Realy to delete this? (You can NOT get it back.)</p>
 
 <form action="{{ action }}" method="post">
-<p><button>Yes, DELETE</button></p>
+<p>
+	<button class="btn btn-danger">Yes, DELETE</button>
+	<a href="{{ href_detail }}" class="btn btn-link">cancel</a>
+</p>
 <input type="hidden" name=":action" value="write" />
 {{ hidden|raw }}
 </form>
-
-<p><a href="{{ href_detail }}">cancel</a></p>

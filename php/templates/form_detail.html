@@ -1,7 +1,9 @@
-<table>
+<table class="table">
 {{ content|raw }}
 </table>
 
-<p><a href="{{ href_edit }}">edit this Record</a></p>
-<p><a href="{{ href_delete }}">delete this Record</a></p>
-<p><a href="{{ href_list }}">back to list page</a></p>
+<p>
+	<a href="{{ href_edit }}" class="btn btn-primary">edit this Record</a>
+	<a href="{{ href_delete }}" class="btn btn-danger">delete this Record</a>
+	<a href="{{ href_list }}" class="btn btn-link">back to list page</a>
+</p>

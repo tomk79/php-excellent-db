@@ -1,9 +1,11 @@
 <form action="{{ action }}" method="post">
-<table>
+<table class="table">
 {{ content|raw }}
 </table>
 
-<p><button>CHECK</button></p>
+<p>
+	<button class="btn btn-primary">CHECK</button>
+	<a href="{{ href_detail }}" class="btn btn-link">cancel</a>
+</p>
 <input type="hidden" name=":action" value="confirm" />
 </form>
-<p><a href="{{ href_detail }}">cancel</a></p>

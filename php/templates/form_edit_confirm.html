@@ -1,17 +1,17 @@
 <form action="{{ action }}" method="post">
-<table>
+<table class="table">
 {{ content|raw }}
 </table>
 
-<p><button>CONFIRM</button></p>
+<p><button class="btn btn-primary">CONFIRM</button></p>
 <input type="hidden" name=":action" value="write" />
 {{ hidden|raw }}
 </form>
 
 <form action="{{ action }}" method="post">
-<p><button>Re EDIT</button></p>
+<p><button class="btn btn-default">Re EDIT</button></p>
 <input type="hidden" name=":action" value="input" />
 {{ hidden|raw }}
 </form>
 
-<p><a href="{{ href_detail }}">cancel</a></p>
+<p><a href="{{ href_detail }}" class="btn btn-link">cancel</a></p>
