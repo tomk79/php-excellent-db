@@ -52,7 +52,7 @@ class dba_crud{
 		$sql_keys = array();
 		$sql_tpls = array();
 
-		foreach( $table_definition->table_definition as $column_definition ){
+		foreach( $table_definition->columns as $column_definition ){
 			array_push($sql_keys, $column_definition->column_name);
 			array_push($sql_tpls, ':'.$column_definition->column_name);
 		}
@@ -69,7 +69,7 @@ class dba_crud{
 				break;
 			}
 			$insert_data = array();
-			foreach( $table_definition->table_definition as $column_definition ){
+			foreach( $table_definition->columns as $column_definition ){
 				$row_value = null;
 				if( !@is_null( $data[$column_definition->column_name] ) ){
 					// データの入力がある場合
@@ -151,10 +151,10 @@ class dba_crud{
 		}
 
 		foreach($where as $key=>$val){
-			if( $table_definition->table_definition->{$key}->type == 'password' ){
+			if( $table_definition->columns->{$key}->type == 'password' ){
 				// パスワードをハッシュ値化
 				$where[$key] = $this->exdb->encrypt_password($val);
-			}elseif( $table_definition->table_definition->{$key}->type == 'delete_flg' ){
+			}elseif( $table_definition->columns->{$key}->type == 'delete_flg' ){
 				// delete_flgを 0 or 1 に整形
 				$where[$key] = ($val ? 1 : 0);
 			}
@@ -199,10 +199,10 @@ class dba_crud{
 		// var_dump($table_definition);
 
 		foreach($where as $key=>$val){
-			if( $table_definition->table_definition->{$key}->type == 'password' ){
+			if( $table_definition->columns->{$key}->type == 'password' ){
 				// パスワードをハッシュ値化
 				$where[$key] = $this->exdb->encrypt_password($val);
-			}elseif( $table_definition->table_definition->{$key}->type == 'delete_flg' ){
+			}elseif( $table_definition->columns->{$key}->type == 'delete_flg' ){
 				// delete_flgを 0 or 1 に整形
 				$where[$key] = ($val ? 1 : 0);
 			}
@@ -247,11 +247,11 @@ class dba_crud{
 		$delete_flg_id = $table_definition->system_columns->delete_flg;
 
 		foreach($where as $key=>$val){
-			if( $table_definition->table_definition->{$key}->type == 'password' ){
+			if( $table_definition->columns->{$key}->type == 'password' ){
 				// パスワードをハッシュ値化
 				$where[$key] = $this->exdb->encrypt_password($where[$key]);
 				$data[$key] = $this->exdb->encrypt_password($data[$key]);
-			}elseif( $table_definition->table_definition->{$key}->type == 'delete_flg' ){
+			}elseif( $table_definition->columns->{$key}->type == 'delete_flg' ){
 				// delete_flgを 0 or 1 に整形
 				$where[$key] = ($where[$key] ? 1 : 0);
 				$data[$key] = ($data[$key] ? 1 : 0);

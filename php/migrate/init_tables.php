@@ -36,7 +36,7 @@ class migrate_init_tables{
 			$sql_create_db = '';
 			$sql_create_db .= 'CREATE TABLE '.$this->exdb->get_physical_table_name($table_definition_row->table_name).' (';
 			$ary_table_columns = array();
-			foreach( $table_definition_row->table_definition as $column_definition ){
+			foreach( $table_definition_row->columns as $column_definition ){
 				$sql_column_definition = '';
 
 				// セル名

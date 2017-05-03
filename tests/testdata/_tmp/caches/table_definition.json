@@ -2,7 +2,7 @@
     "tables": {
         "user": {
             "sheet_label": "table_user",
-            "table_definition": {
+            "columns": {
                 "user_id": {
                     "column_name": "user_id",
                     "type": "auto_id",
@@ -164,7 +164,7 @@
         },
         "project": {
             "sheet_label": "table_project",
-            "table_definition": {
+            "columns": {
                 "project_id": {
                     "column_name": "project_id",
                     "type": "auto_id",

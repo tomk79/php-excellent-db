@@ -90,7 +90,7 @@ class endpoint_form_edit{
 	 */
 	private function input($data, $errors = array()){
 		$rtn = '';
-		foreach( $this->table_definition->table_definition as $column_definition ){
+		foreach( $this->table_definition->columns as $column_definition ){
 			// var_dump($column_definition);
 			if( !$this->exdb->is_editable_column( $column_definition ) ){
 				continue;
@@ -125,7 +125,7 @@ class endpoint_form_edit{
 	private function confirm($data){
 		$content = '';
 		$hidden = '';
-		foreach( $this->table_definition->table_definition as $column_definition ){
+		foreach( $this->table_definition->columns as $column_definition ){
 			// var_dump($column_definition);
 			if( !$this->exdb->is_editable_column( $column_definition ) ){
 				continue;

@@ -303,7 +303,7 @@ class endpoint_form{
 			}
 		}
 		$rtn = '';
-		foreach( $this->table_definition->table_definition as $column_definition ){
+		foreach( $this->table_definition->columns as $column_definition ){
 			// var_dump($column_definition);
 			$rtn .= $this->render(
 				'form_elms/default/detail.html',

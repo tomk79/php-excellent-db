@@ -36,13 +36,13 @@ class validator_validate{
 
 		// 余計な値が送られていないかチェック
 		foreach( $data as $key=>$val ){
-			if( !@$table_definition->table_definition->{$key} ){
+			if( !@$table_definition->columns->{$key} ){
 				$errors[':common'] = '"'.$key.'" is NOT Exists in table "'.$table_name.'".';
 			}
 		}
 
 		// 形式のチェック
-		foreach( $table_definition->table_definition as $column_definition ){
+		foreach( $table_definition->columns as $column_definition ){
 			if( !array_key_exists($column_definition->column_name, $data) ){
 				// `$data` に含まれていないキーは調べない
 				continue;

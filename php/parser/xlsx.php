@@ -54,7 +54,7 @@ class parser_xlsx{
 		$parsed = json_decode('{}');
 
 		@$parsed->sheet_label = $objSheet->getTitle();
-		@$parsed->table_definition = json_decode('{}');
+		@$parsed->columns = json_decode('{}');
 
 		$sheet_section_info = $this->parse_sheet_section($objSheet);
 		// var_dump($sheet_section_info);
@@ -76,7 +76,7 @@ class parser_xlsx{
 		$col = 'A';
 		$skip_count = 0;
 		while(1){
-			$def_key = $objSheet->getCell($col.$sheet_section_info['column_definition']['start'])->getCalculatedValue();
+			$def_key = $objSheet->getCell($col.$sheet_section_info['columns']['start'])->getCalculatedValue();
 			if(!strlen($def_key)){
 				$skip_count ++;
 				$col ++;
@@ -107,7 +107,7 @@ class parser_xlsx{
 
 		// --------------------
 		// テーブル定義を読み取り
-		for( $row_number = $sheet_section_info['column_definition']['start']+1; $row_number <= $sheet_section_info['column_definition']['end']; $row_number++ ){
+		for( $row_number = $sheet_section_info['columns']['start']+1; $row_number <= $sheet_section_info['columns']['end']; $row_number++ ){
 			$col = json_decode('{}');
 			foreach($col_define as $col_def_row){
 				$col->{$col_def_row['key']} = $objSheet->getCell($col_def_row['col'].$row_number)->getCalculatedValue();
@@ -115,7 +115,7 @@ class parser_xlsx{
 			if(!@strlen($col->column_name)){
 				break;
 			}
-			@$parsed->table_definition->{$col->column_name} = $col;
+			@$parsed->columns->{$col->column_name} = $col;
 			continue;
 		}
 
@@ -130,7 +130,7 @@ class parser_xlsx{
 			'delete_flg'=>null,
 			'password'=>array(),
 		)));
-		foreach( $parsed->table_definition as $column_definition ){
+		foreach( $parsed->columns as $column_definition ){
 			if( $column_definition->type == 'auto_id' || $column_definition->type == 'auto_increment' ){
 				$parsed->system_columns->id = json_decode(json_encode(array(
 					'type'=>$column_definition->type,
@@ -161,14 +161,14 @@ class parser_xlsx{
 	private function parse_sheet_section($objSheet){
 		$sheet_section = array(
 			'table_info'=>null,
-			'column_definition'=>null,
+			'columns'=>null,
 			'sheet_max_row_number'=>$objSheet->getHighestRow(), // e.g. 10
 			'sheet_max_col_name'=>$objSheet->getHighestColumn(), // e.g 'F'
 		);
 
 		$section_name_list = array(
 			'table_info',
-			'column_definition',
+			'columns',
 		);
 
 		// 行番号を初期化
