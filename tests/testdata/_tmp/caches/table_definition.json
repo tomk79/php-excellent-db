@@ -2,7 +2,6 @@
     "tables": {
         "user": {
             "sheet_label": "table_user",
-            "table_name": "user",
             "table_definition": {
                 "user_id": {
                     "column_name": "user_id",
@@ -148,6 +147,7 @@
                     "foreign_key": null
                 }
             },
+            "table_name": "user",
             "system_columns": {
                 "id": {
                     "type": "auto_id",
@@ -164,7 +164,6 @@
         },
         "project": {
             "sheet_label": "table_project",
-            "table_name": "project",
             "table_definition": {
                 "project_id": {
                     "column_name": "project_id",
@@ -263,6 +262,7 @@
                     "foreign_key": null
                 }
             },
+            "table_name": "project",
             "system_columns": {
                 "id": {
                     "type": "auto_id",

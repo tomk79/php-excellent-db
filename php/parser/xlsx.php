@@ -53,11 +53,22 @@ class parser_xlsx{
 	private function parse_sheet( $objSheet ){
 		$parsed = json_decode('{}');
 
-		$table_name = $objSheet->getCell('B1')->getCalculatedValue();
-
 		@$parsed->sheet_label = $objSheet->getTitle();
-		@$parsed->table_name = $table_name;
 		@$parsed->table_definition = json_decode('{}');
+
+		$sheet_section_info = $this->parse_sheet_section($objSheet);
+		// var_dump($sheet_section_info);
+
+		// --------------------
+		// テーブル情報を読み取り
+		for( $idx = $sheet_section_info['table_info']['start']; $idx <= $sheet_section_info['table_info']['end']; $idx++ ){
+			$tmp_info_key = strtolower(trim($objSheet->getCell('A'.$idx)->getCalculatedValue()));
+			switch( $tmp_info_key ){
+				case 'table_name':
+					@$parsed->{$tmp_info_key} = $objSheet->getCell('B'.$idx)->getCalculatedValue();
+					break;
+			}
+		}
 
 		// --------------------
 		// 定義列を読み取り
@@ -65,7 +76,7 @@ class parser_xlsx{
 		$col = 'A';
 		$skip_count = 0;
 		while(1){
-			$def_key = $objSheet->getCell($col.'3')->getCalculatedValue(); // TODO: 3行目を決め打ちしているが、フレキシブルにしたい。
+			$def_key = $objSheet->getCell($col.$sheet_section_info['column_definition']['start'])->getCalculatedValue();
 			if(!strlen($def_key)){
 				$skip_count ++;
 				$col ++;
@@ -96,8 +107,7 @@ class parser_xlsx{
 
 		// --------------------
 		// テーブル定義を読み取り
-		$row_number = 4;
-		while( 1 ){
+		for( $row_number = $sheet_section_info['column_definition']['start']+1; $row_number <= $sheet_section_info['column_definition']['end']; $row_number++ ){
 			$col = json_decode('{}');
 			foreach($col_define as $col_def_row){
 				$col->{$col_def_row['key']} = $objSheet->getCell($col_def_row['col'].$row_number)->getCalculatedValue();
@@ -106,7 +116,6 @@ class parser_xlsx{
 				break;
 			}
 			@$parsed->table_definition->{$col->column_name} = $col;
-			$row_number ++;
 			continue;
 		}
 
@@ -143,5 +152,56 @@ class parser_xlsx{
 
 		return $parsed;
 	}
+
+	/**
+	 * シートの全体構造を把握する
+	 * @param  [type] $objSheet [description]
+	 * @return [type]           [description]
+	 */
+	private function parse_sheet_section($objSheet){
+		$sheet_section = array(
+			'table_info'=>null,
+			'column_definition'=>null,
+			'sheet_max_row_number'=>$objSheet->getHighestRow(), // e.g. 10
+			'sheet_max_col_name'=>$objSheet->getHighestColumn(), // e.g 'F'
+		);
+
+		$section_name_list = array(
+			'table_info',
+			'column_definition',
+		);
+
+		// 行番号を初期化
+		// 基本的に、上から順にスキャンする.
+		$row_number = 1;
+
+		// --------------------
+		// シートの全体構造をを読み取り
+		$last_section_name = null;
+		while(1){
+			$def_key = $objSheet->getCell('A'.$row_number)->getCalculatedValue();
+			foreach($section_name_list as $section_name){
+				if(strtolower($def_key) == ':'.$section_name){
+					$sheet_section[$section_name] = array(
+						'start'=>$row_number+1,
+					);
+					if(strlen($last_section_name)){
+						$sheet_section[$last_section_name]['end'] = ($row_number-1);
+					}
+					$last_section_name = $section_name;
+				}
+			}
+
+			if( $row_number >= $sheet_section['sheet_max_row_number'] ){
+				if(strlen($last_section_name)){
+					$sheet_section[$last_section_name]['end'] = ($row_number);
+				}
+				break;
+			}
+			$row_number ++;
+		}
+
+		return $sheet_section;
+	} // parse_sheet_section()
 
 }
