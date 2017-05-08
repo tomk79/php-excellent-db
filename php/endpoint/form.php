@@ -251,8 +251,21 @@ class endpoint_form{
 	 */
 	private function page_list( $table_name ){
 		// var_dump($table_name);
+		$max_count = $this->exdb->count($table_name, array());
+		$this->query_options['limit'] = @intval($this->query_options['limit']);
+		if( $this->query_options['limit'] <= 0 ){
+			$this->query_options['limit'] = 10;
+		}
+		$page = intval($this->query_options['page']);
+		$max_page = intval($max_count/$this->query_options['limit']);
+		if( $page < 0 || $page > $max_page ){
+			@header("HTTP/1.0 404 Not Found");
+			$rtn = $this->page_fatal_error('No Items.');
+			echo $rtn;
+			return null;
+		}
+
 		$list = $this->exdb->select($table_name, array(), $this->query_options);
-		$count = $this->exdb->count($table_name, array());
 
 		// var_dump($this->table_definition->system_columns);
 		if( count($this->table_definition->system_columns->password) ){
@@ -272,12 +285,30 @@ class endpoint_form{
 			array_push($list, $tmp_row);
 		}
 
+		$nav_prev = array(
+			'href'=>$this->generate_url($table_name, null, null).'?:page='.($page -1),
+		);
+		if( $page <= 0 ){
+			$nav_prev = null;
+		}
+		$nav_next = array(
+			'href'=>$this->generate_url($table_name, null, null).'?:page='.($page +1),
+		);
+		if( $page >= $max_page ){
+			$nav_next = null;
+		}
+
 		$rtn = $this->render(
 			'form_list.html',
 			array(
-				'count'=>$count,
+				'table_label'=>$this->table_definition->label,
+				'count'=>$max_count,
 				'list'=>$list,
 				'href_create'=>$this->generate_url($table_name, null, 'create'),
+				'page'=>$page+1,
+				'max_page'=>$max_page+1,
+				'prev'=>$nav_prev,
+				'next'=>$nav_next,
 			)
 		);
 		// var_dump($table_list);

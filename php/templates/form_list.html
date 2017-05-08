@@ -1,8 +1,15 @@
+<h2>{{ table_label }}</h2>
 <p>Max: {{ count }}</p>
 <ul>
 {% for row in list %}
 <li><a href="{{ row.href }}">{{ row.label }}</a></li>
 {% endfor %}
+</ul>
+
+<ul>
+{% if(prev) %}<li><a href="{{ prev.href }}">PREV</a></li>{% endif %}
+<li>{{ page }}/{{ max_page }}</li>
+{% if(next) %}<li><a href="{{ next.href }}">NEXT</a></li>{% endif %}
 </ul>
 
 <p><a href="{{ href_create }}" class="btn btn-primary">CREATE NEW</a></p>
