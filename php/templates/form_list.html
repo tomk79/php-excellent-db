@@ -1,10 +1,25 @@
 <h2>{{ table_label }}</h2>
 <p>Max: {{ count }}</p>
-<ul>
-{% for row in list %}
-<li><a href="{{ row.href }}">{{ row.label }}</a></li>
+<table class="table">
+<thead>
+<tr>
+<th></th>
+{% for key,val in list[0].val %}
+<th>{{ key }}</th>
 {% endfor %}
-</ul>
+</tr>
+</thead>
+<tbody>
+{% for row in list %}
+<tr>
+<td><a href="{{ row.href }}" class="btn btn-default">DETAIL</a></td>
+{% for key,val in row.val %}
+<td>{{ val }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
 
 <ul>
 {% if(prev) %}<li><a href="{{ prev.href }}">PREV</a></li>{% endif %}

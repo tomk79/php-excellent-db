@@ -256,7 +256,7 @@ class endpoint_form{
 		if( $this->query_options['limit'] <= 0 ){
 			$this->query_options['limit'] = 10;
 		}
-		$page = intval($this->query_options['page']);
+		$page = intval(@$this->query_options['page']);
 		if( $page == 0 ){ $page = 1; }
 		$max_page = intval($max_count/$this->query_options['limit'])+1;
 		if( $page < 1 || $page > $max_page ){
