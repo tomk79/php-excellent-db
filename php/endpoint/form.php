@@ -228,9 +228,9 @@ class endpoint_form{
 		foreach( $table_defs_all->tables as $table_def ){
 			// var_dump($table_def);
 			$table = array();
-			$table['label'] = $table_def->table_name;
-			$table['table_name'] = $table_def->table_name;
-			$table['href'] = $this->generate_url($table_def->table_name);
+			$table['label'] = $table_def->label;
+			$table['name'] = $table_def->name;
+			$table['href'] = $this->generate_url($table_def->name);
 			array_push($table_list, $table);
 		}
 		$rtn = $this->render(

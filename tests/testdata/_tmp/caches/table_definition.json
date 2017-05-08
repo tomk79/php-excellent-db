@@ -147,7 +147,8 @@
                     "foreign_key": null
                 }
             },
-            "table_name": "user",
+            "name": "user",
+            "label": "Users",
             "system_columns": {
                 "id": {
                     "type": "auto_id",
@@ -262,7 +263,8 @@
                     "foreign_key": null
                 }
             },
-            "table_name": "project",
+            "name": "project",
+            "label": "Projects",
             "system_columns": {
                 "id": {
                     "type": "auto_id",

@@ -37,7 +37,7 @@ class parser_xlsx{
 			$objSheet = $objPHPExcel->getActiveSheet();
 
 			$sheetData = $this->parse_sheet( $objSheet );
-			@$definition->tables->{$sheetData->table_name} = $sheetData;
+			@$definition->tables->{$sheetData->name} = $sheetData;
 
 		}
 
@@ -64,7 +64,8 @@ class parser_xlsx{
 		for( $idx = $sheet_section_info['table_info']['start']; $idx <= $sheet_section_info['table_info']['end']; $idx++ ){
 			$tmp_info_key = strtolower(trim($objSheet->getCell('A'.$idx)->getCalculatedValue()));
 			switch( $tmp_info_key ){
-				case 'table_name':
+				case 'name':
+				case 'label':
 					@$parsed->{$tmp_info_key} = $objSheet->getCell('B'.$idx)->getCalculatedValue();
 					break;
 			}
