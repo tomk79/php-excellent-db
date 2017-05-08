@@ -257,8 +257,9 @@ class endpoint_form{
 			$this->query_options['limit'] = 10;
 		}
 		$page = intval($this->query_options['page']);
-		$max_page = intval($max_count/$this->query_options['limit']);
-		if( $page < 0 || $page > $max_page ){
+		if( $page == 0 ){ $page = 1; }
+		$max_page = intval($max_count/$this->query_options['limit'])+1;
+		if( $page < 1 || $page > $max_page ){
 			@header("HTTP/1.0 404 Not Found");
 			$rtn = $this->page_fatal_error('No Items.');
 			echo $rtn;
@@ -288,7 +289,7 @@ class endpoint_form{
 		$nav_prev = array(
 			'href'=>$this->generate_url($table_name, null, null).'?:page='.($page -1),
 		);
-		if( $page <= 0 ){
+		if( $page <= 1 ){
 			$nav_prev = null;
 		}
 		$nav_next = array(
@@ -305,8 +306,8 @@ class endpoint_form{
 				'count'=>$max_count,
 				'list'=>$list,
 				'href_create'=>$this->generate_url($table_name, null, 'create'),
-				'page'=>$page+1,
-				'max_page'=>$max_page+1,
+				'page'=>$page,
+				'max_page'=>$max_page,
 				'prev'=>$nav_prev,
 				'next'=>$nav_next,
 			)

@@ -131,7 +131,7 @@ class dba_crud{
 	 * @param  string $tbl テーブル名
 	 * @param  array $where 抽出条件
 	 * @param  array $options オプション(連想配列)
-	 * - *page* : `0` から始まるページ番号 (default: `0`)
+	 * - *page* : `1` から始まるページ番号 (default: `1`)
 	 * - *limit* : 1ページあたりの件数 (default: `10`)
 	 * @return array 抽出されたレコード
 	 */
@@ -141,14 +141,17 @@ class dba_crud{
 		// var_dump($table_definition);
 		// var_dump($options);
 
-		$page = 0; // ページ数(0から数える)
+		$page = 1; // ページ数(0から数える)
 		if( @strlen($options['page']) ){
 			$page = intval($options['page']);
 		}
+		if( $page < 1 ){ $page = 1; }
+
 		$limit = 10; // 10件ずつ
 		if( @strlen($options['limit']) ){
 			$limit = intval($options['limit']);
 		}
+		if( $limit < 1 ){ $limit = 1; }
 
 		foreach($where as $key=>$val){
 			if( $table_definition->columns->{$key}->type == 'password' ){
@@ -166,7 +169,7 @@ class dba_crud{
 		$sql = array();
 		$sql['select'] = 'SELECT * FROM '.$this->exdb->get_physical_table_name($tbl).'';
 		$sql['where'] = ' WHERE ';
-		$sql['limit'] = ' LIMIT '.($page*$limit).','.$limit.' ';
+		$sql['limit'] = ' LIMIT '.(($page-1)*$limit).','.$limit.' ';
 		$sql['close'] = ';';
 
 		$sql_where = array();

@@ -102,7 +102,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		// ページ指定して取得
 		$userList = $this->exdb->select('user', array(), array(
 			'limit' => 10 ,
-			'page' => 1 , // ← 2ページ目
+			'page' => 2 , // ← 2ページ目
 		));
 		// var_dump($userList);
 		$this->assertEquals( count($userList), 10 );
@@ -111,7 +111,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 		$userList = $this->exdb->select('user', array(), array(
 			'limit' => 10 ,
-			'page' => 5 , // ← 6ページ目
+			'page' => 6 , // ← 6ページ目
 		));
 		// var_dump($userList);
 		$this->assertEquals( count($userList), 10 );
@@ -122,7 +122,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		// ページごとの件数を指定して取得
 		$userList = $this->exdb->select('user', array(), array(
 			'limit' => 100 ,
-			'page' => 1 , // ← 2ページ目
+			'page' => 2 , // ← 2ページ目
 		));
 		// var_dump($userList);
 		$this->assertEquals( count($userList), 100 );
