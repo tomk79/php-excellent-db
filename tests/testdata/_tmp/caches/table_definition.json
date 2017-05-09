@@ -9,11 +9,8 @@
                     "label": "User ID",
                     "description": null,
                     "unique": "user_id",
-                    "primary_key": 1,
-                    "index": 1,
                     "hidden": 1,
                     "not_null": 1,
-                    "auto_increment": 1,
                     "foreign_key": null
                 },
                 "user_account": {
@@ -22,11 +19,8 @@
                     "label": "Account Name",
                     "description": null,
                     "unique": "user_account",
-                    "primary_key": null,
-                    "index": 1,
                     "hidden": null,
                     "not_null": 1,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "password": {
@@ -35,11 +29,8 @@
                     "label": "Password",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": null,
                     "not_null": 1,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "user_name": {
@@ -48,11 +39,8 @@
                     "label": "User Name",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": null,
                     "not_null": 1,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "email": {
@@ -61,11 +49,8 @@
                     "label": "E-mail Address",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": 1,
                     "hidden": null,
                     "not_null": null,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "birthday": {
@@ -74,11 +59,8 @@
                     "label": "Birthday",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": null,
                     "not_null": null,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "last_login_date": {
@@ -87,11 +69,8 @@
                     "label": "Last Login",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "create_date": {
@@ -100,11 +79,8 @@
                     "label": "Create Date",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "update_date": {
@@ -113,11 +89,8 @@
                     "label": "Update Date",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "delete_date": {
@@ -126,11 +99,8 @@
                     "label": "Delete Date",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
-                    "auto_increment": null,
                     "foreign_key": null
                 },
                 "delete_flg": {
@@ -139,11 +109,8 @@
                     "label": "Delete Flag",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
-                    "auto_increment": null,
                     "foreign_key": null
                 }
             },
@@ -172,8 +139,6 @@
                     "label": "Project ID",
                     "description": null,
                     "unique": "project_id",
-                    "primary_key": 1,
-                    "index": 1,
                     "hidden": 1,
                     "not_null": 1,
                     "foreign_key": null
@@ -184,8 +149,6 @@
                     "label": "User ID",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": 1,
                     "foreign_key": "user.user_id"
@@ -196,8 +159,6 @@
                     "label": "Project Name",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": null,
                     "not_null": 1,
                     "foreign_key": null
@@ -208,8 +169,6 @@
                     "label": "Project Description",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": null,
                     "not_null": null,
                     "foreign_key": null
@@ -220,8 +179,6 @@
                     "label": "Create Date",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
                     "foreign_key": null
@@ -232,8 +189,6 @@
                     "label": "Update Date",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
                     "foreign_key": null
@@ -244,8 +199,6 @@
                     "label": "Delete Date",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
                     "foreign_key": null
@@ -256,8 +209,6 @@
                     "label": "Delete Flag",
                     "description": null,
                     "unique": null,
-                    "primary_key": null,
-                    "index": null,
                     "hidden": 1,
                     "not_null": null,
                     "foreign_key": null
