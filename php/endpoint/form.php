@@ -114,7 +114,7 @@ class endpoint_form{
 
 
 		// Twig テンプレートエンジンを準備
-		$loader = new \Twig_Loader_Filesystem(__DIR__.'/../templates/');
+		$loader = new \Twig_Loader_Filesystem(__DIR__.'/../../templates/');
 		$this->twig = new \Twig_Environment($loader, array(
 			// 'cache' => $this->exdb->conf()->path_cache_dir.'/twig_cache/',
 			'debug' => true,
