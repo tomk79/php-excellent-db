@@ -15,6 +15,9 @@ class create{
 	/** PDO Instance */
 	private $pdo;
 
+	/** Login User Manager Instance */
+	private $user;
+
 	/** cache manager Instance */
 	private $caches;
 
@@ -52,6 +55,9 @@ class create{
 			trigger_error('[ExcellentDb: Setup Error] '.$env_error);
 			return;
 		}
+
+		// Generate Login User Manager
+		$this->user = new user( $this );
 
 		// Generate CRUD Operator
 		$this->crud = new dba_crud( $this );
@@ -109,6 +115,14 @@ class create{
 	 */
 	public function pdo(){
 		return $this->pdo;
+	}
+
+	/**
+	 * `$user` を取得する
+	 * @return object Login User Manager Instance.
+	 */
+	public function user(){
+		return $this->user;
 	}
 
 	/**
@@ -272,7 +286,7 @@ class create{
 	 * @param  string $tbl テーブル名
 	 * @param  array $where 抽出条件
 	 * @param  array $options オプション(連想配列)
-	 * - *page* : `0` から始まるページ番号 (default: `0`)
+	 * - *page* : `1` から始まるページ番号 (default: `1`)
 	 * - *limit* : 1ページあたりの件数 (default: `10`)
 	 * @return array 抽出されたレコード
 	 */
@@ -353,7 +367,18 @@ class create{
 	 */
 	public function automatic_form($options = null){
 		$api = new endpoint_form( $this, $options );
-		$api->execute();
+		$api->automatic_form();
+		return null;
+	}
+
+	/**
+	 * ログインフォームエンドポイントを自動的にセットアップ
+	 * @param  array $options オプション
+	 * @return null          このメソッドは値を返しません。
+	 */
+	public function automatic_login_form($options = null){
+		$api = new endpoint_form( $this, $options );
+		$api->automatic_login_form();
 		return null;
 	}
 }

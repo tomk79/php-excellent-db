@@ -153,12 +153,11 @@ class endpoint_form{
 	}
 
 	/**
-	 * Execute
+	 * Execute Automatic form
 	 *
-	 * @param object $exdb ExcellentDb Object
 	 * @return null This method returns no value.
 	 */
-	public function execute(){
+	public function automatic_form(){
 		@header('text/html; charset=UTF-8');
 
 		$rtn = '';
@@ -214,7 +213,71 @@ class endpoint_form{
 		echo $rtn;
 
 		return null;
-	}
+	} // automatic_form();
+
+
+	/**
+	 * Execute Automatic login form
+	 *
+	 * @return null This method returns no value.
+	 */
+	public function automatic_login_form(){
+		@header('text/html; charset=UTF-8');
+
+		$rtn = '';
+
+		if( !strlen($this->options['table']) ){
+			// --------------------
+			// 対象のテーブルが選択されていない
+			echo $this->page_table_list();
+			return null;
+		}
+
+		$table_definition = $this->get_current_table_definition();
+		// var_dump($table_definition);
+		if( !$table_definition ){
+			@header("HTTP/1.0 404 Not Found");
+			$rtn = $this->page_fatal_error('Table NOT Exists.');
+			echo $rtn;
+			return null;
+		}
+
+		if( !strlen($this->options['id']) ){
+			// ID無指定の場合、一覧情報を返す
+			echo $this->page_list($this->options['table']);
+			return null;
+		}elseif( $this->options['id'] == ':create' ){
+			// IDの代わりに文字列 `:create` が指定されたら、新規作成画面を返す
+			echo $this->page_edit($this->options['table']);
+			return null;
+		}else{
+			// ID指定がある場合、詳細情報1件を返す
+			$row_data = $this->get_current_row_data();
+			if( !$row_data && !($this->options['action'] == 'delete' && $this->query_options['action'] == 'done') ){
+				@header("HTTP/1.0 404 Not Found");
+				$rtn = $this->page_fatal_error('ID NOT Exists.');
+				echo $rtn;
+				return null;
+			}
+
+			if( $this->options['action'] == 'delete' ){
+				echo $this->page_delete($this->options['table'], $this->options['id']);
+			}elseif( $this->options['action'] == 'edit' ){
+				echo $this->page_edit($this->options['table'], $this->options['id']);
+			}else{
+				echo $this->page_detail($this->options['table'], $this->options['id']);
+			}
+			return null;
+		}
+
+
+
+		// エラー画面
+		$rtn = $this->page_fatal_error('Unknown method');
+		echo $rtn;
+
+		return null;
+	} // automatic_login_form();
 
 
 	/**

@@ -35,6 +35,7 @@
         "files": [
             "php/create.php",
             "php/caches.php",
+            "php/user.php",
             "php/parser/xlsx.php",
             "php/migrate/init_tables.php",
             "php/dba/crud.php",
