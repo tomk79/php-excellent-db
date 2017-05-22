@@ -61,11 +61,15 @@ class parser_xlsx{
 
 		// --------------------
 		// テーブル情報を読み取り
+		$parsed->name = null;
+		$parsed->label = null;
+		$parsed->key_column = null;
 		for( $idx = $sheet_section_info['table_info']['start']; $idx <= $sheet_section_info['table_info']['end']; $idx++ ){
 			$tmp_info_key = strtolower(trim($objSheet->getCell('A'.$idx)->getCalculatedValue()));
 			switch( $tmp_info_key ){
 				case 'name':
 				case 'label':
+				case 'key_column':
 					@$parsed->{$tmp_info_key} = $objSheet->getCell('B'.$idx)->getCalculatedValue();
 					break;
 			}
@@ -137,7 +141,10 @@ class parser_xlsx{
 					'type'=>$column_definition->type,
 					'column_name'=>$column_definition->column_name,
 				)));
-			}else if( $column_definition->type == 'create_date' ){
+				if( @is_null($parsed->key_column) ){
+					$parsed->key_column = $column_definition->column_name;
+				}
+			}elseif( $column_definition->type == 'create_date' ){
 				$parsed->system_columns->create_date = $column_definition->column_name;
 			}elseif( $column_definition->type == 'update_date' ){
 				$parsed->system_columns->update_date = $column_definition->column_name;

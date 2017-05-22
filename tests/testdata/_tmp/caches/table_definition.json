@@ -116,6 +116,7 @@
             },
             "name": "user",
             "label": "Users",
+            "key_column": "user_account",
             "system_columns": {
                 "id": {
                     "type": "auto_id",
@@ -216,6 +217,7 @@
             },
             "name": "project",
             "label": "Projects",
+            "key_column": "project_id",
             "system_columns": {
                 "id": {
                     "type": "auto_id",

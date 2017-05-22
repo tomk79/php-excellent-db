@@ -168,7 +168,7 @@ class endpoint_form_edit{
 		}elseif( $this->action_name == "edit" ){
 			$result = $this->exdb->update(
 				$this->table_name,
-				array($this->table_definition->system_columns->id->column_name=>$this->row_id),
+				array($this->table_definition->key_column=>$this->row_id),
 				$data
 			);
 		}

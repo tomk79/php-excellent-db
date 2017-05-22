@@ -115,7 +115,7 @@ class endpoint_form_delete{
 	private function write($data){
 		$result = $this->exdb->delete(
 			$this->table_name,
-			array($this->table_definition->system_columns->id->column_name=>$this->row_id)
+			array($this->table_definition->key_column=>$this->row_id)
 		);
 
 		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name);

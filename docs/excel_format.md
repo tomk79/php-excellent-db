@@ -6,6 +6,21 @@
 
 - 1シートにつき1つのテーブルを表現する。
 
+## Table Definition
+
+### name
+
+物理テーブル名。
+
+### label
+
+論理テーブル名。
+
+### key_column
+
+キーとするカラム名。
+省略時は、はじめて見つけた `auto_increment` または `auto_id` のカラムをキーとして設定します。
+
 ## Column Definition
 
 ### column_name

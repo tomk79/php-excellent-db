@@ -99,7 +99,7 @@ class endpoint_form{
 				$list = $this->exdb->select(
 					$this->options['table'],
 					array(
-						$this->table_definition->system_columns->id->column_name=>$this->options['id']
+						$this->table_definition->key_column=>$this->options['id']
 					),
 					array()
 				);
@@ -343,8 +343,8 @@ class endpoint_form{
 		$list = array();
 		foreach( $original_list as $row ){
 			$tmp_row = array();
-			$tmp_row['label'] = $row[$this->table_definition->system_columns->id->column_name];
-			$tmp_row['href'] = $this->generate_url($table_name, $row[$this->table_definition->system_columns->id->column_name]);
+			$tmp_row['label'] = $row[$this->table_definition->key_column];
+			$tmp_row['href'] = $this->generate_url($table_name, $row[$this->table_definition->key_column]);
 			$tmp_row['val'] = $row;
 			array_push($list, $tmp_row);
 		}
@@ -387,7 +387,7 @@ class endpoint_form{
 	 */
 	private function page_detail( $table_name, $row_id ){
 		// var_dump($table_name);
-		$list = $this->exdb->select($table_name, array($this->table_definition->system_columns->id->column_name=>$row_id), $this->query_options);
+		$list = $this->exdb->select($table_name, array($this->table_definition->key_column=>$row_id), $this->query_options);
 
 		// var_dump($this->table_definition->system_columns);
 		if( count($this->table_definition->system_columns->password) ){
