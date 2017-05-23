@@ -407,7 +407,7 @@ class endpoint_form{
 			$rtn .= $this->render(
 				'form_elms/default/detail.html',
 				array(
-					'value'=>@$list[0][$column_definition->column_name],
+					'value'=>@$list[0][$column_definition->name],
 					'def'=>@$column_definition,
 				)
 			);

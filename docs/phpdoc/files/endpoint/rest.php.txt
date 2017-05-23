@@ -154,7 +154,7 @@ class endpoint_rest{
 				// ID指定がある場合、詳細情報1件を返す
 				$where = $this->options['get_params'];
 				// $rtn['table_definition'] = $this->table_definition;
-				$where[$this->table_definition->system_columns->id->column_name] = $this->options['id'];
+				$where[$this->table_definition->system_columns->id->name] = $this->options['id'];
 				$row = $this->exdb->select($this->options['table'], $where);
 				$rtn['row'] = @$row[0];
 				foreach($this->table_definition->system_columns->password as $column_name){
@@ -185,7 +185,7 @@ class endpoint_rest{
 			$result = $this->exdb->update(
 				$this->options['table'],
 				array(
-					$this->table_definition->system_columns->id->column_name => $this->options['id'],
+					$this->table_definition->system_columns->id->name => $this->options['id'],
 				),
 				$params
 			);
@@ -213,7 +213,7 @@ class endpoint_rest{
 			$result = $this->exdb->delete(
 				$this->options['table'],
 				array(
-					$this->table_definition->system_columns->id->column_name => $this->options['id'],
+					$this->table_definition->system_columns->id->name => $this->options['id'],
 				)
 			);
 			$rtn['result'] = ($result ? true : false);

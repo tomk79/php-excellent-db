@@ -46,11 +46,11 @@ class validator_validate{
 
 		// 形式のチェック
 		foreach( $table_definition->columns as $column_definition ){
-			if( !array_key_exists($column_definition->column_name, $data) ){
+			if( !array_key_exists($column_definition->name, $data) ){
 				// `$data` に含まれていないキーは調べない
 				continue;
 			}
-			$value = @$data[$column_definition->column_name];
+			$value = @$data[$column_definition->name];
 
 			if( !$column_definition->not_null && !strlen($value) ){
 				// 必須項目ではなく、かつ値が入力されていない場合、エラーとして扱わない
@@ -59,7 +59,7 @@ class validator_validate{
 
 			if( $column_definition->type == 'email' ){
 				if( !preg_match('/^.*?\@.*?$/s', $value) ){
-					$errors[$column_definition->column_name] = 'Invalid E-Mail Format.';
+					$errors[$column_definition->name] = 'Invalid E-Mail Format.';
 				}
 			}
 		}

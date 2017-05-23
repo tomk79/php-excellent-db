@@ -53,8 +53,8 @@ class dba_crud{
 		$sql_tpls = array();
 
 		foreach( $table_definition->columns as $column_definition ){
-			array_push($sql_keys, $column_definition->column_name);
-			array_push($sql_tpls, ':'.$column_definition->column_name);
+			array_push($sql_keys, $column_definition->name);
+			array_push($sql_tpls, ':'.$column_definition->name);
 		}
 
 		$sql_template = $sql['insert'].implode($sql_keys,',').$sql['values'].implode($sql_tpls,',').$sql['close'];
@@ -71,9 +71,9 @@ class dba_crud{
 			$insert_data = array();
 			foreach( $table_definition->columns as $column_definition ){
 				$row_value = null;
-				if( !@is_null( $data[$column_definition->column_name] ) ){
+				if( !@is_null( $data[$column_definition->name] ) ){
 					// データの入力がある場合
-					$row_value = $data[$column_definition->column_name];
+					$row_value = $data[$column_definition->name];
 				}
 
 				if( $column_definition->type == 'auto_id' ){
@@ -95,7 +95,7 @@ class dba_crud{
 					$row_value = 0;
 				}
 
-				$insert_data[':'.$column_definition->column_name] = $row_value;
+				$insert_data[':'.$column_definition->name] = $row_value;
 
 			}
 			// var_dump($insert_data);
