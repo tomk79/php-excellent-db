@@ -350,35 +350,22 @@ class create{
 	}
 
 	/**
-	 * REST APIエンドポイントを自動的にセットアップ
+	 * REST APIエンドポイントを取得
 	 * @param  array $options オプション
 	 * @return null          このメソッドは値を返しません。
 	 */
-	public function automatic_rest_api_response($options = null){
+	public function get_rest($options = null){
 		$api = new endpoint_rest( $this, $options );
-		$api->execute();
-		return null;
+		return $api;
 	}
 
 	/**
-	 * フォームエンドポイントを自動的にセットアップ
+	 * フォームエンドポイントを取得
 	 * @param  array $options オプション
 	 * @return null          このメソッドは値を返しません。
 	 */
-	public function automatic_form($options = null){
+	public function get_form($options = null){
 		$api = new endpoint_form( $this, $options );
-		$api->automatic_form();
-		return null;
-	}
-
-	/**
-	 * ログインフォームエンドポイントを自動的にセットアップ
-	 * @param  array $options オプション
-	 * @return null          このメソッドは値を返しません。
-	 */
-	public function automatic_login_form($options = null){
-		$api = new endpoint_form( $this, $options );
-		$api->automatic_login_form();
-		return null;
+		return $api;
 	}
 }

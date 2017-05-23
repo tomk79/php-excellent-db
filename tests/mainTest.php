@@ -14,11 +14,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	public function setup(){
 		mb_internal_encoding('utf-8');
 
-		// @unlink(__DIR__.'/testdata/_tmp/db/test.sqlite');
-		// clearstatcache();
-
+		$path_db = __DIR__.'/testdata/_tmp/db/test.sqlite';
 		$pdo = new \PDO(
-			'sqlite:'.__DIR__.'/testdata/_tmp/db/test.sqlite',
+			'sqlite:'.$path_db,
 			null, null,
 			array(
 				\PDO::ATTR_PERSISTENT => false, // ←これをtrueにすると、"持続的な接続" になる
@@ -32,6 +30,17 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		) );
 
 	}
+
+	/**
+	 * (cleanup)
+	 */
+	public function testCleanupDb(){
+
+		$path_db = __DIR__.'/testdata/_tmp/db/test.sqlite';
+		@unlink($path_db);
+		clearstatcache();
+
+	}//testCleanupDb()
 
 	/**
 	 * migrate test

@@ -1,4 +1,5 @@
 <?php
 require_once(__DIR__.'/../php/config.php');
-$exdb->automatic_rest_api_response();
+$rest = $exdb->get_rest();
+$rest->automatic_rest_api();
 exit();

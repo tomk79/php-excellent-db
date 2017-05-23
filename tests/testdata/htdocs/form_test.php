@@ -1,4 +1,5 @@
 <?php
 require_once(__DIR__.'/../php/config.php');
-$exdb->automatic_form();
+$form = $exdb->get_form();
+$form->automatic_form();
 exit();

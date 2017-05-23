@@ -92,7 +92,7 @@ class endpoint_rest{
 	 * @param object $exdb ExcellentDb Object
 	 * @return null This method returns no value.
 	 */
-	public function execute(){
+	public function automatic_rest_api(){
 		@header('text/json; charset=UTF-8');
 
 		$rtn = array();
