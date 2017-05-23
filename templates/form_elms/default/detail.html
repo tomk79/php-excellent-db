@@ -1,4 +1,12 @@
 <tr>
 <th style="width:30%;">{{ def.label }}</th>
-<td style="width:70%;">{{ value }}</td>
+<td style="width:70%;">
+{% if def.type == "text" %}
+    {{ value }}
+{% elseif def.type == "password" %}
+	********
+{% else %}
+    {{ value }}
+{% endif %}
+</td>
 </tr>

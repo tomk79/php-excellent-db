@@ -2,7 +2,19 @@
 <th style="width:30%;">{{ def.label }}</th>
 <td style="width:70%;">
 	<div class="form-group{% if error %} has-error{% endif %}">
-		<textarea name="{{ def.name }}" class="form-control">{{ value }}</textarea>
+		{% if def.type == "text" %}
+			<input type="text" name="{{ def.name }}" value="{{ value }}" class="form-control" />
+		{% elseif def.type == "email" %}
+			<input type="text" name="{{ def.name }}" value="{{ value }}" class="form-control" />
+		{% elseif def.type == "date" %}
+			<input type="date" name="{{ def.name }}" value="{{ value }}" class="form-control" />
+		{% elseif def.type == "datetime" %}
+			<input type="datetime" name="{{ def.name }}" value="{{ value }}" class="form-control" />
+		{% elseif def.type == "password" %}
+			<input type="password" name="{{ def.name }}" value="{{ value }}" class="form-control" />
+		{% else %}
+			<textarea name="{{ def.name }}" class="form-control">{{ value }}</textarea>
+		{% endif %}
 		{% if error %}
 			<span class="help-block">{{ error }}</span>
 		{% endif %}

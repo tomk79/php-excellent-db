@@ -16,6 +16,7 @@ $form->auth(
 </head>
 <body>
 <p>Logged in.</p>
+<p><a href="./">Back</a></p>
 <p><a href="logout.php">LOGOUT</a></p>
 </body>
 </html>
