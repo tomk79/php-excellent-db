@@ -180,6 +180,9 @@ class dba_crud{
 		$sql_template = $sql['select'].(count($sql_where) ? $sql['where'].implode($sql_where, ' AND ') : '').$sql['limit'].$sql['close'];
 		// var_dump($sql_template);
 		$sth = $this->exdb->pdo()->prepare( $sql_template );
+		if( !$sth ){
+			return false;
+		}
 		$result = $sth->execute( $where );
 		if( $result === false ){
 			return false;

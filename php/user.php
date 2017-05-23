@@ -25,11 +25,70 @@ class user{
 	/**
 	 * Check User Logging Status.
 	 *
+	 * @param  string $table_name テーブル名
 	 * @return boolean If logged in return `true`, logged out return `false`.
 	 */
-	public function is_login(){
-		// TODO: 未実装
+	public function is_login( $table_name ){
+		$user_info = $this->get_login_user_info( $table_name );
+		if( $user_info === false ){
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Get Login User Info.
+	 *
+	 * @param  string $table_name テーブル名
+	 * @return mixed If logged in return array, logged out return `false`.
+	 */
+	public function get_login_user_info( $table_name ){
+		$user_info = $this->exdb->session()->get('user_info');
+		if( is_array( @$user_info[$table_name] ) ){
+			return $user_info[$table_name];
+		}
 		return false;
+	}
+
+	/**
+	 * ログインする
+	 * @param  string $table_name テーブル名
+	 * @param  array $inquiries 照会するカラム名
+	 * @param  array $data      ユーザーの入力データ
+	 * @return boolean result.
+	 */
+	public function login( $table_name, $inquiries, $data ){
+		// var_dump($table_name, $inquiries, $data);
+		$where = array();
+		foreach( $inquiries as $key ){
+			$where[$key] = @$data[$key];
+		}
+		$res = $this->exdb->select( $table_name, $where );
+		if( is_array($res) && count($res) ){
+			$user_info = $this->exdb->session()->get('user_info');
+			if(!is_array($user_info)){
+				$user_info = array();
+			}
+			$user_info[$table_name] = $res;
+			$this->exdb->session()->set('user_info', $user_info);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * ログアウトする
+	 * @param  string $table_name テーブル名
+	 * @return boolean result.
+	 */
+	public function logout( $table_name ){
+		$user_info = $this->exdb->session()->get('user_info');
+		if(!is_array($user_info)){
+			$user_info = array();
+		}
+		unset($user_info[$table_name]);
+		$this->exdb->session()->set('user_info', $user_info);
+		return true;
 	}
 
 }

@@ -24,6 +24,9 @@ class create{
 	/** CRUD Operator Instance */
 	private $crud;
 
+	/** Session Manager Instance */
+	private $session;
+
 	/** Validator Instance */
 	private $validator;
 
@@ -56,14 +59,17 @@ class create{
 			return;
 		}
 
-		// Generate Login User Manager
-		$this->user = new user( $this );
-
 		// Generate CRUD Operator
 		$this->crud = new dba_crud( $this );
 
+		// Generate Session Manager
+		$this->session = new dba_session( $this );
+
 		// Generate Validator
 		$this->validator = new validator_validate($this);
+
+		// Generate Login User Manager
+		$this->user = new user( $this );
 
 		$this->reload_definition_data();
 		return;
@@ -115,6 +121,14 @@ class create{
 	 */
 	public function pdo(){
 		return $this->pdo;
+	}
+
+	/**
+	 * `$session` を取得する
+	 * @return object Session Manager Instance.
+	 */
+	public function session(){
+		return $this->session;
 	}
 
 	/**

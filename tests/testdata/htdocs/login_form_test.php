@@ -2,13 +2,20 @@
 require_once(__DIR__.'/../php/config.php');
 $form = $exdb->get_form();
 $form->auth(
-	// 照合するデータ
-	array(
-		'user.user_account',
-		'user.password',
+	'user', // テーブル名
+	array( // 照合するデータ
+		'user_account',
+		'password',
 	)
 );
-
-print '<!DOCTYPE html>'."\n";
-print '<p>Logged in.</p>'."\n";
-exit();
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>LOGIN SAMPLE</title>
+</head>
+<body>
+<p>Logged in.</p>
+<p><a href="logout.php">LOGOUT</a></p>
+</body>
+</html>

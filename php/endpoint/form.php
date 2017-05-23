@@ -219,12 +219,66 @@ class endpoint_form{
 	/**
 	 * Execute Automatic Auth form
 	 *
-	 * @param  array $inquiries 照会するデータ
-	 * @return null This method returns no value.
+	 * @param  string $table_name テーブル名
+	 * @param  array $inquiries 照会するカラム名
+	 * @return boolean Always `true`.
 	 */
-	public function auth($inquiries){
-		return null;
+	public function auth($table_name, $inquiries){
+		$options = $this->get_options();
+		$data = $options['post_params'];
+
+		if(@$this->query_options['action'] == 'login'){
+			// ログインを試みる
+			$result = $this->exdb->user()->login( $table_name, $inquiries, $data );
+		}
+
+
+		$is_login = $this->exdb->user()->is_login($table_name);
+		if( $is_login ){
+			// ログイン処理済みなら終了
+			return true;
+		}
+
+		$table_definition = $this->exdb->get_table_definition($table_name);
+		// var_dump($table_definition->columns);
+
+		$rtn = '';
+		foreach( $inquiries as $column_name ){
+			$column_definition = $table_definition->columns->{$column_name};
+			$rtn .= $this->render(
+				'form_elms/default/edit.html',
+				array(
+					'value'=>'',
+					'error'=>'',
+					'def'=>@$column_definition,
+				)
+			);
+		}
+
+		$rtn = $this->render(
+			'form_login.html',
+			array(
+				'is_error'=>(@$this->query_options['action'] == 'login'),
+				'content'=>$rtn,
+			)
+		);
+		// var_dump($table_list);
+		$rtn = $this->wrap_theme($rtn);
+		echo $rtn;
+		exit();
+		return false;
+
 	} // auth();
+
+	/**
+	 * ログアウトする
+	 * @param  string $table_name テーブル名
+	 * @return boolean Always `true`.
+	 */
+	public function logout($table_name){
+		$result = $this->exdb->user()->logout( $table_name );
+		return true;
+	} // logout()
 
 
 	/**
