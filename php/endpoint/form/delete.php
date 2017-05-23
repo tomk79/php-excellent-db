@@ -118,6 +118,12 @@ class endpoint_form_delete{
 			array($this->table_definition->key_column=>$this->row_id)
 		);
 
+		if( !$result ){
+			// 書き込みに失敗
+			// Sorry, failed to save changes. Please try again later.
+			return $this->confirm($data);
+		}
+
 		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name);
 		@header('Location: '.$action.'?'.urlencode(':action').'=done');
 		return '';

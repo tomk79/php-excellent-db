@@ -1,4 +1,7 @@
 <form action="{{ action }}" method="post">
+{% if error %}
+	<span class="help-block">{{ error }}</span>
+{% endif %}
 <table class="table">
 {{ content|raw }}
 </table>

@@ -110,6 +110,7 @@ class endpoint_form_edit{
 			array(
 				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
 				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
+				'error'=>@$errors[':common'],
 				'content'=>$rtn,
 			)
 		);
@@ -171,6 +172,13 @@ class endpoint_form_edit{
 				array($this->table_definition->key_column=>$this->row_id),
 				$data
 			);
+		}
+
+		if( !$result ){
+			// 書き込みに失敗
+			$errors = array();
+			$errors[':common'] = 'Sorry, failed to save changes. Please try again later.';
+			return $this->input($data, $errors);
 		}
 
 		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name);
