@@ -100,8 +100,8 @@ class endpoint_form_edit{
 			$rtn .= $this->form_endpoint->render(
 				'form_elms/default/edit.html',
 				array(
-					'value'=>@$data[$column_definition->column_name],
-					'error'=>@$errors[$column_definition->column_name],
+					'value'=>@$data[$column_definition->name],
+					'error'=>@$errors[$column_definition->name],
 					'def'=>@$column_definition,
 				)
 			);
@@ -137,11 +137,11 @@ class endpoint_form_edit{
 			$content .= $this->form_endpoint->render(
 				'form_elms/default/detail.html',
 				array(
-					'value'=>@$data[$column_definition->column_name],
+					'value'=>@$data[$column_definition->name],
 					'def'=>@$column_definition,
 				)
 			);
-			$hidden .= '<input type="hidden" name="'.htmlspecialchars($column_definition->column_name).'" value="'.htmlspecialchars(@$data[$column_definition->column_name]).'"/>';
+			$hidden .= '<input type="hidden" name="'.htmlspecialchars($column_definition->name).'" value="'.htmlspecialchars(@$data[$column_definition->name]).'"/>';
 		}
 
 		$rtn = $this->form_endpoint->render(

@@ -4,7 +4,7 @@
             "sheet_label": "table_user",
             "columns": {
                 "user_id": {
-                    "column_name": "user_id",
+                    "name": "user_id",
                     "type": "auto_id",
                     "label": "User ID",
                     "description": null,
@@ -14,7 +14,7 @@
                     "foreign_key": null
                 },
                 "user_account": {
-                    "column_name": "user_account",
+                    "name": "user_account",
                     "type": "string",
                     "label": "Account Name",
                     "description": null,
@@ -24,7 +24,7 @@
                     "foreign_key": null
                 },
                 "password": {
-                    "column_name": "password",
+                    "name": "password",
                     "type": "password",
                     "label": "Password",
                     "description": null,
@@ -34,7 +34,7 @@
                     "foreign_key": null
                 },
                 "user_name": {
-                    "column_name": "user_name",
+                    "name": "user_name",
                     "type": "string",
                     "label": "User Name",
                     "description": null,
@@ -44,7 +44,7 @@
                     "foreign_key": null
                 },
                 "email": {
-                    "column_name": "email",
+                    "name": "email",
                     "type": "email",
                     "label": "E-mail Address",
                     "description": null,
@@ -54,7 +54,7 @@
                     "foreign_key": null
                 },
                 "birthday": {
-                    "column_name": "birthday",
+                    "name": "birthday",
                     "type": "date",
                     "label": "Birthday",
                     "description": null,
@@ -64,7 +64,7 @@
                     "foreign_key": null
                 },
                 "last_login_date": {
-                    "column_name": "last_login_date",
+                    "name": "last_login_date",
                     "type": "datetime",
                     "label": "Last Login",
                     "description": null,
@@ -74,7 +74,7 @@
                     "foreign_key": null
                 },
                 "create_date": {
-                    "column_name": "create_date",
+                    "name": "create_date",
                     "type": "create_date",
                     "label": "Create Date",
                     "description": null,
@@ -84,7 +84,7 @@
                     "foreign_key": null
                 },
                 "update_date": {
-                    "column_name": "update_date",
+                    "name": "update_date",
                     "type": "update_date",
                     "label": "Update Date",
                     "description": null,
@@ -94,7 +94,7 @@
                     "foreign_key": null
                 },
                 "delete_date": {
-                    "column_name": "delete_date",
+                    "name": "delete_date",
                     "type": "delete_date",
                     "label": "Delete Date",
                     "description": null,
@@ -104,7 +104,7 @@
                     "foreign_key": null
                 },
                 "delete_flg": {
-                    "column_name": "delete_flg",
+                    "name": "delete_flg",
                     "type": "delete_flg",
                     "label": "Delete Flag",
                     "description": null,
@@ -120,7 +120,7 @@
             "system_columns": {
                 "id": {
                     "type": "auto_id",
-                    "column_name": "user_id"
+                    "name": "user_id"
                 },
                 "create_date": "create_date",
                 "update_date": "update_date",
@@ -135,7 +135,7 @@
             "sheet_label": "table_project",
             "columns": {
                 "project_id": {
-                    "column_name": "project_id",
+                    "name": "project_id",
                     "type": "auto_id",
                     "label": "Project ID",
                     "description": null,
@@ -145,7 +145,7 @@
                     "foreign_key": null
                 },
                 "user_id": {
-                    "column_name": "user_id",
+                    "name": "user_id",
                     "type": "string",
                     "label": "User ID",
                     "description": null,
@@ -155,7 +155,7 @@
                     "foreign_key": "user.user_id"
                 },
                 "project_name": {
-                    "column_name": "project_name",
+                    "name": "project_name",
                     "type": "string",
                     "label": "Project Name",
                     "description": null,
@@ -165,7 +165,7 @@
                     "foreign_key": null
                 },
                 "description": {
-                    "column_name": "description",
+                    "name": "description",
                     "type": "text",
                     "label": "Project Description",
                     "description": null,
@@ -175,7 +175,7 @@
                     "foreign_key": null
                 },
                 "create_date": {
-                    "column_name": "create_date",
+                    "name": "create_date",
                     "type": "create_date",
                     "label": "Create Date",
                     "description": null,
@@ -185,7 +185,7 @@
                     "foreign_key": null
                 },
                 "update_date": {
-                    "column_name": "update_date",
+                    "name": "update_date",
                     "type": "update_date",
                     "label": "Update Date",
                     "description": null,
@@ -195,7 +195,7 @@
                     "foreign_key": null
                 },
                 "delete_date": {
-                    "column_name": "delete_date",
+                    "name": "delete_date",
                     "type": "delete_date",
                     "label": "Delete Date",
                     "description": null,
@@ -205,7 +205,7 @@
                     "foreign_key": null
                 },
                 "delete_flg": {
-                    "column_name": "delete_flg",
+                    "name": "delete_flg",
                     "type": "delete_flg",
                     "label": "Delete Flag",
                     "description": null,
@@ -221,7 +221,7 @@
             "system_columns": {
                 "id": {
                     "type": "auto_id",
-                    "column_name": "project_id"
+                    "name": "project_id"
                 },
                 "create_date": "create_date",
                 "update_date": "update_date",

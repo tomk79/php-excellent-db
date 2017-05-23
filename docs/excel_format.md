@@ -25,7 +25,7 @@
 
 ## `:columns` - Column Definition
 
-### column_name
+### name
 
 カラム名。
 実際に生成されるテーブル上でのカラムの物理名称として使われます。

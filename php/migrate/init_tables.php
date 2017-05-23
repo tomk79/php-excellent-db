@@ -40,7 +40,7 @@ class migrate_init_tables{
 				$sql_column_definition = '';
 
 				// セル名
-				$sql_column_definition .= $column_definition->column_name;
+				$sql_column_definition .= $column_definition->name;
 
 				// 型
 				switch(strtolower( $column_definition->type )){

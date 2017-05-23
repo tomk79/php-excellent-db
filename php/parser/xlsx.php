@@ -117,10 +117,10 @@ class parser_xlsx{
 			foreach($col_define as $col_def_row){
 				$col->{$col_def_row['key']} = $objSheet->getCell($col_def_row['col'].$row_number)->getCalculatedValue();
 			}
-			if(!@strlen($col->column_name)){
+			if(!@strlen($col->name)){
 				break;
 			}
-			@$parsed->columns->{$col->column_name} = $col;
+			@$parsed->columns->{$col->name} = $col;
 			continue;
 		}
 
@@ -139,21 +139,21 @@ class parser_xlsx{
 			if( $column_definition->type == 'auto_id' || $column_definition->type == 'auto_increment' ){
 				$parsed->system_columns->id = json_decode(json_encode(array(
 					'type'=>$column_definition->type,
-					'column_name'=>$column_definition->column_name,
+					'name'=>$column_definition->name,
 				)));
 				if( @is_null($parsed->key_column) ){
-					$parsed->key_column = $column_definition->column_name;
+					$parsed->key_column = $column_definition->name;
 				}
 			}elseif( $column_definition->type == 'create_date' ){
-				$parsed->system_columns->create_date = $column_definition->column_name;
+				$parsed->system_columns->create_date = $column_definition->name;
 			}elseif( $column_definition->type == 'update_date' ){
-				$parsed->system_columns->update_date = $column_definition->column_name;
+				$parsed->system_columns->update_date = $column_definition->name;
 			}elseif( $column_definition->type == 'delete_date' ){
-				$parsed->system_columns->delete_date = $column_definition->column_name;
+				$parsed->system_columns->delete_date = $column_definition->name;
 			}elseif( $column_definition->type == 'delete_flg' ){
-				$parsed->system_columns->delete_flg = $column_definition->column_name;
+				$parsed->system_columns->delete_flg = $column_definition->name;
 			}elseif( $column_definition->type == 'password' ){
-				array_push($parsed->system_columns->password, $column_definition->column_name);
+				array_push($parsed->system_columns->password, $column_definition->name);
 			}
 			// var_dump($column_definition);
 		}
