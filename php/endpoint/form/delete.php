@@ -74,6 +74,7 @@ class endpoint_form_delete{
 
 	/**
 	 * 確認画面を描画
+	 * @param  array $data 入力データ
 	 * @return String HTML Source Code
 	 */
 	private function confirm($data){
@@ -110,6 +111,7 @@ class endpoint_form_delete{
 
 	/**
 	 * 書き込みを実行
+	 * @param  array $data 入力データ
 	 * @return String HTML Source Code
 	 */
 	private function write($data){

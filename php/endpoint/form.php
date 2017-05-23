@@ -311,6 +311,7 @@ class endpoint_form{
 
 	/**
 	 * 一覧画面を描画
+	 * @param  string $table_name テーブル名
 	 * @return String HTML Source Code
 	 */
 	private function page_list( $table_name ){
@@ -384,6 +385,8 @@ class endpoint_form{
 
 	/**
 	 * 詳細画面を描画
+	 * @param  string $table_name テーブル名
+	 * @param  string $row_id 表示する行のID値
 	 * @return String HTML Source Code
 	 */
 	private function page_detail( $table_name, $row_id ){
@@ -428,6 +431,8 @@ class endpoint_form{
 
 	/**
 	 * 編集画面を描画
+	 * @param  string $table_name テーブル名
+	 * @param  string $row_id 表示する行のID値
 	 * @return String HTML Source Code
 	 */
 	private function page_edit( $table_name, $row_id = null ){
@@ -438,6 +443,8 @@ class endpoint_form{
 
 	/**
 	 * 削除画面を描画
+	 * @param  string $table_name テーブル名
+	 * @param  string $row_id 表示する行のID値
 	 * @return String HTML Source Code
 	 */
 	private function page_delete( $table_name, $row_id ){
@@ -447,6 +454,8 @@ class endpoint_form{
 
 	/**
 	 * 致命的なエラー画面
+	 * @param  array $errors エラーメッセージ
+	 * @return String HTML Source Code
 	 */
 	public function page_fatal_error($errors = ''){
 		$rtn = '';
@@ -457,6 +466,10 @@ class endpoint_form{
 
 	/**
 	 * URLを生成する
+	 * @param  string $table_name テーブル名
+	 * @param  string $row_id 表示する行のID値
+	 * @param  string $action actionスイッチ
+	 * @return string URL文字列
 	 */
 	public function generate_url($table_name = null, $row_id = null, $action = null){
 		if( strlen( $table_name ) && !strlen( $row_id ) && $action == 'create' ){
@@ -476,6 +489,9 @@ class endpoint_form{
 
 	/**
 	 * テンプレートを描画する
+	 * @param  string $template Twigテンプレートコード
+	 * @param  array $data バインドデータ
+	 * @return string バインドされたHTMLソース
 	 */
 	public function render($template, $data){
 		$rtn = $this->twig->render($template, $data);

@@ -15,6 +15,12 @@ class endpoint_rest{
 	/** Options */
 	private $options;
 
+	/** Query Options */
+	private $query_options;
+
+	/** Table Definition */
+	private $table_definition;
+
 	/**
 	 * constructor
 	 *
@@ -40,21 +46,41 @@ class endpoint_rest{
 		$this->options['method'] = strtoupper($this->options['method']);
 
 		// params
+
 		if( @!is_array($this->options['get_params']) ){
 			$this->options['get_params'] = $_GET;
 		}
+		foreach($this->options['get_params'] as $key=>$val){
+			if( preg_match('/^\:/', $key) ){
+				$tmp_key = preg_replace('/^\:/', '', $key);
+				$this->query_options[$tmp_key] = $val;
+				unset($this->options['get_params'][$key]);
+			}
+		}
+
 		if( @!is_array($this->options['post_params']) ){
 			$this->options['post_params'] = $_POST;
+		}
+		foreach($this->options['post_params'] as $key=>$val){
+			if( preg_match('/^\:/', $key) ){
+				$tmp_key = preg_replace('/^\:/', '', $key);
+				$this->query_options[$tmp_key] = $val;
+				unset($this->options['post_params'][$key]);
+			}
 		}
 
 		// table name
 		if( @!strlen($this->options['table']) ){
-			$this->options['table'] = $tmp_path_info[1];
+			$this->options['table'] = @$tmp_path_info[1];
 		}
 
 		// resource id
 		if( @!strlen($this->options['id']) ){
-			$this->options['id'] = $tmp_path_info[2];
+			$this->options['id'] = @$tmp_path_info[2];
+		}
+
+		if( strlen($this->options['table']) ){
+			$this->table_definition = $this->exdb->get_table_definition($this->options['table']);
 		}
 
 		return;
@@ -66,12 +92,8 @@ class endpoint_rest{
 	 * @param object $exdb ExcellentDb Object
 	 * @return null This method returns no value.
 	 */
-	public function execute(){
+	public function automatic_rest_api(){
 		@header('text/json; charset=UTF-8');
-
-		if( strlen($this->options['table']) ){
-			$table_definition = $this->exdb->get_table_definition($this->options['table']);
-		}
 
 		$rtn = array();
 		$rtn['result'] = false;
@@ -116,11 +138,12 @@ class endpoint_rest{
 
 			if( !strlen($this->options['id']) ){
 				// ID無指定の場合、一覧情報を返す
-				$rtn['list'] = $this->exdb->select($this->options['table'], $this->options['get_params']);
+				$rtn['list'] = $this->exdb->select($this->options['table'], $this->options['get_params'], $this->query_options);
+				$rtn['count'] = $this->exdb->count($this->options['table'], $this->options['get_params']);
 				$rtn['result'] = true;
-				if( count($table_definition->system_columns->password) ){
+				if( count($this->table_definition->system_columns->password) ){
 					foreach( $rtn['list'] as $key=>$val ){
-						foreach($table_definition->system_columns->password as $column_name){
+						foreach($this->table_definition->system_columns->password as $column_name){
 							unset($rtn['list'][$key][$column_name]);
 						}
 					}
@@ -130,11 +153,11 @@ class endpoint_rest{
 			}else{
 				// ID指定がある場合、詳細情報1件を返す
 				$where = $this->options['get_params'];
-				// $rtn['table_definition'] = $table_definition;
-				$where[$table_definition->system_columns->id->column_name] = $this->options['id'];
+				// $rtn['table_definition'] = $this->table_definition;
+				$where[$this->table_definition->system_columns->id->column_name] = $this->options['id'];
 				$row = $this->exdb->select($this->options['table'], $where);
 				$rtn['row'] = @$row[0];
-				foreach($table_definition->system_columns->password as $column_name){
+				foreach($this->table_definition->system_columns->password as $column_name){
 					unset($rtn['row'][$column_name]);
 				}
 				$rtn['result'] = true;
@@ -162,7 +185,7 @@ class endpoint_rest{
 			$result = $this->exdb->update(
 				$this->options['table'],
 				array(
-					$table_definition->system_columns->id->column_name => $this->options['id'],
+					$this->table_definition->system_columns->id->column_name => $this->options['id'],
 				),
 				$params
 			);
@@ -190,7 +213,7 @@ class endpoint_rest{
 			$result = $this->exdb->delete(
 				$this->options['table'],
 				array(
-					$table_definition->system_columns->id->column_name => $this->options['id'],
+					$this->table_definition->system_columns->id->column_name => $this->options['id'],
 				)
 			);
 			$rtn['result'] = ($result ? true : false);

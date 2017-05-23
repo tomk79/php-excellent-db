@@ -24,6 +24,9 @@ class validator_validate{
 
 	/**
 	 * Do Validation
+	 * @param  string $table_name テーブル名
+	 * @param  array $data 入力データ
+	 * @return array エラー配列
 	 */
 	public function validate($table_name, $data){
 		$errors = array();

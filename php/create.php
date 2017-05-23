@@ -9,31 +9,58 @@ namespace excellent_db;
  */
 class create{
 
-	/** tomk79/filesystem Instance */
+	/**
+	 * tomk79/filesystem Instance
+	 * @ignore
+	 */
 	private $fs;
 
-	/** PDO Instance */
+	/**
+	 * PDO Instance
+	 * @ignore
+	 */
 	private $pdo;
 
-	/** Login User Manager Instance */
+	/**
+	 * Login User Manager Instance
+	 * @ignore
+	 */
 	private $user;
 
-	/** cache manager Instance */
+	/**
+	 * cache manager Instance
+	 * @ignore
+	 */
 	private $caches;
 
-	/** CRUD Operator Instance */
+	/**
+	 * CRUD Operator Instance
+	 * @ignore
+	 */
 	private $crud;
 
-	/** Session Manager Instance */
+	/**
+	 * Session Manager Instance
+	 * @ignore
+	 */
 	private $session;
 
-	/** Validator Instance */
+	/**
+	 * Validator Instance
+	 * @ignore
+	 */
 	private $validator;
 
-	/** Database Config */
+	/**
+	 * Database Config
+	 * @ignore
+	 */
 	private $config;
 
-	/** Table Definition */
+	/**
+	 * Table Definition
+	 * @ignore
+	 */
 	private $table_definition;
 
 	/**
@@ -77,6 +104,7 @@ class create{
 
 	/**
 	 * 環境情報(設定を含む)を検証する
+	 * @ignore
 	 * @return string Error message.
 	 */
 	private function check_env(){
@@ -356,9 +384,11 @@ class create{
 
 	/**
 	 * データを検証する
+	 * @param  string $table テーブル名
+	 * @param  array $data 入力データ
+	 * @return array エラー配列
 	 */
 	public function validate( $table, $data ){
-		// TODO: 未実装
 		$errors = $this->validator->validate($table, $data);
 		return $errors;
 	}
@@ -366,7 +396,7 @@ class create{
 	/**
 	 * REST APIエンドポイントを取得
 	 * @param  array $options オプション
-	 * @return null          このメソッドは値を返しません。
+	 * @return object [excellent_db\endpoint_rest](./excellent_db.endpoint_rest.html) のインスタンス
 	 */
 	public function get_rest($options = null){
 		$api = new endpoint_rest( $this, $options );
@@ -375,8 +405,9 @@ class create{
 
 	/**
 	 * フォームエンドポイントを取得
+	 *
 	 * @param  array $options オプション
-	 * @return null          このメソッドは値を返しません。
+	 * @return object [excellent_db\endpoint_form](./excellent_db.endpoint_form.html) のインスタンス
 	 */
 	public function get_form($options = null){
 		$api = new endpoint_form( $this, $options );

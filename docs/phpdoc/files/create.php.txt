@@ -9,23 +9,59 @@ namespace excellent_db;
  */
 class create{
 
-	/** tomk79/filesystem Instance */
+	/**
+	 * tomk79/filesystem Instance
+	 * @ignore
+	 */
 	private $fs;
 
-	/** cache manager Instance */
-	private $caches;
-
-	/** PDO Instance */
+	/**
+	 * PDO Instance
+	 * @ignore
+	 */
 	private $pdo;
 
-	/** Database Config */
+	/**
+	 * Login User Manager Instance
+	 * @ignore
+	 */
+	private $user;
+
+	/**
+	 * cache manager Instance
+	 * @ignore
+	 */
+	private $caches;
+
+	/**
+	 * CRUD Operator Instance
+	 * @ignore
+	 */
+	private $crud;
+
+	/**
+	 * Session Manager Instance
+	 * @ignore
+	 */
+	private $session;
+
+	/**
+	 * Validator Instance
+	 * @ignore
+	 */
+	private $validator;
+
+	/**
+	 * Database Config
+	 * @ignore
+	 */
 	private $config;
 
-	/** Table Definition */
+	/**
+	 * Table Definition
+	 * @ignore
+	 */
 	private $table_definition;
-
-	/** CRUD Operator */
-	private $crud;
 
 	/**
 	 * constructor
@@ -44,7 +80,7 @@ class create{
 		$this->caches = new caches($this);
 
 		// 環境情報をチェック
-		$env_error = $this->validate_env();
+		$env_error = $this->check_env();
 		if( $env_error ){
 			trigger_error('[ExcellentDb: Setup Error] '.$env_error);
 			return;
@@ -53,15 +89,25 @@ class create{
 		// Generate CRUD Operator
 		$this->crud = new dba_crud( $this );
 
+		// Generate Session Manager
+		$this->session = new dba_session( $this );
+
+		// Generate Validator
+		$this->validator = new validator_validate($this);
+
+		// Generate Login User Manager
+		$this->user = new user( $this );
+
 		$this->reload_definition_data();
 		return;
 	}
 
 	/**
 	 * 環境情報(設定を含む)を検証する
+	 * @ignore
 	 * @return string Error message.
 	 */
-	private function validate_env(){
+	private function check_env(){
 		if( !is_file($this->config->path_definition_file) ){
 			return 'Table definition file is NOT a file (or NOT exists).';
 		}
@@ -106,6 +152,22 @@ class create{
 	}
 
 	/**
+	 * `$session` を取得する
+	 * @return object Session Manager Instance.
+	 */
+	public function session(){
+		return $this->session;
+	}
+
+	/**
+	 * `$user` を取得する
+	 * @return object Login User Manager Instance.
+	 */
+	public function user(){
+		return $this->user;
+	}
+
+	/**
 	 * パスワードをハッシュ値化する
 	 * @param  String $password 平文のパスワード
 	 * @return String           ハッシュ値化後のパスワード
@@ -128,7 +190,8 @@ class create{
 	 * @return object Table Definition.
 	 */
 	public function get_table_definition( $table_name ){
-		return $this->table_definition->tables->{$table_name};
+		$tabel_definition = @$this->table_definition->tables->{$table_name};
+		return ($tabel_definition ? $tabel_definition : false);
 	}
 
 	/**
@@ -204,6 +267,29 @@ class create{
 		return $prefix.$table_name;
 	}
 
+
+	/**
+	 * 編集可能なカラムか調べる
+	 * @param  object  $column_definition カラム定義
+	 * @return boolean                    編集可否
+	 */
+	public function is_editable_column( $column_definition ){
+		if($column_definition->type == 'auto_id'){
+			return false;
+		}elseif($column_definition->type == 'auto_increment'){
+			return false;
+		}elseif($column_definition->type == 'create_date'){
+			return false;
+		}elseif($column_definition->type == 'update_date'){
+			return false;
+		}elseif($column_definition->type == 'delete_date'){
+			return false;
+		}elseif($column_definition->type == 'delete_flg'){
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * INSERT文を発行する
 	 * @param  string $tbl テーブル名
@@ -242,12 +328,22 @@ class create{
 	 * @param  string $tbl テーブル名
 	 * @param  array $where 抽出条件
 	 * @param  array $options オプション(連想配列)
-	 * - *page* : `0` から始まるページ番号 (default: `0`)
+	 * - *page* : `1` から始まるページ番号 (default: `1`)
 	 * - *limit* : 1ページあたりの件数 (default: `10`)
 	 * @return array 抽出されたレコード
 	 */
 	public function select($tbl, $where, $options = array()){
 		return $this->crud->select($tbl, $where, $options);
+	}
+
+	/**
+	 * SELECT文を発行し、該当件数を調べる
+	 * @param  string $tbl テーブル名
+	 * @param  array $where 抽出条件
+	 * @return int 抽出されたレコード数
+	 */
+	public function count($tbl, $where){
+		return $this->crud->count($tbl, $where);
 	}
 
 	/**
@@ -287,14 +383,35 @@ class create{
 
 
 	/**
-	 * REST APIエンドポイントを自動的にセットアップ
-	 * @param  array $options オプション
-	 * @return null          このメソッドは値を返しません。
+	 * データを検証する
+	 * @param  string $table テーブル名
+	 * @param  array $data 入力データ
+	 * @return array エラー配列
 	 */
-	public function automatic_rest_api_response($options = null){
+	public function validate( $table, $data ){
+		$errors = $this->validator->validate($table, $data);
+		return $errors;
+	}
+
+	/**
+	 * REST APIエンドポイントを取得
+	 * @param  array $options オプション
+	 * @return object [excellent_db\endpoint_rest](./excellent_db.endpoint_rest.html) のインスタンス
+	 */
+	public function get_rest($options = null){
 		$api = new endpoint_rest( $this, $options );
-		$api->execute();
-		return null;
+		return $api;
+	}
+
+	/**
+	 * フォームエンドポイントを取得
+	 *
+	 * @param  array $options オプション
+	 * @return object [excellent_db\endpoint_form](./excellent_db.endpoint_form.html) のインスタンス
+	 */
+	public function get_form($options = null){
+		$api = new endpoint_form( $this, $options );
+		return $api;
 	}
 }
 

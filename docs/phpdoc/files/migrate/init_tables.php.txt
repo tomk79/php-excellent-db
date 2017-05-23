@@ -34,9 +34,9 @@ class migrate_init_tables{
 			// var_dump($table_definition_row);
 
 			$sql_create_db = '';
-			$sql_create_db .= 'CREATE TABLE '.$this->exdb->get_physical_table_name($table_definition_row->table_name).' (';
+			$sql_create_db .= 'CREATE TABLE '.$this->exdb->get_physical_table_name($table_definition_row->name).' (';
 			$ary_table_columns = array();
-			foreach( $table_definition_row->table_definition as $column_definition ){
+			foreach( $table_definition_row->columns as $column_definition ){
 				$sql_column_definition = '';
 
 				// セル名
@@ -90,7 +90,7 @@ class migrate_init_tables{
 			$result = @$this->exdb->pdo()->query($sql_create_db);
 			// var_dump($result);
 			if( !$result ){
-				array_push($error, '[ERROR] Failed to create table "'.$this->exdb->get_physical_table_name($table_definition_row->table_name).'"');
+				array_push($error, '[ERROR] Failed to create table "'.$this->exdb->get_physical_table_name($table_definition_row->name).'"');
 			}
 		}
 		// var_dump($error);

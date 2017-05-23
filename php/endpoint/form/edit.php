@@ -86,6 +86,8 @@ class endpoint_form_edit{
 
 	/**
 	 * 編集画面を描画
+	 * @param  array $data 入力データ
+	 * @param  array $errors エラー配列
 	 * @return String HTML Source Code
 	 */
 	private function input($data, $errors = array()){
@@ -121,6 +123,7 @@ class endpoint_form_edit{
 
 	/**
 	 * 確認画面を描画
+	 * @param  array $data 入力データ
 	 * @return String HTML Source Code
 	 */
 	private function confirm($data){
@@ -157,6 +160,7 @@ class endpoint_form_edit{
 
 	/**
 	 * 書き込みを実行
+	 * @param  array $data 入力データ
 	 * @return String HTML Source Code
 	 */
 	private function write($data){
