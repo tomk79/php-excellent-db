@@ -2,10 +2,10 @@
 <th style="width:30%;">{{ def.label }}</th>
 <td style="width:70%;">
 	<div class="form-group{% if error %} has-error{% endif %}">
-		{% if def.type == "text" %}
+		{% if def.type == "string" %}
 			<input type="text" name="{{ def.name }}" value="{{ value }}" class="form-control" />
 		{% elseif def.type == "email" %}
-			<input type="text" name="{{ def.name }}" value="{{ value }}" class="form-control" />
+			<input type="email" name="{{ def.name }}" value="{{ value }}" class="form-control" />
 		{% elseif def.type == "date" %}
 			<input type="date" name="{{ def.name }}" value="{{ value }}" class="form-control" />
 		{% elseif def.type == "datetime" %}
