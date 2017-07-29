@@ -185,7 +185,7 @@ class endpoint_form_edit{
 			return $this->input($data, $errors);
 		}
 
-		if( !is_null( $data[$this->table_definition->key_column] ) ){
+		if( !is_null( @$data[$this->table_definition->key_column] ) ){
 			// キーの値を変更している場合は更新する
 			$this->row_id = $data[$this->table_definition->key_column];
 		}
