@@ -97,12 +97,29 @@ class endpoint_form_edit{
 			if( !$this->exdb->is_editable_column( $column_definition ) ){
 				continue;
 			}
+
+			$foreign_key_array = null;
+			if( $column_definition->foreign_key ){
+				$foreign_key = explode( '.', $column_definition->foreign_key );
+				$foreign_row = $this->exdb->select(
+					$foreign_key[0],
+					array(),
+					array('limit' => 10000)
+				);
+				if( is_array($foreign_row) ){
+					foreach($foreign_row as $foreign_row_row){
+						$foreign_key_array[$foreign_row_row[$foreign_key[1]]] = $foreign_row_row[$foreign_key[1]];
+					}
+				}
+			}
+
 			$rtn .= $this->form_endpoint->render(
 				'form_elms/default/edit.html',
 				array(
 					'value'=>@$data[$column_definition->name],
 					'error'=>@$errors[$column_definition->name],
 					'def'=>@$column_definition,
+					'select_options'=>@$foreign_key_array,
 				)
 			);
 		}

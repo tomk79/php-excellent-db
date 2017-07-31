@@ -2,7 +2,13 @@
 <th style="width:30%;">{{ def.label }}</th>
 <td style="width:70%;">
 	<div class="form-group{% if error %} has-error{% endif %}">
-		{% if def.type == "string" %}
+		{% if select_options %}
+			<select name="{{ def.name }}">
+				{% for key, value in select_options %}
+				    <option value="{{key}}">{{value}}</option>
+				{% endfor %}
+			</select>
+		{% elseif def.type == "string" %}
 			<input type="text" name="{{ def.name }}" value="{{ value }}" class="form-control" />
 		{% elseif def.type == "email" %}
 			<input type="email" name="{{ def.name }}" value="{{ value }}" class="form-control" />
