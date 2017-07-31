@@ -44,7 +44,8 @@ class validator_validate{
 			}
 		}
 
-		// 形式のチェック
+		// --------------------------------------
+		// 入力値のチェック
 		foreach( $table_definition->columns as $column_definition ){
 			if( !array_key_exists($column_definition->name, $data) ){
 				// `$data` に含まれていないキーは調べない
@@ -52,15 +53,37 @@ class validator_validate{
 			}
 			$value = @$data[$column_definition->name];
 
+			// NOT NULL 制約
 			if( !$column_definition->not_null && !strlen($value) ){
 				// 必須項目ではなく、かつ値が入力されていない場合、エラーとして扱わない
 				continue;
 			}
 
+			// EMAIL 形式チェック
 			if( $column_definition->type == 'email' ){
 				if( !preg_match('/^.*?\@.*?$/s', $value) ){
 					$errors[$column_definition->name] = 'Invalid E-Mail Format.';
+					continue;
 				}
+			}
+
+			// FOREIGN KEY 制約
+			if( $column_definition->foreign_key ){
+				$foreign_key = explode( '.', $column_definition->foreign_key );
+				$foreign_row = $this->exdb->select(
+					$foreign_key[0],
+					array(
+						$foreign_key[1] => $value,
+					),
+					array(
+						'limit' => 1
+					)
+				);
+				if( !$foreign_row ){
+					$errors[$column_definition->name] = 'Foreign key is not exists.';
+					continue;
+				}
+				unset($foreign_key, $foreign_row);
 			}
 		}
 
