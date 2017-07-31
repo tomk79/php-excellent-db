@@ -4,8 +4,8 @@
 	<div class="form-group{% if error %} has-error{% endif %}">
 		{% if select_options %}
 			<select name="{{ def.name }}">
-				{% for key, value in select_options %}
-				    <option value="{{key}}">{{value}}</option>
+				{% for opt_val, opt_label in select_options %}
+				    <option value="{{opt_val}}"{% if opt_val == value %} selected="selected"{% endif %}>{{opt_label}}</option>
 				{% endfor %}
 			</select>
 		{% elseif def.type == "string" %}
