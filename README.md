@@ -31,19 +31,6 @@ Excellent Db は、 データベース設計書 に記述された物理設計�
 
 データベース設計書の定義については、[こちらを参照](./docs/excel_format.md)してください。
 
-### フォーム自動処理
-
-```php
-<?php
-require_once('/path/to/vendor/autoload.php');
-$pdo = new PDO( /* PDO Options */ );
-$exdb = new excellent_db\create( $pdo, /* options */ );
-
-$form = $exdb->get_form();
-$form->automatic_form();
-exit();
-```
-
 ### REST API 自動処理
 
 ```php
@@ -57,8 +44,9 @@ $rest->automatic_rest_api();
 exit();
 ```
 
+### フォームAPI 自動処理
 
-### サインアップフォーム
+#### サインアップフォーム
 
 ```php
 <?php
@@ -67,21 +55,22 @@ $pdo = new PDO( /* PDO Options */ );
 $exdb = new excellent_db\create( $pdo, /* options */ );
 
 $form = $exdb->get_form();
-$form->signup(
+$form->automatic_signup_form(
 	'user', // テーブル名
-	array( // 初期登録するデータ
+	array( // 初期登録するカラム
 		'user_account',
 		'user_name',
 		'email',
 		'password',
 	),
-	array(
-		'href_backto'=>'/'
+	array( // Options
+		'href_backto'=>'/' // 戻り先のURL
 	)
 );
+exit();
 ```
 
-### ログインフォーム
+#### ログインフォーム
 
 ```php
 <?php
@@ -109,7 +98,7 @@ $form->auth(
 </html>
 ```
 
-### ログアウト
+#### ログアウト
 
 ```php
 <?php
@@ -130,6 +119,20 @@ $form->logout('user');
 </body>
 </html>
 ```
+
+#### フォーム自動処理
+
+```php
+<?php
+require_once('/path/to/vendor/autoload.php');
+$pdo = new PDO( /* PDO Options */ );
+$exdb = new excellent_db\create( $pdo, /* options */ );
+
+$form = $exdb->get_form();
+$form->automatic_form();
+exit();
+```
+
 
 ## ライセンス - License
 

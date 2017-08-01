@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__.'/../php/config.php');
 $form = $exdb->get_form();
-$form->signup(
+$form->automatic_signup_form(
 	'user', // テーブル名
 	array( // 初期登録するデータ
 		'user_account',

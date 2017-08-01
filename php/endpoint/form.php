@@ -225,7 +225,7 @@ class endpoint_form{
 	 * @param array $options オプション
 	 * @return boolean Always `true`.
 	 */
-	public function signup($table_name, $init_cols, $options = array()){
+	public function automatic_signup_form($table_name, $init_cols, $options = array()){
 		@header('text/html; charset=UTF-8');
 
 		$param_options = $this->get_options();
