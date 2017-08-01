@@ -58,6 +58,26 @@ exit();
 ```
 
 
+### サインアップフォーム
+
+```php
+<?php
+require_once('/path/to/vendor/autoload.php');
+$pdo = new PDO( /* PDO Options */ );
+$exdb = new excellent_db\create( $pdo, /* options */ );
+
+$form = $exdb->get_form();
+$form->signup(
+	'user', // テーブル名
+	array( // 初期登録するデータ
+		'user_account',
+		'user_name',
+		'email',
+		'password',
+	)
+);
+```
+
 ### ログインフォーム
 
 ```php

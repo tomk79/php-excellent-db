@@ -58,6 +58,11 @@ class validator_validate{
 				// 必須項目ではなく、かつ値が入力されていない場合、エラーとして扱わない
 				continue;
 			}
+			if( $column_definition->not_null && !strlen($value) ){
+				// 必須項目で、かつ値が入力されていない場合、エラー
+				$errors[$column_definition->name] = 'Required.';
+				continue;
+			}
 
 			// EMAIL 形式チェック
 			if( $column_definition->type == 'email' ){

@@ -36,6 +36,7 @@ class endpoint_form{
 	public function __construct( $exdb, $options ){
 		$this->exdb = $exdb;
 		$this->options = $options;
+		$this->query_options = array();
 
 		$tmp_path_info = @$_SERVER['PATH_INFO'];
 		$tmp_path_info = explode('/', $tmp_path_info);
@@ -215,6 +216,33 @@ class endpoint_form{
 		return null;
 	} // automatic_form();
 
+
+	/**
+	 * Automatic Signup form
+	 *
+	 * @param  string $table_name テーブル名
+	 * @param  array $init_cols 初期設定するカラム名
+	 * @return boolean Always `true`.
+	 */
+	public function signup($table_name, $init_cols){
+		@header('text/html; charset=UTF-8');
+
+		$options = $this->get_options();
+		$data = $options['post_params'];
+
+		$this->table_definition = $this->exdb->get_table_definition($table_name);
+
+		$is_login = $this->exdb->user()->is_login($table_name);
+		if( $is_login ){
+			// ログイン処理済みなら終了
+			echo '<p>Already Logging in.</p>';
+			return true;
+		}
+		$page_edit = new endpoint_form_signup($this->exdb, $this, $table_name, $init_cols);
+		echo $page_edit->execute();
+
+		return true;
+	}
 
 	/**
 	 * Execute Automatic Auth form
