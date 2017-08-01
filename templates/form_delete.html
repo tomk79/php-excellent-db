@@ -5,10 +5,14 @@
 <p>Realy to delete this? (You can NOT get it back.)</p>
 
 <form action="{{ action }}" method="post">
-<p>
+<p style="text-align:center;">
 	<button class="btn btn-danger">Yes, DELETE</button>
-	<a href="{{ href_detail }}" class="btn btn-link">cancel</a>
 </p>
+{% if( href_backto ) %}
+<p style="text-align:center;">
+	<a href="{{ href_backto }}" class="btn btn-link">cancel</a>
+</p>
+{% endif %}
 <input type="hidden" name=":action" value="write" />
 {{ hidden|raw }}
 </form>

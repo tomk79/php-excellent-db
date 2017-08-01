@@ -1,2 +1,4 @@
 <p>DONE.</p>
-<p><a href="{{ href_detail }}" class="btn btn-default">BACK</a></p>
+{% if(href_backto) %}
+<p><a href="{{ href_backto }}" class="btn btn-default">BACK</a></p>
+{% endif %}

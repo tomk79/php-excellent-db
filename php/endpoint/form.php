@@ -220,15 +220,16 @@ class endpoint_form{
 	/**
 	 * Automatic Signup form
 	 *
-	 * @param  string $table_name テーブル名
-	 * @param  array $init_cols 初期設定するカラム名
+	 * @param string $table_name テーブル名
+	 * @param array $init_cols 初期設定するカラム名
+	 * @param array $options オプション
 	 * @return boolean Always `true`.
 	 */
-	public function signup($table_name, $init_cols){
+	public function signup($table_name, $init_cols, $options = array()){
 		@header('text/html; charset=UTF-8');
 
-		$options = $this->get_options();
-		$data = $options['post_params'];
+		$param_options = $this->get_options();
+		$data = $param_options['post_params'];
 
 		$this->table_definition = $this->exdb->get_table_definition($table_name);
 
@@ -238,7 +239,7 @@ class endpoint_form{
 			echo '<p>Already Logging in.</p>';
 			return true;
 		}
-		$page_edit = new endpoint_form_signup($this->exdb, $this, $table_name, $init_cols);
+		$page_edit = new endpoint_form_signup($this->exdb, $this, $table_name, $init_cols, $options);
 		echo $page_edit->execute();
 
 		return true;

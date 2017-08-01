@@ -30,6 +30,9 @@ class endpoint_form_signup{
 	/** Action Name (`edit` or `create`) */
 	private $action_name;
 
+	/** Options */
+	private $options;
+
 	/**
 	 * constructor
 	 *
@@ -37,8 +40,9 @@ class endpoint_form_signup{
 	 * @param object $form_endpoint Form Endpoint Object
 	 * @param string $table_name Target Table Name
 	 * @param array $init_cols 初期設定するカラム名
+	 * @param array $options オプション
 	 */
-	public function __construct( $exdb, $form_endpoint, $table_name, $init_cols = array() ){
+	public function __construct( $exdb, $form_endpoint, $table_name, $init_cols, $options = array() ){
 		$this->exdb = $exdb;
 		$this->form_endpoint = $form_endpoint;
 		$this->table_name = $table_name;
@@ -46,6 +50,10 @@ class endpoint_form_signup{
 		$this->table_definition = $this->form_endpoint->get_current_table_definition();
 		$this->query_options = $this->form_endpoint->get_query_options();
 		$this->action_name = 'create';
+		$this->options = $options;
+		if( !@strlen($this->options['href_backto']) ){
+			$this->options['href_backto'] = '?';
+		}
 		return;
 	}
 
@@ -123,7 +131,7 @@ class endpoint_form_signup{
 		$rtn = $this->form_endpoint->render(
 			'form_edit.html',
 			array(
-				'href_detail'=>'?',
+				'href_backto'=>$this->options['href_backto'],
 				'action'=>'?',
 				'error'=>@$errors[':common'],
 				'content'=>$rtn,
@@ -161,7 +169,7 @@ class endpoint_form_signup{
 		$rtn = $this->form_endpoint->render(
 			'form_edit_confirm.html',
 			array(
-				'href_detail'=>'?',
+				'href_backto'=>$this->options['href_backto'],
 				'action'=>'?',
 				'content'=>$content,
 				'hidden'=>$hidden,
@@ -217,7 +225,7 @@ class endpoint_form_signup{
 		$rtn = $this->form_endpoint->render(
 			'form_edit_done.html',
 			array(
-				'href_detail'=>'?',
+				'href_backto'=>$this->options['href_backto'],
 			)
 		);
 

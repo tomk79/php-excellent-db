@@ -8,5 +8,8 @@ $form->signup(
 		'user_name',
 		'email',
 		'password',
+	),
+	array(
+		'href_backto'=>'./'
 	)
 );

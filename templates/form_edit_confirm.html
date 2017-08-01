@@ -14,4 +14,6 @@
 {{ hidden|raw }}
 </form>
 
-<p><a href="{{ href_detail }}" class="btn btn-link">cancel</a></p>
+{% if( href_backto ) %}
+<p><a href="{{ href_backto }}" class="btn btn-link">cancel</a></p>
+{% endif %}
