@@ -1,5 +1,6 @@
 <?php
-@date_default_timezone_set('Asia/Tokyo');
+require_once(__DIR__.'/testhelper/server_setup.php');
+test_helper_server_setup();
 
 /**
  * Test Script

@@ -1,33 +1,6 @@
 <?php
-@date_default_timezone_set('Asia/Tokyo');
-
-// Command that starts the built-in web server
-$command = sprintf(
-	'php -S %s:%d -t %s >/dev/null 2>&1 & echo $!',
-	WEB_SERVER_HOST,
-	WEB_SERVER_PORT,
-	WEB_SERVER_DOCROOT
-);
-
-// Execute the command and store the process ID
-$output = array();
-exec($command, $output);
-$pid = (int) $output[0];
-
-echo sprintf(
-	'%s - Web server started on %s:%d with PID %d',
-	date('r'),
-	WEB_SERVER_HOST,
-	WEB_SERVER_PORT,
-	$pid
-) . PHP_EOL;
-
-// Kill the web server when the process ends
-register_shutdown_function(function() use ($pid) {
-	echo sprintf('%s - Killing process with ID %d', date('r'), $pid) . PHP_EOL;
-	exec('kill ' . $pid);
-});
-
+require_once(__DIR__.'/testhelper/server_setup.php');
+test_helper_server_setup();
 
 /**
  * Test Script
@@ -155,7 +128,90 @@ class apiTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals( $getJson->result, true );
 		$this->assertNull( $getJson->row );
 
-	}//testPostPutDelete()
+	} // testPostPutDelete()
+
+	/**
+	 * POST Error Test
+	 */
+	public function testPostErrors(){
+
+		// --------------------------------------
+		// 行を追加
+		// 必須項目を省略するエラー
+		$res = $this->client->request(
+			'POST',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user',
+			array(
+				'form_params'=>array(
+					// 'user_account' => 'post-tester-00001', // <- required value
+					'password' => 'password',
+					'user_name' => 'POST Tester No.00001',
+				)
+			)
+		);
+		// var_dump($res);
+		$postJson = json_decode($res->getBody());
+		// var_dump($postJson);
+		$this->assertFalse( $postJson->result );
+		$this->assertNull( $postJson->given_id );
+
+		$res = $this->client->request(
+			'POST',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user',
+			array(
+				'form_params'=>array(
+					'user_account' => 'post-error-tester-00001', // <- required value
+					'password' => 'password', // <- required value
+					// 'user_name' => 'POST Error Tester No.00001', // <- required value
+				)
+			)
+		);
+		// var_dump($res);
+		$postJson = json_decode($res->getBody());
+		// var_dump($postJson);
+		$this->assertFalse( $postJson->result );
+		$this->assertNull( $postJson->given_id );
+
+		// --------------------------------------
+		// UNIQUE項目が重複しているエラー
+		$res = $this->client->request(
+			'POST',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user',
+			array(
+				'form_params'=>array(
+					'user_account' => 'post-tester-00001', // <- UNIQUE (先に論理削除のテストをしているためDBには残っている)
+					'password' => 'password',
+					'user_name' => 'POST Tester No.00001',
+				)
+			)
+		);
+		// var_dump($res);
+		$postJson = json_decode($res->getBody());
+		// var_dump($postJson);
+		$this->assertFalse( $postJson->result );
+		$this->assertNull( $postJson->given_id );
+
+		// --------------------------------------
+		// Emailの形式エラー
+		$res = $this->client->request(
+			'POST',
+			'http://'.WEB_SERVER_HOST.':'.WEB_SERVER_PORT.'/api_test.php/user',
+			array(
+				'form_params'=>array(
+					'user_account' => 'post-error-tester-00003',
+					'password' => 'password',
+					'user_name' => 'POST Error Tester No.00003',
+					'email' => 'testmail.localhost', // 記号 `@` が含まれないため、Email形式のバリデータがエラーを返すはず
+				)
+			)
+		);
+		// var_dump($res);
+		$postJson = json_decode($res->getBody());
+		// var_dump($postJson);
+		$this->assertFalse( $postJson->result );
+		$this->assertNull( $postJson->given_id );
+
+	} // testPostErrors()
 
 	/**
 	 * Getting List
