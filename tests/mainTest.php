@@ -215,4 +215,48 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 	}//testPhysicalDelete()
 
+	/**
+	 * INSTERT Error
+	 */
+	public function testInstertError(){
+		$result = $this->exdb->insert('user', array(
+			// 'user_account'=>'tester-error-00001', // <- required value
+			'password'=>'password',
+			'user_name'=>'Tester Error No.00001',
+		));
+
+		// var_dump($result);
+		$this->assertFalse( $result );
+
+		$result = $this->exdb->insert('user', array(
+			'user_account'=>'tester-error-00002',
+			'password'=>'password',
+			'user_name'=>'Tester Error No.00002',
+			'email'=>'error.localhost', // <- 記号 `@` がないため、形式エラーがおきるはず
+		));
+
+		// var_dump($result);
+		$this->assertFalse( $result );
+
+	} // testInstertError()
+
+	/**
+	 * UPDATE Error
+	 */
+	public function testUpdateError(){
+		$result = $this->exdb->update(
+			'user',
+			array(
+				'user_account'=>'tester-00001'
+			),
+			array(
+				'user_name'=>'Updated UserName Error No.00001',
+				'email'=>'email.localhost',
+			)
+		);
+		// var_dump($result);
+		$this->assertFalse( $result );
+
+	} // testUpdateError()
+
 }
