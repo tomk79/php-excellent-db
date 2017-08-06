@@ -250,7 +250,7 @@ class endpoint_form{
 	 *
 	 * @param  string $table_name テーブル名
 	 * @param  array $inquiries 照会するカラム名
-	 * @return boolean Always `true`.
+	 * @return boolean Success to `true`, Failed, or NOT Login to `false`.
 	 */
 	public function auth($table_name, $inquiries){
 		$options = $this->get_options();
@@ -294,7 +294,6 @@ class endpoint_form{
 		// var_dump($table_list);
 		$rtn = $this->wrap_theme($rtn);
 		echo $rtn;
-		exit();
 		return false;
 
 	} // auth();

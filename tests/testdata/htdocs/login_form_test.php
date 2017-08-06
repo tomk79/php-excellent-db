@@ -1,13 +1,16 @@
 <?php
 require_once(__DIR__.'/../php/config.php');
 $form = $exdb->get_form();
-$form->auth(
+$is_login = $form->auth(
 	'user', // テーブル名
 	array( // 照合するデータ
 		'user_account',
 		'password',
 	)
 );
+if( !$is_login ){
+	exit();
+}
 ?>
 <!DOCTYPE html>
 <html>
