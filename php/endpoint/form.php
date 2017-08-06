@@ -115,7 +115,14 @@ class endpoint_form{
 
 
 		// Twig テンプレートエンジンを準備
-		$loader = new \Twig_Loader_Filesystem(__DIR__.'/../../templates/');
+		$templates = array();
+		if( is_array($this->options['templates']) ){
+			$templates = $this->options['templates'];
+		}elseif( is_string($this->options['templates']) ){
+			array_push($templates, $this->options['templates']);
+		}
+		array_push($templates, __DIR__.'/../../templates/');
+		$loader = new \Twig_Loader_Filesystem($templates);
 		$this->twig = new \Twig_Environment($loader, array(
 			// 'cache' => $this->exdb->conf()->path_cache_dir.'/twig_cache/',
 			'debug' => true,
