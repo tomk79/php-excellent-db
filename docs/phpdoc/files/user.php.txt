@@ -64,12 +64,12 @@ class user{
 			$where[$key] = @$data[$key];
 		}
 		$res = $this->exdb->select( $table_name, $where );
-		if( is_array($res) && count($res) ){
+		if( is_array($res) && count($res) === 1 ){
 			$user_info = $this->exdb->session()->get('user_info');
 			if(!is_array($user_info)){
 				$user_info = array();
 			}
-			$user_info[$table_name] = $res;
+			$user_info[$table_name] = $res[0];
 			$this->exdb->session()->set('user_info', $user_info);
 			return true;
 		}

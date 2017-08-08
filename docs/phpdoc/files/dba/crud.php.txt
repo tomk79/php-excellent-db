@@ -252,15 +252,20 @@ class dba_crud{
 		$table_definition = $this->exdb->get_table_definition($tbl);
 		$delete_flg_id = $table_definition->system_columns->delete_flg;
 
-		foreach($where as $key=>$val){
+		foreach($table_definition->columns as $key=>$val){
+			if( !array_key_exists( $key, $where ) && !array_key_exists( $key, $data ) ){continue;}
 			if( $table_definition->columns->{$key}->type == 'password' ){
 				// パスワードをハッシュ値化
-				$where[$key] = $this->exdb->encrypt_password($where[$key]);
-				$data[$key] = $this->exdb->encrypt_password($data[$key]);
+				if( array_key_exists($key, $where) ){ $where[$key] = $this->exdb->encrypt_password($where[$key]); }
+				if( strlen($data[$key]) ){
+					if( array_key_exists($key, $data) ){ $data[$key] = $this->exdb->encrypt_password($data[$key]); }
+				}else{
+					unset($data[$key]);
+				}
 			}elseif( $table_definition->columns->{$key}->type == 'delete_flg' ){
 				// delete_flgを 0 or 1 に整形
-				$where[$key] = ($where[$key] ? 1 : 0);
-				$data[$key] = ($data[$key] ? 1 : 0);
+				if( array_key_exists($key, $where) ){ $where[$key] = ($where[$key] ? 1 : 0); }
+				if( array_key_exists($key, $data) ){ $data[$key] = ($data[$key] ? 1 : 0); }
 			}
 		}
 		if( is_string($delete_flg_id) && @is_null( $where[$delete_flg_id] ) ){

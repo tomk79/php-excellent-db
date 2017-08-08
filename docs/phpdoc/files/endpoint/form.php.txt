@@ -32,10 +32,18 @@ class endpoint_form{
 	 *
 	 * @param object $exdb ExcellentDb Object
 	 * @param array $options Options
+	 * - method : HTTPメソッド名。省略時 `$_SERVER['REQUEST_METHOD']` で初期化。
+	 * - get_params : GETパラメータ。省略時 `$_GET` で初期化。
+	 * - post_params : POSTパラメータ。省略時 `$_POST` で初期化。
+	 * - table : テーブル名。
+	 * - id : 行の識別ID。
+	 * - action : action名。例: input, confirm, write, done
+	 * - templates : カスタムテンプレートの格納フォルダ
 	 */
 	public function __construct( $exdb, $options ){
 		$this->exdb = $exdb;
 		$this->options = $options;
+		$this->query_options = array();
 
 		$tmp_path_info = @$_SERVER['PATH_INFO'];
 		$tmp_path_info = explode('/', $tmp_path_info);
@@ -114,7 +122,14 @@ class endpoint_form{
 
 
 		// Twig テンプレートエンジンを準備
-		$loader = new \Twig_Loader_Filesystem(__DIR__.'/../../templates/');
+		$templates = array();
+		if( @is_array($this->options['templates']) ){
+			$templates = $this->options['templates'];
+		}elseif( @is_string($this->options['templates']) ){
+			array_push($templates, $this->options['templates']);
+		}
+		array_push($templates, __DIR__.'/../../templates/');
+		$loader = new \Twig_Loader_Filesystem($templates);
 		$this->twig = new \Twig_Environment($loader, array(
 			// 'cache' => $this->exdb->conf()->path_cache_dir.'/twig_cache/',
 			'debug' => true,
@@ -217,11 +232,39 @@ class endpoint_form{
 
 
 	/**
+	 * Automatic Signup form
+	 *
+	 * @param string $table_name テーブル名
+	 * @param array $init_cols 初期設定するカラム名
+	 * @param array $options オプション
+	 * @return boolean Always `true`.
+	 */
+	public function automatic_signup_form($table_name, $init_cols, $options = array()){
+		@header('text/html; charset=UTF-8');
+
+		$param_options = $this->get_options();
+		$data = $param_options['post_params'];
+
+		$this->table_definition = $this->exdb->get_table_definition($table_name);
+
+		$is_login = $this->exdb->user()->is_login($table_name);
+		if( $is_login ){
+			// ログイン処理済みなら終了
+			echo '<p>Already Logging in.</p>';
+			return true;
+		}
+		$page_edit = new endpoint_form_signup($this->exdb, $this, $table_name, $init_cols, $options);
+		echo $page_edit->execute();
+
+		return true;
+	}
+
+	/**
 	 * Execute Automatic Auth form
 	 *
 	 * @param  string $table_name テーブル名
 	 * @param  array $inquiries 照会するカラム名
-	 * @return boolean Always `true`.
+	 * @return boolean Success to `true`, Failed, or NOT Login to `false`.
 	 */
 	public function auth($table_name, $inquiries){
 		$options = $this->get_options();
@@ -265,7 +308,6 @@ class endpoint_form{
 		// var_dump($table_list);
 		$rtn = $this->wrap_theme($rtn);
 		echo $rtn;
-		exit();
 		return false;
 
 	} // auth();

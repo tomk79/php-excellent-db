@@ -36,6 +36,7 @@ class migrate_init_tables{
 			$sql_create_db = '';
 			$sql_create_db .= 'CREATE TABLE '.$this->exdb->get_physical_table_name($table_definition_row->name).' (';
 			$ary_table_columns = array();
+			$ary_foreign_keys = array();
 			foreach( $table_definition_row->columns as $column_definition ){
 				$sql_column_definition = '';
 
@@ -73,18 +74,35 @@ class migrate_init_tables{
 				}
 
 				// NOT NULL 制約
-				if( $column_definition->not_null ){
+				if( @$column_definition->not_null ){
 					$sql_column_definition .= ' NOT NULL';
 				}
 
 				// UNIQUE 制約
-				if( $column_definition->unique ){
+				if( @$column_definition->unique ){
 					$sql_column_definition .= ' UNIQUE';
+				}
+
+				// FOREIGN KEY 制約
+				if( @$column_definition->foreign_key ){
+					$ary_foreign_keys[$column_definition->name] = $column_definition->foreign_key;
 				}
 
 				array_push($ary_table_columns, $sql_column_definition);
 			}
 			$sql_create_db .= implode($ary_table_columns, ',');
+
+			if( count($ary_foreign_keys) ){
+				// FOREIGN KEY 制約
+				foreach($ary_foreign_keys as $colName=>$foreign_tbl_col){
+					$sql_create_db .= ', FOREIGN KEY (';
+					$sql_create_db .= $colName;
+					$sql_create_db .= ')';
+					$foreign_tbl_col = explode('.', $foreign_tbl_col);
+					$sql_create_db .= ' REFERENCES '.$this->exdb->get_physical_table_name($foreign_tbl_col[0]).'('.$foreign_tbl_col[1].')';
+				}
+			}
+
 			$sql_create_db .= ');';
 			// var_dump($sql_create_db);
 			$result = @$this->exdb->pdo()->query($sql_create_db);

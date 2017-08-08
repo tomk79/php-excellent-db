@@ -5,9 +5,9 @@
 namespace excellent_db;
 
 /**
- * endpoint/form/edit.php
+ * endpoint/form/signup.php
  */
-class endpoint_form_edit{
+class endpoint_form_signup{
 
 	/** ExcellentDb Object */
 	private $exdb;
@@ -24,11 +24,14 @@ class endpoint_form_edit{
 	/** Table Name */
 	private $table_name;
 
-	/** Row ID */
-	private $row_id;
+	/** 初期設定するカラム名 */
+	private $init_cols;
 
 	/** Action Name (`edit` or `create`) */
 	private $action_name;
+
+	/** Options */
+	private $options;
 
 	/**
 	 * constructor
@@ -36,16 +39,21 @@ class endpoint_form_edit{
 	 * @param object $exdb ExcellentDb Object
 	 * @param object $form_endpoint Form Endpoint Object
 	 * @param string $table_name Target Table Name
-	 * @param string $row_id Target Row Unique ID
+	 * @param array $init_cols 初期設定するカラム名
+	 * @param array $options オプション
 	 */
-	public function __construct( $exdb, $form_endpoint, $table_name, $row_id = null ){
+	public function __construct( $exdb, $form_endpoint, $table_name, $init_cols, $options = array() ){
 		$this->exdb = $exdb;
 		$this->form_endpoint = $form_endpoint;
 		$this->table_name = $table_name;
-		$this->row_id = $row_id;
+		$this->init_cols = $init_cols;
 		$this->table_definition = $this->form_endpoint->get_current_table_definition();
 		$this->query_options = $this->form_endpoint->get_query_options();
-		$this->action_name = (strlen($row_id) ? 'edit' : 'create');
+		$this->action_name = 'create';
+		$this->options = $options;
+		if( !@strlen($this->options['href_backto']) ){
+			$this->options['href_backto'] = '?';
+		}
 		return;
 	}
 
@@ -57,12 +65,7 @@ class endpoint_form_edit{
 	public function execute(){
 		$options = $this->form_endpoint->get_options();
 		$action = @$this->query_options['action'];
-		$data = array();
-		if( !strlen($action) && strlen($this->row_id) ){
-			$data = @$this->form_endpoint->get_current_row_data();
-		}else{
-			$data = array_merge($data, $options['post_params']);
-		}
+		$data = $options['post_params'];
 
 		$errors = $this->exdb->validate($this->table_name, $data);
 
@@ -92,7 +95,8 @@ class endpoint_form_edit{
 	 */
 	private function input($data, $errors = array()){
 		$rtn = '';
-		foreach( $this->table_definition->columns as $column_definition ){
+		foreach( $this->init_cols as $column_name ){
+			$column_definition = $this->table_definition->columns->$column_name;
 			// var_dump($column_definition);
 			if( !$this->exdb->is_editable_column( $column_definition ) ){
 				continue;
@@ -127,8 +131,8 @@ class endpoint_form_edit{
 		$rtn = $this->form_endpoint->render(
 			'form_edit.html',
 			array(
-				'href_backto'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
-				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
+				'href_backto'=>$this->options['href_backto'],
+				'action'=>'?',
 				'error'=>@$errors[':common'],
 				'content'=>$rtn,
 			)
@@ -146,7 +150,8 @@ class endpoint_form_edit{
 	private function confirm($data){
 		$content = '';
 		$hidden = '';
-		foreach( $this->table_definition->columns as $column_definition ){
+		foreach( $this->init_cols as $column_name ){
+			$column_definition = $this->table_definition->columns->$column_name;
 			// var_dump($column_definition);
 			if( !$this->exdb->is_editable_column( $column_definition ) ){
 				continue;
@@ -164,8 +169,8 @@ class endpoint_form_edit{
 		$rtn = $this->form_endpoint->render(
 			'form_edit_confirm.html',
 			array(
-				'href_backto'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
-				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
+				'href_backto'=>$this->options['href_backto'],
+				'action'=>'?',
 				'content'=>$content,
 				'hidden'=>$hidden,
 			)
@@ -207,7 +212,7 @@ class endpoint_form_edit{
 			$this->row_id = $data[$this->table_definition->key_column];
 		}
 
-		$action = $this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name);
+		$action = '';
 		@header('Location: '.$action.'?'.urlencode(':action').'=done');
 		return '';
 	} // write()
@@ -220,7 +225,7 @@ class endpoint_form_edit{
 		$rtn = $this->form_endpoint->render(
 			'form_edit_done.html',
 			array(
-				'href_backto'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
+				'href_backto'=>$this->options['href_backto'],
 			)
 		);
 

@@ -98,7 +98,7 @@ class endpoint_form_delete{
 		$rtn = $this->form_endpoint->render(
 			'form_delete.html',
 			array(
-				'href_detail'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
+				'href_backto'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id),
 				'action'=>$this->form_endpoint->generate_url($this->table_name, $this->row_id, $this->action_name),
 				'content'=>$content,
 				'hidden'=>$hidden,
@@ -139,7 +139,7 @@ class endpoint_form_delete{
 		$rtn = $this->form_endpoint->render(
 			'form_delete_done.html',
 			array(
-				'href_list'=>$this->form_endpoint->generate_url($this->table_name),
+				'href_backto'=>$this->form_endpoint->generate_url($this->table_name),
 			)
 		);
 
