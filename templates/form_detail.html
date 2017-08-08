@@ -2,8 +2,10 @@
 {{ content|raw }}
 </table>
 
-<p>
-	<a href="{{ href_edit }}" class="btn btn-primary">edit this Record</a>
-	<a href="{{ href_delete }}" class="btn btn-danger">delete this Record</a>
-	<a href="{{ href_list }}" class="btn btn-link">back to list page</a>
-</p>
+<div class="text-center">
+	<a href="{{ href_edit }}" class="btn btn-primary">編集する</a>
+	<a href="{{ href_delete }}" class="btn btn-danger">削除する</a>
+</div>
+<div class="text-left">
+	<a href="{{ href_list }}" class="btn btn-link">リストページへ戻る</a>
+</div>

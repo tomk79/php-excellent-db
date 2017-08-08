@@ -1,4 +1,5 @@
-<p>PLEASE LOGIN</p>
+<p>ログインしてください。</p>
+
 <form action="{{ action }}" method="post">
 {% if is_error %}
 	<span class="help-block">Failed to logging in. Anything wrong.</span>
@@ -7,8 +8,8 @@
 <table class="table">
 {{ content|raw }}
 </table>
-<p>
-	<button class="btn btn-primary">LOGIN</button>
-</p>
+<div class="text-center">
+	<button class="btn btn-primary">ログイン</button>
+</div>
 <input type="hidden" name=":action" value="login" />
 </form>

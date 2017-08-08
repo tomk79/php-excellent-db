@@ -6,13 +6,13 @@
 {{ content|raw }}
 </table>
 
-<p style="text-align: center;">
-	<button class="btn btn-primary">CHECK</button>
-</p>
+<div class="text-center">
+	<button class="btn btn-primary">入力内容を確認する</button>
+</div>
 {% if( href_backto ) %}
-<p style="text-align: center;">
-	<a href="{{ href_backto }}" class="btn btn-link">cancel</a>
-</p>
+<div class="text-left">
+	<a href="{{ href_backto }}" class="btn btn-link">キャンセル</a>
+</div>
 {% endif %}
 <input type="hidden" name=":action" value="confirm" />
 </form>

@@ -26,6 +26,11 @@ class endpoint_rest{
 	 *
 	 * @param object $exdb ExcellentDb Object
 	 * @param array $options Options
+	 * - method : HTTPメソッド名。省略時 `$_SERVER['REQUEST_METHOD']` で初期化。
+	 * - get_params : GETパラメータ。省略時 `$_GET` で初期化。
+	 * - post_params : POSTパラメータ。省略時 `$_POST` で初期化。
+	 * - table : テーブル名。
+	 * - id : 行の識別ID。
 	 */
 	public function __construct( $exdb, $options ){
 		$this->exdb = $exdb;

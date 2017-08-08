@@ -1,5 +1,10 @@
 <h2>{{ table_label }}</h2>
-<p>Max: {{ count }}</p>
+
+<div class="text-right">
+    <a href="{{ href_create }}" class="btn btn-primary">新規作成</a>
+</div>
+
+<p>{{ count }} 件のデータ</p>
 <table class="table">
 <thead>
 <tr>
@@ -21,10 +26,24 @@
 </tbody>
 </table>
 
-<ul>
-{% if(prev) %}<li><a href="{{ prev.href }}">PREV</a></li>{% endif %}
-<li>{{ page }}/{{ max_page }}</li>
-{% if(next) %}<li><a href="{{ next.href }}">NEXT</a></li>{% endif %}
-</ul>
+<div class="text-center">
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    {% if(prev) %}<li>
+      <a href="{{ prev.href }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>{% endif %}
+    <li><span>{{ page }}/{{ max_page }}</span></li>
+    {% if(next) %}<li>
+      <a href="{{ next.href }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>{% endif %}
+  </ul>
+</nav>
+</div>
 
-<p><a href="{{ href_create }}" class="btn btn-primary">CREATE NEW</a></p>
+<div class="text-right">
+    <a href="{{ href_create }}" class="btn btn-primary">新規作成</a>
+</div>
