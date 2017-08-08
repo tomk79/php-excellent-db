@@ -9,15 +9,15 @@
 <thead>
 <tr>
 <th></th>
-{% for key,val in list[0].val %}
-<th>{{ key }}</th>
+{% for key,val in table_header %}
+<th>{{ val.label }}</th>
 {% endfor %}
 </tr>
 </thead>
 <tbody>
 {% for row in list %}
 <tr>
-<td><a href="{{ row.href }}" class="btn btn-default">DETAIL</a></td>
+<td><a href="{{ row.href }}" class="btn btn-default">詳細</a></td>
 {% for key,val in row.val %}
 <td>{{ val }}</td>
 {% endfor %}

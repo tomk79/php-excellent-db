@@ -373,16 +373,31 @@ class endpoint_form{
 			return null;
 		}
 
+		$table_header = json_decode(json_encode($this->table_definition->columns), true);
 		$list = $this->exdb->select($table_name, array(), $this->query_options);
 
-		// var_dump($this->table_definition->system_columns);
+		// password を隠す
 		if( count($this->table_definition->system_columns->password) ){
-			foreach( $list as $key=>$val ){
-				foreach($this->table_definition->system_columns->password as $column_name){
-					unset($list[$key][$column_name]);
+			foreach($this->table_definition->system_columns->password as $tmp_column_name){
+				unset($table_header[$tmp_column_name]);
+				foreach( $list as $key=>$val ){
+					unset($list[$key][$tmp_column_name]);
+				}
+			}
+			unset($tmp_column_name);
+		}
+		// hidden フラグのある値を隠す
+		foreach( $table_header as $tmp_column_name=>$tmp_column_definition ){
+			if( $tmp_column_definition['hidden'] ){
+				unset($table_header[$tmp_column_name]);
+				unset($table_header[$tmp_column_name]);
+				foreach( $list as $key=>$val ){
+					unset($list[$key][$tmp_column_name]);
 				}
 			}
 		}
+		unset($tmp_column_name, $tmp_column_definition);
+
 		$original_list = $list;
 		$list = array();
 		foreach( $original_list as $row ){
@@ -410,6 +425,7 @@ class endpoint_form{
 			'form_list.html',
 			array(
 				'table_label'=>$this->table_definition->label,
+				'table_header'=>$table_header,
 				'count'=>$max_count,
 				'list'=>$list,
 				'href_create'=>$this->generate_url($table_name, null, 'create'),

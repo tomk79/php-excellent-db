@@ -66,10 +66,10 @@
                 "last_login_date": {
                     "name": "last_login_date",
                     "type": "datetime",
-                    "label": "Last Login",
+                    "label": "Last Login Date",
                     "description": null,
                     "unique": null,
-                    "hidden": 1,
+                    "hidden": null,
                     "not_null": null,
                     "foreign_key": null
                 },
