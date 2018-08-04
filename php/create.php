@@ -22,16 +22,22 @@ class create{
 	private $pdo;
 
 	/**
+	 * Database Config
+	 * @ignore
+	 */
+	private $config;
+
+	/**
+	 * Table Definition
+	 * @ignore
+	 */
+	private $table_definition;
+
+	/**
 	 * Login User Manager Instance
 	 * @ignore
 	 */
 	private $user;
-
-	/**
-	 * cache manager Instance
-	 * @ignore
-	 */
-	private $caches;
 
 	/**
 	 * CRUD Operator Instance
@@ -52,16 +58,10 @@ class create{
 	private $validator;
 
 	/**
-	 * Database Config
+	 * cache manager Instance
 	 * @ignore
 	 */
-	private $config;
-
-	/**
-	 * Table Definition
-	 * @ignore
-	 */
-	private $table_definition;
+	private $caches;
 
 	/**
 	 * constructor
@@ -93,7 +93,7 @@ class create{
 		$this->session = new dba_session( $this );
 
 		// Generate Validator
-		$this->validator = new validator_validate($this);
+		$this->validator = new validator($this);
 
 		// Generate Login User Manager
 		$this->user = new user( $this );
@@ -389,7 +389,7 @@ class create{
 	 * @return array エラー配列
 	 */
 	public function validate( $table, $data ){
-		$errors = $this->validator->validate($table, $data);
+		$errors = $this->validator->validate_table($table, $data);
 		return $errors;
 	}
 

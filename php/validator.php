@@ -1,13 +1,13 @@
 <?php
 /**
- * excellent-db: Validator/Validate
+ * excellent-db: Validator
  */
 namespace excellent_db;
 
 /**
- * validator/validate.php
+ * validator.php
  */
-class validator_validate{
+class validator{
 
 	/** ExcellentDb Object */
 	private $exdb;
@@ -23,12 +23,12 @@ class validator_validate{
 	}
 
 	/**
-	 * Do Validation
+	 * Validate Table Values
 	 * @param  string $table_name テーブル名
-	 * @param  array $data 入力データ
+	 * @param  array $input_data 入力データ
 	 * @return array エラー配列
 	 */
-	public function validate($table_name, $data){
+	public function validate_table($table_name, $input_data){
 		$errors = array();
 
 		$table_definition = $this->exdb->get_table_definition( $table_name );
@@ -38,7 +38,7 @@ class validator_validate{
 		}
 
 		// 余計な値が送られていないかチェック
-		foreach( $data as $key=>$val ){
+		foreach( $input_data as $key=>$val ){
 			if( !@$table_definition->columns->{$key} ){
 				$errors[':common'] = '"'.$key.'" is NOT Exists in table "'.$table_name.'".';
 			}
@@ -47,11 +47,11 @@ class validator_validate{
 		// --------------------------------------
 		// 入力値のチェック
 		foreach( $table_definition->columns as $column_definition ){
-			if( !array_key_exists($column_definition->name, $data) ){
-				// `$data` に含まれていないキーは調べない
+			if( !array_key_exists($column_definition->name, $input_data) ){
+				// `$input_data` に含まれていないキーは調べない
 				continue;
 			}
-			$value = @$data[$column_definition->name];
+			$value = @$input_data[$column_definition->name];
 
 			// NOT NULL 制約
 			if( !$column_definition->not_null && !strlen($value) ){
