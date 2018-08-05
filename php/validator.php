@@ -55,7 +55,7 @@ class validator{
 
 			$restrictions = array();
 			if($column_definition->not_null){
-				$restrictions['not_null'] = true;
+				$restrictions['required'] = true;
 			}
 			$detect_errors = $this->detect_errors($value, $column_definition->type, $restrictions);
 
@@ -97,41 +97,24 @@ class validator{
 	public function detect_errors($value, $type, $restrictions = array()){
 		$errors = array();
 
-		$is_not_null = @$restrictions['not_null'];
-		if( $is_not_null && !strlen($value) ){
+		$is_required = @$restrictions['required'];
+		if( $is_required && !strlen($value) ){
 			// NOT NULL 制約
 			// 空白文字も NULL と同様に扱う
 			array_push($errors, 'Required.');
 			return $errors;
 		}
-		if( !$is_not_null && !strlen($value) ){
+		if( !$is_required && !strlen($value) ){
 			// NOT NULL 制約 がなくて値が空白の場合
 			// 空白文字も NULL と同様に扱う
 			return $errors;
 		}
 
-		// EMAIL 形式チェック
-		if( $type == 'email' ){
-			if( !preg_match('/^.*?\@.*?$/s', $value) ){
-				array_push($errors, 'Invalid E-Mail Format.');
-			}
-			if( preg_match('/\r|\n|\r\n/', $value) ){
-				array_push($errors, 'Line breaking code included.');
-			}
+		$path_validate = __DIR__.'/../form_elements/'.urlencode($type).'/validate.php';
+		if( is_file($path_validate) ){
+			$validate = require($path_validate);
+			$errors = $validate($value, $restrictions);
 		}
-
-		// TEXT 形式チェック
-		if( $type == 'text' || $type == 'textarea' ){
-			if( !is_string($value) ){
-				array_push($errors, 'Strings required.');
-			}
-		}
-		if( $type == 'text' ){
-			if( preg_match('/\r|\n|\r\n/', $value) ){
-				array_push($errors, 'Line breaking code included.');
-			}
-		}
-
 		return $errors;
 	}
 

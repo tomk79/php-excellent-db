@@ -35,15 +35,15 @@ class validationTest extends PHPUnit_Framework_TestCase{
 	 */
 	public function testValidateNotNull(){
 
-		$errors = $this->validator->detect_errors('', 'email', array('not_null'=>true));
+		$errors = $this->validator->detect_errors('', 'email', array('required'=>true));
 		// var_dump($errors);
 		$this->assertEquals( count($errors), 1 );
 
-		$errors = $this->validator->detect_errors('', 'email', array('not_null'=>false));
+		$errors = $this->validator->detect_errors('', 'email', array('required'=>false));
 		// var_dump($errors);
 		$this->assertEquals( count($errors), 0 );
 
-		$errors = $this->validator->detect_errors('valid@example.com', 'email', array('not_null'=>true));
+		$errors = $this->validator->detect_errors('valid@example.com', 'email', array('required'=>true));
 		// var_dump($errors);
 		$this->assertEquals( count($errors), 0 );
 
