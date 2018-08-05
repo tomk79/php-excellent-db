@@ -110,10 +110,9 @@ class validator{
 			return $errors;
 		}
 
-		$path_validate = __DIR__.'/../form_elements/'.urlencode($type).'/validate.php';
-		if( is_file($path_validate) ){
-			$validate = require($path_validate);
-			$errors = $validate($value, $restrictions);
+		$type_info = $this->exdb->form_elements()->get_type_info($type);
+		if( is_callable($type_info['validate']) ){
+			$errors = $type_info['validate']($value, $restrictions);
 		}
 		return $errors;
 	}

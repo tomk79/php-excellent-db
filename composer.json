@@ -45,7 +45,8 @@
             "php/endpoint/form/edit.php",
             "php/endpoint/form/delete.php",
             "php/endpoint/rest.php",
-            "php/validator.php"
+            "php/validator.php",
+            "php/form_elements.php"
         ]
     }
 }

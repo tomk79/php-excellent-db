@@ -85,11 +85,23 @@ class endpoint_form_delete{
 			if( !$this->exdb->is_editable_column( $column_definition ) ){
 				continue;
 			}
-			$content .= $this->form_endpoint->render(
-				'form_elms/default/detail.html',
+			$type_info = $this->exdb->form_elements()->get_type_info($column_definition->type);
+			$form_elm = $this->form_endpoint->render(
+				$type_info['templates']['preview'],
 				array(
 					'value'=>@$data[$column_definition->name],
+					'name'=>@$column_definition->name,
 					'def'=>@$column_definition,
+					'error'=>@$errors[$column_definition->name],
+				)
+			);
+			$content .= $this->form_endpoint->render(
+				'form_elms_unit.html',
+				array(
+					'label'=>@$column_definition->label,
+					'content'=>$form_elm,
+					'def'=>@$column_definition,
+					'error'=>@$errors[$column_definition->name],
 				)
 			);
 			$hidden .= '<input type="hidden" name="'.htmlspecialchars($column_definition->name).'" value="'.htmlspecialchars(@$data[$column_definition->name]).'"/>';

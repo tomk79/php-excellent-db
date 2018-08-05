@@ -288,12 +288,21 @@ class endpoint_form{
 		$rtn = '';
 		foreach( $inquiries as $column_name ){
 			$column_definition = $table_definition->columns->{$column_name};
-			$rtn .= $this->render(
-				'form_elms/default/edit.html',
+			$type_info = $this->exdb->form_elements()->get_type_info($column_definition->type);
+			$form_elm = $this->render(
+				$type_info['templates']['preview'],
 				array(
-					'value'=>'',
-					'error'=>'',
+					'value'=>@$list[0][$column_definition->name],
+					'name'=>@$column_definition->name,
 					'def'=>@$column_definition,
+				)
+			);
+			$rtn .= $this->render(
+				'form_elms_unit.html',
+				array(
+					'label'=>@$column_definition->label,
+					'content'=>$form_elm,
+					'error'=>null,
 				)
 			);
 		}
@@ -462,11 +471,21 @@ class endpoint_form{
 		$rtn = '';
 		foreach( $this->table_definition->columns as $column_definition ){
 			// var_dump($column_definition);
-			$rtn .= $this->render(
-				'form_elms/default/detail.html',
+			$type_info = $this->exdb->form_elements()->get_type_info($column_definition->type);
+			$form_elm = $this->render(
+				$type_info['templates']['preview'],
 				array(
 					'value'=>@$list[0][$column_definition->name],
+					'name'=>@$column_definition->name,
 					'def'=>@$column_definition,
+				)
+			);
+			$rtn .= $this->render(
+				'form_elms_unit.html',
+				array(
+					'label'=>@$column_definition->label,
+					'content'=>$form_elm,
+					'error'=>null,
 				)
 			);
 		}

@@ -16,3 +16,4 @@ $exdb = new excellent_db\create( $pdo, array(
 	"path_definition_file" => __DIR__.'/../db/sample_db_tables.xlsx',
 	"path_cache_dir" => __DIR__.'/../_tmp/caches/',
 ) );
+$exdb->migrate_init_tables();

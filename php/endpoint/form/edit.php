@@ -113,13 +113,24 @@ class endpoint_form_edit{
 				}
 			}
 
-			$rtn .= $this->form_endpoint->render(
-				'form_elms/default/edit.html',
+			$type_info = $this->exdb->form_elements()->get_type_info($column_definition->type);
+			$form_elm = $this->form_endpoint->render(
+				$type_info['templates']['input'],
 				array(
 					'value'=>@$data[$column_definition->name],
-					'error'=>@$errors[$column_definition->name],
+					'name'=>@$column_definition->name,
 					'def'=>@$column_definition,
 					'select_options'=>@$foreign_key_array,
+					'error'=>@$errors[$column_definition->name],
+				)
+			);
+			$rtn .= $this->form_endpoint->render(
+				'form_elms_unit.html',
+				array(
+					'label'=>@$column_definition->label,
+					'content'=>$form_elm,
+					'def'=>@$column_definition,
+					'error'=>@$errors[$column_definition->name],
 				)
 			);
 		}
@@ -151,11 +162,21 @@ class endpoint_form_edit{
 			if( !$this->exdb->is_editable_column( $column_definition ) ){
 				continue;
 			}
-			$content .= $this->form_endpoint->render(
-				'form_elms/default/detail.html',
+			$type_info = $this->exdb->form_elements()->get_type_info($column_definition->type);
+			$form_elm = $this->form_endpoint->render(
+				$type_info['templates']['preview'],
 				array(
 					'value'=>@$data[$column_definition->name],
+					'name'=>@$column_definition->name,
 					'def'=>@$column_definition,
+				)
+			);
+			$content .= $this->form_endpoint->render(
+				'form_elms_unit.html',
+				array(
+					'label'=>@$column_definition->label,
+					'content'=>$form_elm,
+					'error'=>null,
 				)
 			);
 			$hidden .= '<input type="hidden" name="'.htmlspecialchars($column_definition->name).'" value="'.htmlspecialchars(@$data[$column_definition->name]).'"/>';

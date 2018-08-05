@@ -52,6 +52,11 @@ class create{
 	private $session;
 
 	/**
+	 * Form Elements Manager
+	 */
+	private $form_elements;
+
+	/**
 	 * Validator Instance
 	 * @ignore
 	 */
@@ -92,8 +97,11 @@ class create{
 		// Generate Session Manager
 		$this->session = new dba_session( $this );
 
+		// Form Elements Manager
+		$this->form_elements = new form_elements( $this );
+
 		// Generate Validator
-		$this->validator = new validator($this);
+		$this->validator = new validator( $this );
 
 		// Generate Login User Manager
 		$this->user = new user( $this );
@@ -165,6 +173,13 @@ class create{
 	 */
 	public function user(){
 		return $this->user;
+	}
+
+	/**
+	 * フォーム要素マネージャを取得
+	 */
+	public function form_elements(){
+		return $this->form_elements;
 	}
 
 	/**
@@ -420,4 +435,5 @@ class create{
 		$api = new endpoint_form( $this, $options );
 		return $api;
 	}
+
 }
