@@ -53,23 +53,15 @@ class validator{
 			}
 			$value = @$input_data[$column_definition->name];
 
-			// NOT NULL 制約
-			if( !$column_definition->not_null && !strlen($value) ){
-				// 必須項目ではなく、かつ値が入力されていない場合、エラーとして扱わない
-				continue;
+			$restrictions = array();
+			if($column_definition->not_null){
+				$restrictions['not_null'] = true;
 			}
-			if( $column_definition->not_null && !strlen($value) ){
-				// 必須項目で、かつ値が入力されていない場合、エラー
-				$errors[$column_definition->name] = 'Required.';
-				continue;
-			}
+			$detect_errors = $this->detect_errors($value, $column_definition->type, $restrictions);
 
-			// EMAIL 形式チェック
-			if( $column_definition->type == 'email' ){
-				if( !preg_match('/^.*?\@.*?$/s', $value) ){
-					$errors[$column_definition->name] = 'Invalid E-Mail Format.';
-					continue;
-				}
+			if( count($detect_errors) ){
+				$errors[$column_definition->name] = implode(' ', $detect_errors);
+				continue;
 			}
 
 			// FOREIGN KEY 制約
@@ -89,6 +81,54 @@ class validator{
 					continue;
 				}
 				unset($foreign_key, $foreign_row);
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Detect Input Errors
+	 * @param string $value        Validation target value
+	 * @param string $type         Data type
+	 * @param array  $restrictions Restrictions
+	 * @return array エラーメッセージを含む配列。 エラーがない場合、0件の配列が返ります。
+	 */
+	public function detect_errors($value, $type, $restrictions = array()){
+		$errors = array();
+
+		$is_not_null = @$restrictions['not_null'];
+		if( $is_not_null && !strlen($value) ){
+			// NOT NULL 制約
+			// 空白文字も NULL と同様に扱う
+			array_push($errors, 'Required.');
+			return $errors;
+		}
+		if( !$is_not_null && !strlen($value) ){
+			// NOT NULL 制約 がなくて値が空白の場合
+			// 空白文字も NULL と同様に扱う
+			return $errors;
+		}
+
+		// EMAIL 形式チェック
+		if( $type == 'email' ){
+			if( !preg_match('/^.*?\@.*?$/s', $value) ){
+				array_push($errors, 'Invalid E-Mail Format.');
+			}
+			if( preg_match('/\r|\n|\r\n/', $value) ){
+				array_push($errors, 'Line breaking code included.');
+			}
+		}
+
+		// TEXT 形式チェック
+		if( $type == 'text' || $type == 'textarea' ){
+			if( !is_string($value) ){
+				array_push($errors, 'Strings required.');
+			}
+		}
+		if( $type == 'text' ){
+			if( preg_match('/\r|\n|\r\n/', $value) ){
+				array_push($errors, 'Line breaking code included.');
 			}
 		}
 

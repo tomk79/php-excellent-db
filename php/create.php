@@ -383,6 +383,13 @@ class create{
 
 
 	/**
+	 * $validator
+	 */
+	public function validator(){
+		return $this->validator;
+	}
+
+	/**
 	 * データを検証する
 	 * @param  string $table テーブル名
 	 * @param  array $data 入力データ

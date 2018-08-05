@@ -133,6 +133,30 @@ $form->automatic_form();
 exit();
 ```
 
+#### validator を単体で使う
+
+```php
+<?php
+require_once('/path/to/vendor/autoload.php');
+$pdo = new PDO( /* PDO Options */ );
+$exdb = new excellent_db\create( $pdo, /* options */ );
+$validator = $exdb->validator();
+
+$check_value = 'valid';
+$errors = $validator->detect_errors(
+	$check_value, // 検証対象の値
+	'text', // 期待するデータ型
+	array( // 制約事項 (optional)
+		'not_null'=>true
+	)
+);
+if( count($errors) ){
+	echo "Invalid";
+}else{
+	echo "Valid";
+}
+```
+
 
 ## ライセンス - License
 
