@@ -1,7 +1,8 @@
 <tr>
 	<th style="width:30%;">{{ label }}</th>
-	<td style="width:70%;">
-		<div class="form-group{% if error %} has-error{% endif %}">
+	<td style="width:70%;"{% if error %} class="has-error"{% endif %}>
+		<div class="form-group">
+			{% if error %}<span class="help-block">{{ error }}</span>{% endif %}
 			{{ content|raw }}
 		</div>
 	</td>

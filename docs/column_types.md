@@ -17,8 +17,23 @@ TEXT 型。
 
 ## textarea
 
-TEXT 型。
-可変長の複数行入力。
+`text` と同じが、可変長の複数行入力ができる。
+
+## password
+
+`text` と同じが、入力時に文字列が伏せられる。
+
+## select
+
+与えられる選択肢からの選択。
+
+## date
+
+日付型の入力。
+
+## datetime
+
+日時型の入力。
 
 ## create_date
 

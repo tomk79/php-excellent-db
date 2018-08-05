@@ -1,0 +1,5 @@
+<select name="{{ name }}">
+{% for opt_val, opt_label in select_options %}
+<option value="{{ opt_val }}"{% if opt_val == value %} selected="selected"{% endif %}>{{ opt_label }}</option>
+{% endfor %}
+</select>
